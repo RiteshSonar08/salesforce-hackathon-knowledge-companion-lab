@@ -739,11 +739,10 @@ export default class KnowledgeCompanion extends LightningElement {
             </ul>
             <p>Keep exploring, keep building, and happy coding!</p>
         </div>
-    </div>
-
-    <div class="navigation-buttons">
-        <button id="prevBtn" onclick="changeSlide(-1)">❮ Previous</button>
-        <button id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+        <div class="navigation-buttons">
+            <button id="prevBtn" onclick="changeSlide(-1)">❮ Previous</button>
+            <button id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+        </div>    
     </div>
 
     <script>
@@ -766,7 +765,7 @@ export default class KnowledgeCompanion extends LightningElement {
                 }
             });
             currentSlide = index;
-            //updateNavButtons();
+            updateNavButtons();
 
             // If slide 7 (0-indexed as 6) is active, initialize or restart its specific animations
             if (index === 6) { // Slide 7 is at index 6
