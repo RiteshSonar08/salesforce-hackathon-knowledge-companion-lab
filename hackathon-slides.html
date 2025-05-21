@@ -25,13 +25,13 @@
             background-color: #fff;
             border: 1px solid #ddd;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
+            overflow: hidden; /* Ensures content within slides doesn't cause unexpected layout shifts */
         }
 
         .slide {
             display: none;
             padding: 30px 40px;
-            min-height: 400px;
+            min-height: 400px; /* Adjust as needed based on content */
             animation: fadeIn 0.5s ease-in-out;
         }
 
@@ -85,14 +85,19 @@
             background-color: transparent;
             padding: 0;
             font-size: 1em; /* Reset font size for code inside pre */
+            color: inherit; /* Inherit color from pre */
         }
 
         .navigation-buttons {
             display: flex;
             justify-content: space-between;
-            padding: 20px 40px;
+            padding: 20px 40px; /* Use consistent padding with slides */
             background-color: #f0f0f0;
             border-top: 1px solid #ccc;
+            width: 90%; /* Match slide-container width */
+            max-width: 1000px; /* Match slide-container max-width */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            margin: 0 auto 20px auto; /* Center and add bottom margin */
         }
 
         .navigation-buttons button {
@@ -109,7 +114,7 @@
             transition: background-color 0.3s ease;
         }
 
-        .navigation-buttons button:hover {
+        .navigation-buttons button:hover:not(:disabled) {
             background-color: #005fb2;
         }
 
@@ -173,7 +178,8 @@
             margin-top: 20px;
             background-color: #f9f9f9;
         }
-        #workflowAnimation svg {
+        #workflowAnimation svg { /* Ensure SVG takes full dimensions of its container */
+            display: block; /* Removes any extra space below inline SVGs */
             width: 100%;
             height: 100%;
         }
@@ -194,16 +200,17 @@
         }
         #summaryAfterView { display: none; } /* Initially hidden */
 
-        /* Syntax highlighting (basic) */
-        .token.keyword { color: #569cd6; }
+        /* Syntax highlighting (basic conceptual) */
+        .token.keyword { color: #569cd6; font-weight: bold; }
         .token.string { color: #ce9178; }
-        .token.comment { color: #6a9955; }
-        .token.punctuation { color: #d4d4d4; }
+        .token.comment { color: #6a9955; font-style: italic; }
+        .token.punctuation { color: #d4d4d4; } /* Might be too light on dark, adjust if needed */
         .token.class-name { color: #4ec9b0; }
         .token.function { color: #dcdcaa; }
         .token.tag { color: #569cd6; }
         .token.attr-name { color: #9cdcfe; }
         .token.attr-value { color: #ce9178; }
+        .token.annotation { color: #4ec9b0; } /* For Apex annotations */
 
     </style>
 </head>
@@ -218,7 +225,7 @@
             <p>In today's fast-paced environment, users are often confronted with vast amounts of text. Quickly understanding the essence of long documents like Salesforce <strong>Knowledge Articles</strong>, detailed <strong>Case Descriptions</strong>, or comprehensive <strong>Product Manuals</strong> is crucial but time-consuming.</p>
 
             <h3>The Solution: Knowledge Companion ✨</h3>
-            <p>This lab guides you in building a "Knowledge Companion" tool. Powered by the <strong>Gemini Flash 1.5 API</strong>, this tool integrates directly into Salesforce to provide instant summaries of lengthy text content. This significantly enhances productivity by allowing users to grasp key information at a glance.</p>
+            <p>This lab guides you in building a "Knowledge Companion" tool. Powered by the <strong>Gemini API</strong>, this tool integrates directly into Salesforce to provide instant summaries of lengthy text content. This significantly enhances productivity by allowing users to grasp key information at a glance.</p>
 
             <h3>Real-Life Use Cases 💡</h3>
             <ul>
@@ -333,33 +340,49 @@ public with sharing class GeminiAPIService {
     // Replace with your Custom Setting name if you used one
     private static String getApiKey() {
         // OPTION 1: Using a Hierarchy Custom Setting (Recommended for Lab)
-        // Gemini_API_Config__c config = Gemini_API_Config__c.getOrgDefaults();
-        // if (config != null && String.isNotBlank(config.API_Key__c)) {
-        //     return config.API_Key__c;
-        // }
-        // return null; // Or throw an error
+        /*
+        Gemini_API_Config__c config = Gemini_API_Config__c.getOrgDefaults();
+        if (config != null && String.isNotBlank(config.API_Key__c)) {
+            return config.API_Key__c;
+        }
+        System.debug(Logginglevel.ERROR, 'API Key not found in Custom Setting Gemini_API_Config__c');
+        return null; // Or throw an error
+        */
 
-        // OPTION 2: Placeholder for direct input (NOT FOR PRODUCTION)
-        return 'YOUR_GEMINI_API_KEY'; // <-- PASTE YOUR KEY HERE FOR QUICK TESTING ONLY
+        // OPTION 2: Placeholder for direct input (NOT FOR PRODUCTION - REPLACE THIS)
+        // Remember to replace 'YOUR_GEMINI_API_KEY_HERE' with your actual key for testing.
+        // For the lab, ensure participants understand this is for temporary testing only.
+        String apiKey = 'YOUR_GEMINI_API_KEY_HERE'; 
+        if (apiKey == 'YOUR_GEMINI_API_KEY_HERE' || String.isBlank(apiKey)) {
+            System.debug(LoggingLevel.ERROR, 'API Key is a placeholder or blank. Please configure it.');
+            // In a real app, you'd throw an exception or handle this more gracefully.
+            // For the lab, returning an error message the LWC can display is one option.
+            // throw new AuraHandledException('API Key not configured.'); // This would go to LWC catch block
+        }
+        return apiKey;
     }
 
     @AuraEnabled(cacheable=false) // Use cacheable=false for methods that perform DML or callouts
     public static String getSummary(Id recordId, String textToSummarize) {
         if (String.isBlank(textToSummarize)) {
+            System.debug('GeminiAPIService: No content provided for summarization for recordId: ' + recordId);
             return 'Error: No content provided for summarization.';
         }
 
         String apiKey = getApiKey();
-        if (String.isBlank(apiKey) || apiKey == 'YOUR_GEMINI_API_KEY') {
-            return 'Error: API Key not configured.';
+        if (String.isBlank(apiKey) || apiKey == 'YOUR_GEMINI_API_KEY_HERE') { // Check against placeholder
+            System.debug('GeminiAPIService: API Key not configured or is placeholder.');
+            return 'Error: API Key not configured properly.';
         }
 
         HttpRequest request = new HttpRequest();
         // Using Named Credential URL + path for Gemini Flash 1.5
+        // The '/v1beta/models/gemini-1.5-flash:generateContent' is the specific endpoint path.
+        // The Named Credential 'Google_Gemini_API' handles the base URL 'https://generativelanguage.googleapis.com'
         request.setEndpoint('callout:Google_Gemini_API/v1beta/models/gemini-1.5-flash:generateContent');
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json; charset=utf-8');
-        request.setHeader('x-goog-api-key', apiKey); // API Key in header
+        request.setHeader('x-goog-api-key', apiKey); // API Key in header as per Gemini requirements
 
         // Construct the request body for Gemini API
         Map<String, Object> contentPart = new Map<String, Object>{
@@ -372,66 +395,82 @@ public with sharing class GeminiAPIService {
             'contents' => new List<Object>{contentsMap}
         };
         
-        // Optional: Add generationConfig for more control (e.g. maxOutputTokens)
+        // Optional: Add generationConfig for more control (e.g. maxOutputTokens, temperature)
         // Map<String, Object> generationConfig = new Map<String, Object>{
-        //    'maxOutputTokens' => 150 // Example: limit summary length
+        //    'maxOutputTokens' => 150, // Example: limit summary length
+        //    'temperature' => 0.7      // Example: control creativity
         // };
         // requestBodyMap.put('generationConfig', generationConfig);
 
         request.setBody(JSON.serialize(requestBodyMap));
-        request.setTimeout(60000); // 60 seconds timeout
+        request.setTimeout(60000); // 60 seconds timeout, adjust as needed
 
         Http http = new Http();
         String summary = '';
 
         try {
             HttpResponse response = http.send(request);
+            System.debug('Gemini API Response Status Code: ' + response.getStatusCode());
+            System.debug('Gemini API Response Body: ' + response.getBody());
+
             if (response.getStatusCode() == 200) {
                 Map<String, Object> result = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
-                System.debug('Gemini API Response: ' + response.getBody());
-
+                
                 List<Object> candidates = (List<Object>) result.get('candidates');
                 if (candidates != null && !candidates.isEmpty()) {
                     Map<String, Object> firstCandidate = (Map<String, Object>) candidates[0];
                     Map<String, Object> content = (Map<String, Object>) firstCandidate.get('content');
-                    List<Object> parts = (List<Object>) content.get('parts');
-                    if (parts != null && !parts.isEmpty()) {
-                        Map<String, Object> firstPart = (Map<String, Object>) parts[0];
-                        summary = (String) firstPart.get('text');
+                    if (content != null) {
+                        List<Object> parts = (List<Object>) content.get('parts');
+                        if (parts != null && !parts.isEmpty()) {
+                            Map<String, Object> firstPart = (Map<String, Object>) parts[0];
+                            summary = (String) firstPart.get('text');
+                        } else {
+                             summary = 'Error: No summary content parts found in response.';
+                             System.debug('GeminiAPIService: No parts in content. Response: ' + response.getBody());
+                        }
                     } else {
-                         summary = 'Error: No summary content found in response.';
+                        summary = 'Error: No content object in candidate. Response: ' + response.getBody();
+                        System.debug('GeminiAPIService: No content in candidate. Response: ' + response.getBody());
                     }
                 } else {
                     summary = 'Error: No candidates found in API response.';
-                    System.debug('No candidates in response: ' + response.getBody());
+                    // Check for error structure in response if no candidates
+                    Map<String, Object> errorResponse = (Map<String, Object>) result.get('error');
+                    if(errorResponse != null && errorResponse.containsKey('message')) {
+                        summary += ' API Error: ' + errorResponse.get('message');
+                    }
+                    System.debug('GeminiAPIService: No candidates in response. Full Body: ' + response.getBody());
                 }
             } else {
                 summary = 'Error: API call failed with status ' + response.getStatusCode() + ' - ' + response.getStatus();
-                System.debug('Error from Gemini API: ' + response.getBody());
+                summary += '. Response: ' + response.getBody(); // Include API error message if possible
+                System.debug('Error from Gemini API: Status=' + response.getStatusCode() + ', Body=' + response.getBody());
             }
         } catch (Exception e) {
             summary = 'Error: Exception during API call - ' + e.getMessage();
-            System.debug('Exception: ' + e.getMessage() + ' Stacktrace: ' + e.getStackTraceString());
-            // Consider throwing AuraHandledException for better LWC error handling
-            // throw new AuraHandledException(e.getMessage());
+            System.debug(LoggingLevel.ERROR, 'GeminiAPIService Exception: ' + e.getMessage() + ' Stacktrace: ' + e.getStackTraceString());
+            // For LWC, throwing AuraHandledException is a good practice for client-side error handling
+            // throw new AuraHandledException('Failed to connect to summarization service: ' + e.getMessage());
         }
-        return summary.stripHtmlTags(); // Basic sanitization
+        // Basic HTML tag stripping. For more robust sanitization, consider alternatives.
+        return summary != null ? summary.stripHtmlTags() : 'Error: Received null summary.';
     }
 }
             </code></pre>
             <h3>Key Points:</h3>
             <ul>
                 <li><strong><code>@AuraEnabled(cacheable=false)</code></strong>: Makes the method callable from an LWC. <code>cacheable=false</code> is needed because it performs a callout.</li>
-                <li><strong>API Key Retrieval</strong>: Shows how to get the API key (ideally from Custom Settings).</li>
+                <li><strong>API Key Retrieval</strong>: Shows how to get the API key (ideally from Custom Settings). **Ensure 'YOUR_GEMINI_API_KEY_HERE' is replaced or the Custom Setting method is implemented.**</li>
                 <li><strong>Named Credential</strong>: Uses <code>callout:Google_Gemini_API/...</code> syntax.</li>
                 <li><strong>Request Body</strong>: Constructs the JSON payload required by the Gemini API (<code>gemini-1.5-flash</code> model).</li>
                 <li><strong><code>x-goog-api-key</code> header</strong>: This is where the API key is passed.</li>
-                <li><strong>JSON Deserialization</strong>: Parses the API response to extract the summary. The structure might vary slightly based on Gemini API versions, so always check their docs.</li>
-                <li><strong>Error Handling</strong>: Basic try-catch block. In production, you'd have more robust error logging and user feedback.</li>
+                <li><strong>JSON Deserialization</strong>: Parses the API response to extract the summary. The structure is based on Gemini API responses; always verify with current API documentation. Includes more detailed debugs and checks for common missing parts in the response.</li>
+                <li><strong>Error Handling</strong>: Basic try-catch block with more verbose logging.</li>
                 <li><strong>Timeout</strong>: Set to 60 seconds; adjust as needed.</li>
             </ul>
              <div class="note">
-                <strong>Field to Summarize:</strong> The current Apex method takes <code>textToSummarize</code> as a parameter. Your LWC will be responsible for fetching this text from the Knowledge Article record. Alternatively, you could pass <code>recordId</code> to Apex and have Apex query the field. The example LWC will demonstrate passing the text.
+                <strong>Field to Summarize:</strong> The current Apex method takes <code>textToSummarize</code> as a parameter. Your LWC will be responsible for fetching this text from the Knowledge Article record.
             </div>
         </div>
 
@@ -453,15 +492,15 @@ public with sharing class GeminiAPIService {
             &lt;/lightning-button&gt;
 
             &lt;template if:true={isLoading}&gt;
-                &lt;div class="slds-m-top_medium"&gt;
+                &lt;div class="slds-m-top_medium slds-is-relative" style="height: 50px;"&gt; &lt;!-- Added height for spinner positioning --&gt;
                     &lt;lightning-spinner alternative-text="Loading..." size="medium"&gt;&lt;/lightning-spinner&gt;
-                    &lt;p&gt;Generating summary, please wait...&lt;/p&gt;
+                    &lt;!-- &lt;p&gt;Generating summary, please wait...&lt;/p&gt; --&gt; &lt;!-- Spinner implies waiting --&gt;
                 &lt;/div&gt;
             &lt;/template&gt;
 
             &lt;template if:true={error}&gt;
                 &lt;div class="slds-m-top_medium slds-text-color_error"&gt;
-                    &lt;p&gt;{error}&lt;/p&gt;
+                    &lt;p&gt;&lt;strong&gt;Error:&lt;/strong&gt; {error}&lt;/p&gt;
                 &lt;/div&gt;
             &lt;/template&gt;
         &lt;/div&gt;
@@ -497,28 +536,43 @@ import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getSummary from '@salesforce/apex/GeminiAPIService.getSummary';
 
-// Import the field from Knowledge__kav you want to summarize.
-// Replace 'Knowledge__kav.Content_for_Summarization__c' with your actual field API name.
-// Example: For standard 'Article Body' in a specific article type, it might be different.
-// Find the correct API name in Object Manager > Knowledge > Fields & Relationships.
-// Or for a FAQ, it might be Knowledge__kav.Question__c + Knowledge__kav.Answer__c
-import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Content_for_Summarization__c'; // MODIFY AS NEEDED
+// IMPORTANT: Replace 'Knowledge__kav.Content_for_Summarization__c' 
+// with the actual API name of the field on your Knowledge Article object 
+// that contains the text you want to summarize.
+// Examples: 
+// - Custom Rich Text Field: 'Knowledge__kav.My_Rich_Text_Content__c'
+// - Standard Answer field for FAQ Article Type: 'Knowledge__kav.Answer__c'
+// Check Object Manager > Knowledge > Fields & Relationships for the correct API name.
+import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Content_for_Summarization__c'; 
 
 export default class KnowledgeCompanion extends LightningElement {
-    @api recordId; // Automatically populated when on a record page
+    @api recordId; // Automatically populated when LWC is on a record page
 
     @track summaryText = '';
     @track isLoading = false;
     @track error;
     @track isModalOpen = false;
 
+    _wiredArticleData; // To store the raw wired data
+
     // Wire adapter to get the content from the Knowledge Article record
-    // Ensure KNOWLEDGE_CONTENT_FIELD is correctly imported and references your desired field
     @wire(getRecord, { recordId: '$recordId', fields: [KNOWLEDGE_CONTENT_FIELD] })
-    wiredArticle;
+    wiredArticle({ error, data }) {
+        if (data) {
+            this._wiredArticleData = data; // Store data
+            this.error = undefined; // Clear previous errors
+        } else if (error) {
+            console.error('Error wiring article data:', JSON.stringify(error));
+            this.error = 'Failed to load article content. Ensure field API name is correct and you have access.';
+            this._wiredArticleData = undefined;
+        }
+    }
 
     get articleContent() {
-        return getFieldValue(this.wiredArticle.data, KNOWLEDGE_CONTENT_FIELD);
+        if (this._wiredArticleData) {
+            return getFieldValue(this._wiredArticleData, KNOWLEDGE_CONTENT_FIELD);
+        }
+        return undefined;
     }
 
     async handleSummariseClick() {
@@ -528,44 +582,66 @@ export default class KnowledgeCompanion extends LightningElement {
 
         const contentToSummarize = this.articleContent;
 
-        if (!contentToSummarize || contentToSummarize.trim() === '') {
-            this.error = 'No content found in the specified field to summarize.';
+        if (!contentToSummarize || String(contentToSummarize).trim() === '') {
+            this.error = 'No content found in the specified field (' + KNOWLEDGE_CONTENT_FIELD.fieldApiName + ') to summarize, or field is empty.';
             this.isLoading = false;
             return;
         }
         
-        // Strip HTML tags from rich text before sending for summarization
-        let plainTextContent = this.stripHtml(contentToSummarize);
+        // Basic HTML stripping. For complex HTML, consider a more robust library or server-side cleaning.
+        let plainTextContent = this.stripHtml(String(contentToSummarize)); // Ensure it's a string
+
+        if (!plainTextContent || plainTextContent.trim() === '') {
+            this.error = 'Content became empty after attempting to strip HTML. Original may have only contained HTML tags.';
+            this.isLoading = false;
+            return;
+        }
+
 
         try {
-            // Pass recordId (optional, if Apex needs it) and the text content
+            // Pass recordId (optional, if Apex needs it for context) and the processed text content
             const result = await getSummary({ recordId: this.recordId, textToSummarize: plainTextContent });
-            if (result && !result.toLowerCase().startsWith('error:')) {
-                this.summaryText = result;
-                this.isModalOpen = true;
+            
+            if (result) {
+                if (result.toLowerCase().startsWith('error:')) {
+                    this.error = result;
+                    console.error('Apex returned error:', result);
+                } else {
+                    this.summaryText = result;
+                    this.isModalOpen = true; // Open modal only on success
+                }
             } else {
-                this.error = result || 'Failed to get summary from API.';
+                this.error = 'Received an empty response from the summarization service.';
+                console.error('Apex returned empty or null result.');
             }
         } catch (e) {
-            console.error('Error calling Apex getSummary:', e);
-            this.error = e.body ? e.body.message : (e.message || 'An unknown error occurred.');
+            console.error('Error calling Apex getSummary:', JSON.stringify(e));
+            this.error = (e.body && e.body.message) ? e.body.message : (e.message || 'An unknown error occurred while calling the summarization service.');
         } finally {
             this.isLoading = false;
         }
     }
     
     stripHtml(html) {
-        let doc = new DOMParser().parseFromString(html, 'text/html');
-        return doc.body.textContent || "";
+        if (!html) return "";
+        // A more robust way to strip HTML in JS if DOMParser is available
+        try {
+            let doc = new DOMParser().parseFromString(html, 'text/html');
+            return doc.body.textContent || "";
+        } catch (e) {
+            console.warn("DOMParser not available or failed, falling back to basic regex for HTML stripping.", e);
+            // Basic regex fallback (less reliable for complex HTML)
+            return html.replace(/<[^>]*>?/gm, '');
+        }
     }
 
-    openModal() {
+    openModal() { // This function isn't directly called by a button in this version, but good to have
         this.isModalOpen = true;
     }
 
     closeModal() {
         this.isModalOpen = false;
-        this.summaryText = ''; // Clear summary on close
+        this.summaryText = ''; // Optionally clear summary on close
     }
 }
             </code></pre>
@@ -574,7 +650,7 @@ export default class KnowledgeCompanion extends LightningElement {
             <pre><code class="language-xml">
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata"&gt;
-    &lt;apiVersion&gt;59.0&lt;/apiVersion&gt;
+    &lt;apiVersion&gt;59.0&lt;/apiVersion&gt; &lt;!-- Or your current org's API version --&gt;
     &lt;isExposed&gt;true&lt;/isExposed&gt;
     &lt;targets&gt;
         &lt;target&gt;lightning__RecordPage&lt;/target&gt;
@@ -583,7 +659,7 @@ export default class KnowledgeCompanion extends LightningElement {
         &lt;targetConfig targets="lightning__RecordPage"&gt;
             &lt;objects&gt;
                 &lt;object&gt;Knowledge__kav&lt;/object&gt; 
-                &lt;!-- Add other objects if you want to use it elsewhere --&gt;
+                &lt;!-- Add other SObject API names here if you want to use this LWC on other record pages --&gt;
             &lt;/objects&gt;
         &lt;/targetConfig&gt;
     &lt;/targetConfigs&gt;
@@ -592,28 +668,28 @@ export default class KnowledgeCompanion extends LightningElement {
             <h3>Key LWC Points:</h3>
             <ul>
                 <li><strong><code>@api recordId</code></strong>: Gets the current record's ID.</li>
-                <li><strong><code>@wire(getRecord, ...)</code></strong>: Fetches the content from the specified field on the Knowledge Article. <strong>Crucially, update <code>KNOWLEDGE_CONTENT_FIELD</code> to point to the correct API name of the rich text field you want to summarize.</strong></li>
-                <li><strong><code>stripHtml()</code></strong>: A simple utility to remove HTML tags from rich text content before sending it to the API, as Gemini generally expects plain text.</li>
-                <li><strong><code>handleSummariseClick()</code></strong>: Calls the Apex <code>getSummary</code> method.</li>
+                <li><strong><code>@wire(getRecord, ...)</code></strong>: Fetches the content from the specified field on the Knowledge Article. **Crucially, update <code>KNOWLEDGE_CONTENT_FIELD</code> to point to the correct API name of the rich text field you want to summarize.** Includes better error handling for the wire service.</li>
+                <li><strong><code>stripHtml()</code></strong>: A utility to remove HTML tags from rich text content. Uses DOMParser with a regex fallback.</li>
+                <li><strong><code>handleSummariseClick()</code></strong>: Calls the Apex <code>getSummary</code> method with improved error checking.</li>
                 <li><strong><code>isLoading</code>, <code>error</code>, <code>isModalOpen</code></strong>: Trackers for UI state.</li>
-                <li><strong>SLDS Modal</strong>: Uses standard SLDS markup for the modal display. The LWC <code>lightning-modal</code> base component could also be used for a simpler modal structure if preferred.</li>
+                <li><strong>SLDS Modal</strong>: Uses standard SLDS markup for the modal display.</li>
                 <li><strong>XML Configuration</strong>: Exposes the LWC for Lightning Record Pages, specifically for the <code>Knowledge__kav</code> object.</li>
             </ul>
-            <p>After deploying these files, add the LWC to your Knowledge Article Lightning Record Page via the Lightning App Builder.</p>
+            <p>After deploying these files to your Salesforce org, add the LWC to your Knowledge Article Lightning Record Page via the Lightning App Builder.</p>
         </div>
 
         <div class="slide" id="slide7">
             <h2>Step 5: Simulation & Visuals 📊</h2>
 
             <h3>Workflow Animation (Conceptual D3.js)</h3>
-            <p>This D3.js animation visualizes the data flow when you click "AI Summarise".</p>
+            <p>This D3.js animation visualizes the data flow when you click "AI Summarise". Click the button below the animation to replay it.</p>
             <div id="workflowAnimation"></div>
             <button onclick="startWorkflowAnimation()" class="slds-button slds-button_neutral slds-m-top_small">Replay Animation</button>
 
-            <h3>Before/After Summary View (Interactive Toggle)</h3>
+            <h3 class="slds-m-top_large">Before/After Summary View (Interactive Toggle)</h3>
             <div class="summary-toggle-container">
                 <p>Simulate how a long piece of text can be condensed. Click the button to toggle between the original content and its summary.</p>
-                <button onclick="toggleSummaryView()" class="slds-button slds-button_brand">Toggle Original/Summary</button>
+                <button id="toggleSummaryBtn" onclick="toggleSummaryView()" class="slds-button slds-button_brand">Show AI Summary Example</button>
                 <div id="originalTextView" class="summary-text-area">
                     <h4>Original Document Text (Example)</h4>
                     <p>The Q4 Global Sales Initiative, codenamed "Project Everest," aims to expand market penetration in emerging APAC regions by 15% and increase overall recurring revenue by 10% through strategic partnerships and a revamped digital marketing strategy. Key performance indicators (KPIs) will include new customer acquisition rates, average deal size, and customer lifetime value. The initiative will involve cross-functional teams from Sales, Marketing, and Product Development, with a projected timeline of six months, starting January 1st. Bi-weekly progress reports will be submitted to the executive leadership team, outlining achievements, challenges, and mitigation strategies. A dedicated budget of $2.5 million has been allocated for this initiative, covering marketing campaigns, sales incentives, and technology upgrades. Training sessions for the sales team on new product features and market positioning are scheduled for mid-December. The success of Project Everest is critical for achieving the company's annual growth targets and strengthening its competitive position in the global market. All team members are expected to fully commit to their roles and responsibilities to ensure the project's objectives are met within the stipulated timeframe and budget.</p>
@@ -623,8 +699,8 @@ export default class KnowledgeCompanion extends LightningElement {
                     <p>"Project Everest," a 6-month, $2.5M Q4 initiative, targets a 15% APAC market expansion and 10% recurring revenue growth via partnerships and digital marketing. KPIs include customer acquisition, deal size, and lifetime value. Cross-functional teams will report bi-weekly to executives. Success is vital for annual growth and market position.</p>
                 </div>
             </div>
-            <div class="note">
-                The D3.js animation script below is conceptual. You would typically refine positions, timing, and appearance further.
+            <div class="note slds-m-top_medium">
+                The D3.js animation script below is conceptual. You would typically refine positions, timing, and appearance further. It's designed to run when this slide becomes active or when the "Replay Animation" button is clicked.
             </div>
         </div>
 
@@ -671,6 +747,7 @@ export default class KnowledgeCompanion extends LightningElement {
     </div>
 
     <script>
+        // --- Slide Navigation Logic ---
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
@@ -678,6 +755,10 @@ export default class KnowledgeCompanion extends LightningElement {
         const nextButton = document.getElementById('nextBtn');
 
         function showSlide(index) {
+            if (index < 0 || index >= totalSlides) {
+                console.error("Invalid slide index:", index);
+                return;
+            }
             slides.forEach((slide, i) => {
                 slide.classList.remove('active');
                 if (i === index) {
@@ -687,74 +768,130 @@ export default class KnowledgeCompanion extends LightningElement {
             currentSlide = index;
             updateNavButtons();
 
-            // If slide 7 is active, initialize or restart its specific animations
-            if (index === 6) { // Slide 7 (0-indexed)
-                startWorkflowAnimation();
+            // If slide 7 (0-indexed as 6) is active, initialize or restart its specific animations
+            if (index === 6) { // Slide 7 is at index 6
+                startWorkflowAnimation(); // D3 animation
             }
         }
 
         function changeSlide(step) {
             let newSlideIndex = currentSlide + step;
+            // No need to check bounds here, showSlide will handle it,
+            // but updateNavButtons relies on currentSlide being within bounds.
             if (newSlideIndex >= 0 && newSlideIndex < totalSlides) {
                 showSlide(newSlideIndex);
             }
         }
         
         function updateNavButtons() {
-            prevButton.disabled = currentSlide === 0;
-            nextButton.disabled = currentSlide === totalSlides - 1;
+            if (prevButton) {
+                prevButton.disabled = currentSlide === 0;
+            }
+            if (nextButton) {
+                nextButton.disabled = currentSlide === totalSlides - 1;
+            }
         }
 
-        // Initialize first slide
-        showSlide(0);
+        // Initialize first slide and button states on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (slides.length > 0) {
+                showSlide(0);
+            } else {
+                console.error("No slides with class '.slide' found. Navigation will not work.");
+                if(prevButton) prevButton.disabled = true;
+                if(nextButton) nextButton.disabled = true;
+            }
+             // Initial state for summary toggle button text
+            const toggleBtn = document.getElementById('toggleSummaryBtn');
+            const summaryView = document.getElementById('summaryAfterView');
+            if (toggleBtn && summaryView) {
+                 if (summaryView.style.display === 'none' || summaryView.style.display === '') {
+                    toggleBtn.textContent = 'Show AI Summary Example';
+                } else {
+                    toggleBtn.textContent = 'Show Original Text';
+                }
+            }
+        });
 
         // --- Slide 7: D3.js Workflow Animation ---
         function startWorkflowAnimation() {
             const svgContainer = d3.select("#workflowAnimation");
-            svgContainer.selectAll("*").remove(); // Clear previous animation
+            svgContainer.selectAll("*").remove(); // Clear previous animation if any
 
-            const width = svgContainer.node().getBoundingClientRect().width;
-            const height = svgContainer.node().getBoundingClientRect().height;
+            const bounds = svgContainer.node().getBoundingClientRect();
+            const width = bounds.width;
+            const height = bounds.height; // Ensure height is correctly determined
+
+            if (width <= 0 || height <= 0) { // Don't draw if container has no size
+                console.warn("D3 animation container has no dimensions. Skipping animation.");
+                return;
+            }
+            
             const svg = svgContainer.append("svg")
                 .attr("width", width)
-                .attr("height", height);
+                .attr("height", height)
+                .attr("viewBox", `0 0 ${width} ${height}`) // Ensures responsiveness
+                .style("overflow", "visible"); // Helps if markers go slightly out
+
+            const nodeRadius = Math.min(width, height) * 0.05; // Dynamic radius
+            const fontSize = Math.min(width, height) * 0.025; // Dynamic font size
 
             const nodes = [
-                { id: 1, name: "User Clicks Summarise (LWC)", x: width * 0.15, y: height * 0.3 },
-                { id: 2, name: "Apex Callout", x: width * 0.35, y: height * 0.3 },
-                { id: 3, name: "Salesforce Sends Request", x: width * 0.5, y: height * 0.1 },
-                { id: 4, name: "Gemini API Processes", x: width * 0.7, y: height * 0.1 },
-                { id: 5, name: "Gemini Responds", x: width * 0.5, y: height * 0.7 },
-                { id: 6, name: "Apex Receives Response", x: width * 0.35, y: height * 0.5 },
-                { id: 7, name: "Summary Displayed (LWC Modal)", x: width * 0.15, y: height * 0.5 }
+                { id: 1, name: "User Clicks Summarise (LWC)", x: width * 0.2, y: height * 0.3 },
+                { id: 2, name: "Apex Callout", x: width * 0.4, y: height * 0.3 },
+                { id: 3, name: "Salesforce Sends Request", x: width * 0.5, y: height * 0.15 },
+                { id: 4, name: "Gemini API Processes", x: width * 0.7, y: height * 0.15 },
+                { id: 5, name: "Gemini Responds", x: width * 0.5, y: height * 0.85 },
+                { id: 6, name: "Apex Receives Response", x: width * 0.4, y: height * 0.7 },
+                { id: 7, name: "Summary Displayed (LWC Modal)", x: width * 0.2, y: height * 0.7 }
             ];
 
             const links = [
                 { source: nodes[0], target: nodes[1], label: "1. UI Event" },
-                { source: nodes[1], target: nodes[2], label: "2. HTTP Request" },
+                { source: nodes[1], target: nodes[2], label: "2. To SF Server" },
                 { source: nodes[2], target: nodes[3], label: "3. To Gemini" },
                 { source: nodes[3], target: nodes[4], label: "4. AI Response" },
                 { source: nodes[4], target: nodes[5], label: "5. Back to SF" },
                 { source: nodes[5], target: nodes[6], label: "6. Update UI" }
             ];
+            
+            // Define arrow marker
+            svg.append("defs").append("marker")
+                .attr("id", "arrow")
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", nodeRadius * 0.7 + 5) // Adjust refX based on node radius for better arrow positioning
+                .attr("refY", 0)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto-start-reverse") // Changed orient for better arrow appearance
+              .append("path")
+                .attr("d", "M0,-5L10,0L0,5")
+                .style("fill", "#555");
+
 
             const nodeElements = svg.selectAll("g.node")
                 .data(nodes)
                 .enter().append("g")
+                .attr("class", "node")
                 .attr("transform", d => `translate(${d.x},${d.y})`);
 
             nodeElements.append("circle")
-                .attr("r", 15)
-                .style("fill", "#00A1E0");
+                .attr("r", nodeRadius)
+                .style("fill", "#00A1E0") // Initial color
+                .style("stroke", "#0070D2")
+                .style("stroke-width", 2);
 
             nodeElements.append("text")
                 .text(d => d.name)
-                .attr("x", 20)
-                .attr("y", 5)
-                .style("font-size", "12px")
-                .style("fill", "#333");
+                .attr("x", 0) // Centered text
+                .attr("y", nodeRadius + fontSize * 1.2) // Position below circle
+                .style("font-size", `${fontSize}px`)
+                .style("fill", "#333")
+                .style("text-anchor", "middle");
 
-            let delay = 0;
+            let animationDelay = 0;
+            const stepDuration = 1000; // Duration for each line draw
+            const highlightDuration = 500; // Duration for node highlight
 
             links.forEach((link, i) => {
                 const path = svg.append("line")
@@ -765,104 +902,112 @@ export default class KnowledgeCompanion extends LightningElement {
                     .attr("stroke", "#aaa")
                     .attr("stroke-width", 2)
                     .attr("marker-end", "url(#arrow)");
-
-                svg.append("defs").append("marker")
-                    .attr("id", "arrow")
-                    .attr("viewBox", "0 -5 10 10")
-                    .attr("refX", 10)
-                    .attr("refY", 0)
-                    .attr("markerWidth", 6)
-                    .attr("markerHeight", 6)
-                    .attr("orient", "auto")
-                    .append("path")
-                    .attr("d", "M0,-5L10,0L0,5")
-                    .style("fill", "#aaa");
                 
                 const label = svg.append("text")
                     .text(link.label)
                     .attr("x", (link.source.x + link.target.x) / 2)
                     .attr("y", (link.source.y + link.target.y) / 2 - 5)
-                    .style("font-size", "10px")
+                    .style("font-size", `${fontSize * 0.8}px`)
                     .style("fill", "#555")
+                    .style("text-anchor", "middle")
                     .style("opacity", 0);
 
-
-                // Animate circle fill and path drawing sequentially
+                // Highlight source node of the current link
                 d3.select(nodeElements.nodes()[i]).select("circle")
                     .transition()
-                    .delay(delay)
-                    .duration(500)
-                    .style("fill", "orange");
+                    .delay(animationDelay)
+                    .duration(highlightDuration)
+                    .style("fill", "orange"); // Active color
                 
-                path.transition()
-                    .delay(delay + 500)
-                    .duration(1000)
-                    .attr("x2", link.target.x)
-                    .attr("y2", link.target.y)
-                    .on("end", () => {
-                         d3.select(nodeElements.nodes()[i]).select("circle").style("fill", "#5cb85c"); // Mark as done
-                         if(nodes[i+1]) {
-                            d3.select(nodeElements.nodes()[i+1]).select("circle").style("fill", "orange"); // Highlight next
-                         }
-                    });
-                
-                label.transition()
-                    .delay(delay + 700)
-                    .duration(500)
-                    .style("opacity", 1);
+                animationDelay += highlightDuration;
 
-                delay += 1500; // Time for each step animation
+                // Animate path drawing
+                path.transition()
+                    .delay(animationDelay)
+                    .duration(stepDuration)
+                    .attr("x2", link.target.x)
+                    .attr("y2", link.target.y);
+
+                // Fade in label
+                label.transition()
+                    .delay(animationDelay + stepDuration / 2)
+                    .duration(highlightDuration)
+                    .style("opacity", 1);
+                
+                animationDelay += stepDuration;
+
+                // Mark source node as completed, highlight target node for next step
+                d3.select(nodeElements.nodes()[i]).select("circle")
+                    .transition()
+                    .delay(animationDelay) // After path is drawn
+                    .duration(highlightDuration)
+                    .style("fill", "#5cb85c"); // Completed color
             });
-             // Final node highlight
-            d3.select(nodeElements.nodes()[nodes.length-1]).select("circle")
-                .transition()
-                .delay(delay)
-                .duration(500)
-                .style("fill", "#5cb85c");
+            
+             // Final node (target of the last link) highlight as completed
+            if (nodes.length > 0) {
+                 d3.select(nodeElements.nodes()[nodes.length-1]).select("circle")
+                    .transition()
+                    .delay(animationDelay) // After last path is drawn
+                    .duration(highlightDuration)
+                    .style("fill", "#5cb85c"); // Completed color
+            }
         }
         
         // --- Slide 7: Before/After Toggle ---
         function toggleSummaryView() {
             const originalView = document.getElementById('originalTextView');
             const summaryView = document.getElementById('summaryAfterView');
-            const button = document.querySelector('.summary-toggle-container button');
+            const button = document.getElementById('toggleSummaryBtn'); // Use ID for button
 
-            if (summaryView.style.display === 'none' || summaryView.style.display === '') {
-                originalView.style.display = 'none';
-                summaryView.style.display = 'block';
-                button.textContent = 'Show Original Text';
+            if (summaryView && originalView && button) { // Check if elements exist
+                if (summaryView.style.display === 'none' || summaryView.style.display === '') {
+                    originalView.style.display = 'none';
+                    summaryView.style.display = 'block';
+                    button.textContent = 'Show Original Text';
+                } else {
+                    originalView.style.display = 'block';
+                    summaryView.style.display = 'none';
+                    button.textContent = 'Show AI Summary Example';
+                }
             } else {
-                originalView.style.display = 'block';
-                summaryView.style.display = 'none';
-                button.textContent = 'Show AI Summary Example';
+                console.error("Summary toggle elements not found.");
             }
         }
 
-        // --- Basic Syntax Highlighter (Conceptual) ---
-        // A more robust solution would use a library, but this is for self-containment
+        // --- Basic Syntax Highlighter (Conceptual - improves slightly on previous) ---
         function basicSyntaxHighlight() {
             document.querySelectorAll('pre code').forEach(block => {
-                let html = block.innerHTML;
-                // Apex/Java-like keywords
-                html = html.replace(/\b(public|private|static|void|String|Id|Map|List|if|else|for|while|try|catch|finally|return|new|with sharing|class|@AuraEnabled|@api|@wire|@track|import|export|default|const|let|async|await|true|false|null)\b/g, '<span class="token keyword">$&</span>');
-                // Strings
+                let html = block.textContent || ""; // Get raw text content to avoid re-processing HTML
+                
+                // Order of replacements matters: comments first, then strings, then keywords.
+                // Comments (block and line)
+                html = html.replace(/(\/\*[\s\S]*?\*\/|\/\/.*)/g, '<span class="token comment">$&</span>');
+                
+                // Strings (single and double quotes)
                 html = html.replace(/('.*?'|".*?")/g, '<span class="token string">$&</span>');
-                // Comments
-                html = html.replace(/(\/\/.*|\/\*[\s\S]*?\*\/)/g, '<span class="token comment">$&</span>');
-                // Annotations
-                html = html.replace(/(@[A-Za-z_]+)/g, '<span class="token class-name">$&</span>'); // Simple annotation
-                 // HTML tags
-                html = html.replace(/(&lt;\/?[\w\s="'-\/\.%]+&gt;)/g, function(match) {
-                    let inner = match.replace(/&lt;\/?([\w-]+)/, '&lt;/<span class="token tag">$1</span>'); // Tag name
-                    inner = inner.replace(/([\w-]+)=(".*?"|'.*?')/g, '<span class="token attr-name">$1</span>=<span class="token attr-value">$2</span>'); // Attributes
-                    return inner;
-                });
+                
+                // Apex/Java-like keywords (case-sensitive)
+                html = html.replace(/\b(public|private|static|void|String|Id|Map|List|if|else|for|while|try|catch|finally|return|new|with sharing|class|extends|implements|integer|boolean|true|false|null|this|super|@AuraEnabled|@api|@wire|@track|@TestVisible|@future|@InvocableMethod|@InvocableVariable|@IsTest)\b/g, '<span class="token keyword">$&</span>');
+                
+                // LWC/JS keywords
+                html = html.replace(/\b(import|export|default|const|let|var|async|await|function|class|extends|constructor|get|set|=>|yield|from|of|this|super|true|false|null|undefined)\b/g, '<span class="token keyword">$&</span>');
+
+                // Annotations (like @AuraEnabled but capture the whole thing)
+                html = html.replace(/(@[A-Za-z_][A-Za-z0-9_]*(?:\s*\([\s\S]*?\))?)/g, '<span class="token annotation">$&</span>');
+                
+                // HTML tags in HTML code blocks (simplified for example)
+                if (block.classList.contains('language-html') || block.classList.contains('language-xml')) {
+                     // Match opening and closing tags
+                    html = html.replace(/(&lt;\/?)([a-zA-Z0-9-]+)/g, '$1<span class="token tag">$2</span>');
+                    // Match attributes (name="value")
+                    html = html.replace(/([a-zA-Z0-9-]+)=(".*?"|'.*?')/g, '<span class="token attr-name">$1</span>=<span class="token attr-value">$2</span>');
+                }
+
                 block.innerHTML = html;
             });
         }
-        // Apply basic syntax highlighting on load
-        // This is very rudimentary; complex code might not render perfectly.
-        // Consider using a more sophisticated library if needed, or pre-processing.
+        // Apply basic syntax highlighting after DOM is loaded
         document.addEventListener('DOMContentLoaded', basicSyntaxHighlight);
 
     </script>
