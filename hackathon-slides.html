@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce Developer Lab Hackathon: Knowledge Companion</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .slide-container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            padding: 30px 40px;
+            min-height: 400px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h1, h2, h3, h4 {
+            color: #003972; /* Salesforce Blue */
+            margin-bottom: 0.75em;
+        }
+        h1 { font-size: 2.2em; text-align: center; margin-bottom: 1em; color: #001B35; }
+        h2 { font-size: 1.8em; border-bottom: 2px solid #00A1E0; padding-bottom: 0.3em; margin-top: 1.5em;}
+        h3 { font-size: 1.4em; margin-top: 1.2em; }
+        h4 { font-size: 1.1em; font-style: italic; color: #555;}
+
+
+        p, ul, ol {
+            margin-bottom: 1em;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+        }
+        li { margin-bottom: 0.5em; }
+
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            background-color: #eef1f3;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background-color: #2d2d2d; /* Dark background for code blocks */
+            color: #f8f8f2; /* Light text for contrast */
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.9em;
+            line-height: 1.5;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            font-size: 1em; /* Reset font size for code inside pre */
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ccc;
+        }
+
+        .navigation-buttons button {
+            background-color: #0070d2; /* Salesforce Button Blue */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .navigation-buttons button:hover {
+            background-color: #005fb2;
+        }
+
+        .navigation-buttons button:disabled {
+            background-color: #c0c0c0;
+            cursor: not-allowed;
+        }
+
+        .note {
+            background-color: #fff3cd; /* Yellowish note */
+            border-left: 5px solid #ffeeba;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 3px;
+        }
+        .note strong { color: #856404; }
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%; /* Could be more or less, depending on screen size */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        }
+        .modal-content h3 { margin-top: 0;}
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* D3 Animation container */
+        #workflowAnimation {
+            width: 100%;
+            height: 400px; /* Adjust as needed */
+            border: 1px solid #eee;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+        }
+        #workflowAnimation svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Before/After Toggle */
+        .summary-toggle-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+        .summary-toggle-container button { margin-bottom: 10px;}
+        .summary-text-area {
+            border: 1px dashed #ccc;
+            padding: 10px;
+            min-height: 100px;
+            background-color: #fff;
+        }
+        #summaryAfterView { display: none; } /* Initially hidden */
+
+        /* Syntax highlighting (basic) */
+        .token.keyword { color: #569cd6; }
+        .token.string { color: #ce9178; }
+        .token.comment { color: #6a9955; }
+        .token.punctuation { color: #d4d4d4; }
+        .token.class-name { color: #4ec9b0; }
+        .token.function { color: #dcdcaa; }
+        .token.tag { color: #569cd6; }
+        .token.attr-name { color: #9cdcfe; }
+        .token.attr-value { color: #ce9178; }
+
+    </style>
+</head>
+<body>
+
+    <h1>🚀 Salesforce Developer Lab: Knowledge Companion - Document Summariser 📄</h1>
+
+    <div class="slide-container">
+        <div class="slide active" id="slide1">
+            <h2>Lab Overview & Business Impact</h2>
+            <h3>The Challenge: Information Overload 😩</h3>
+            <p>In today's fast-paced environment, users are often confronted with vast amounts of text. Quickly understanding the essence of long documents like Salesforce <strong>Knowledge Articles</strong>, detailed <strong>Case Descriptions</strong>, or comprehensive <strong>Product Manuals</strong> is crucial but time-consuming.</p>
+
+            <h3>The Solution: Knowledge Companion ✨</h3>
+            <p>This lab guides you in building a "Knowledge Companion" tool. Powered by the <strong>Gemini Flash 1.5 API</strong>, this tool integrates directly into Salesforce to provide instant summaries of lengthy text content. This significantly enhances productivity by allowing users to grasp key information at a glance.</p>
+
+            <h3>Real-Life Use Cases 💡</h3>
+            <ul>
+                <li><strong>Support Agents:</strong> Quickly summarize complex case histories or long knowledge articles to resolve issues faster.</li>
+                <li><strong>Sales Teams:</strong> Get rapid summaries of account details, past communications, or opportunity notes.</li>
+                <li><strong>Product Managers:</strong> Condense user feedback or technical documentation.</li>
+                <li><strong>Any Salesforce User:</strong> Efficiently process information from lengthy text fields across various objects.</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide2">
+            <h2>Lab Goal 🎯</h2>
+            <p>By the end of this lab, you will have built a solution that can:</p>
+            <ul>
+                <li>Summarize content from a rich text area field (e.g., <code>Content__c</code>) on a Salesforce Knowledge Article.</li>
+                <li>Trigger this summarization process via a custom Lightning Web Component (LWC) button ("AI Summarise") placed on the Knowledge Article page.</li>
+                <li>Display the AI-generated summary clearly within a modal dialog on the screen.</li>
+            </ul>
+            <p>This hands-on experience will cover Salesforce configuration, Apex development for API callouts, and LWC creation for a seamless user interface.</p>
+        </div>
+
+        <div class="slide" id="slide3">
+            <h2>Step 1: Salesforce Org Setup ⚙️</h2>
+            <p>First, let's prepare your Salesforce Developer Org.</p>
+
+            <h3>1. Enable Salesforce Knowledge</h3>
+            <ul>
+                <li>Navigate to <strong>Setup</strong> > <strong>Knowledge</strong> > <strong>Knowledge Settings</strong>.</li>
+                <li>If not already enabled, check "Yes, I'd like to enable Salesforce Knowledge" and follow the setup wizard. You might need to assign licenses and permissions to your user.</li>
+            </ul>
+
+            <h3>2. Add Custom Field to Knowledge Object</h3>
+            <p>We need a field on the Knowledge Article object (<code>Knowledge__kav</code>) to hold the content you want to summarize. If you already have a rich text field with your main content, you can use that. Otherwise, create a new one:</p>
+            <ul>
+                <li>Navigate to <strong>Setup</strong> > <strong>Object Manager</strong> > <strong>Knowledge</strong>.</li>
+                <li>Go to <strong>Fields & Relationships</strong> and click <strong>New</strong>.</li>
+                <li>Select Data Type: <strong>Text Area (Rich)</strong> or <strong>Text Area (Long)</strong>. Click Next.</li>
+                <li>Field Label: e.g., <code>Content for Summarization</code></li>
+                <li>Field Name: e.g., <code>Content_for_Summarization__c</code> (The prompt suggested <code>Content__c</code>, ensure you use a consistent API name. For this guide, let's use <code>Content_for_Summarization__c</code> to be explicit).</li>
+                <li>Complete the field creation wizard (visible to appropriate profiles, add to page layouts).</li>
+            </ul>
+             <div class="note">
+                <strong>Note:</strong> The standard Knowledge object has fields like `Answer__c` (for Q&A) or you might use a custom rich text field that's part of your article type. Identify the API name of the field containing the main text you wish to summarize.
+            </div>
+
+            <h3>3. API Access and User Permissions</h3>
+            <ul>
+                <li>Ensure your user profile has "API Enabled" system permission.</li>
+                <li>Ensure your user has CRUD permissions on the Knowledge object and the custom field.</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide4">
+            <h2>Step 2: Gemini API Configuration 🔑</h2>
+            <p>Now, let's set up access to the Google Gemini API.</p>
+
+            <h3>1. Get Your Gemini API Key</h3>
+            <ul>
+                <li>Go to <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio (formerly MakerSuite)</a>.</li>
+                <li>Sign in with your Google account.</li>
+                <li>Click on "Get API key" and then "Create API key in new project" (or use an existing one).</li>
+                <li>Copy your API key and store it securely. <strong>This key is sensitive!</strong></li>
+            </ul>
+
+            <h3>2. Create a Named Credential in Salesforce</h3>
+            <p>Named Credentials simplify authenticated callouts from Salesforce.</p>
+            <ul>
+                <li>In Salesforce Setup, search for "Named Credentials".</li>
+                <li>Click <strong>New Named Credential</strong>.
+                    <ul>
+                        <li><strong>Label:</strong> <code>Google Gemini API</code></li>
+                        <li><strong>Name:</strong> <code>Google_Gemini_API</code> (This will be auto-filled from label)</li>
+                        <li><strong>URL:</strong> <code>https://generativelanguage.googleapis.com</code></li>
+                        <li><strong>Identity Type:</strong> <code>Anonymous</code> (We will add the API key via a header in Apex for this lab's simplicity. For production, explore options like `Password Authentication` with the API key in the password field and using custom headers, or storing the key in Protected Custom Settings/Metadata and constructing the header in Apex).</li>
+                        <li><strong>Authentication Protocol:</strong> <code>No Authentication</code></li>
+                        <li><strong>Generate Authorization Header:</strong> Unchecked</li>
+                        <li>Leave other fields as default unless you have specific network configurations.</li>
+                    </ul>
+                </li>
+                <li>Click <strong>Save</strong>.</li>
+            </ul>
+
+            <h3>3. Securely Storing and Accessing the API Key (Important Note)</h3>
+            <div class="note">
+                <p>For this hackathon lab, you might be tempted to hardcode the API key in your Apex class. <strong>Avoid this in real projects!</strong></p>
+                <p><strong>Better approach for this lab (and closer to best practice):</strong></p>
+                <ol>
+                    <li>Create a Custom Setting:
+                        <ul>
+                            <li>Setup > Custom Settings > New.</li>
+                            <li>Label: `Gemini API Config`, Object Name: `Gemini_API_Config`. Setting Type: `Hierarchy`.</li>
+                            <li>Add a new custom field: Data Type: `Text`, Field Label: `API Key`, Field Name: `API_Key__c`. Make it long enough.</li>
+                            <li>Manage the Custom Setting records and input your API key there.</li>
+                        </ul>
+                    </li>
+                    <li>In your Apex code, you'll retrieve it like this: <code>Gemini_API_Config__c.getOrgDefaults().API_Key__c;</code></li>
+                </ol>
+                <p>For ultimate security in production, consider Protected Custom Settings/Metadata, or integrate with a secrets management system.</p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide5">
+            <h2>Step 3: Apex Code Walkthrough 👨‍💻</h2>
+            <p>Let's create an Apex class to communicate with the Gemini API.</p>
+
+            <h3>1. Create Apex Class: <code>GeminiAPIService</code></h3>
+            <p>This class will handle the callout to the Gemini API.</p>
+            <pre><code class="language-apex">
+// GeminiAPIService.cls
+public with sharing class GeminiAPIService {
+
+    // Replace with your Custom Setting name if you used one
+    private static String getApiKey() {
+        // OPTION 1: Using a Hierarchy Custom Setting (Recommended for Lab)
+        // Gemini_API_Config__c config = Gemini_API_Config__c.getOrgDefaults();
+        // if (config != null && String.isNotBlank(config.API_Key__c)) {
+        //     return config.API_Key__c;
+        // }
+        // return null; // Or throw an error
+
+        // OPTION 2: Placeholder for direct input (NOT FOR PRODUCTION)
+        return 'YOUR_GEMINI_API_KEY'; // <-- PASTE YOUR KEY HERE FOR QUICK TESTING ONLY
+    }
+
+    @AuraEnabled(cacheable=false) // Use cacheable=false for methods that perform DML or callouts
+    public static String getSummary(Id recordId, String textToSummarize) {
+        if (String.isBlank(textToSummarize)) {
+            return 'Error: No content provided for summarization.';
+        }
+
+        String apiKey = getApiKey();
+        if (String.isBlank(apiKey) || apiKey == 'YOUR_GEMINI_API_KEY') {
+            return 'Error: API Key not configured.';
+        }
+
+        HttpRequest request = new HttpRequest();
+        // Using Named Credential URL + path for Gemini Flash 1.5
+        request.setEndpoint('callout:Google_Gemini_API/v1beta/models/gemini-1.5-flash:generateContent');
+        request.setMethod('POST');
+        request.setHeader('Content-Type', 'application/json; charset=utf-8');
+        request.setHeader('x-goog-api-key', apiKey); // API Key in header
+
+        // Construct the request body for Gemini API
+        Map<String, Object> contentPart = new Map<String, Object>{
+            'text' => textToSummarize
+        };
+        Map<String, Object> contentsMap = new Map<String, Object>{
+            'parts' => new List<Object>{contentPart}
+        };
+        Map<String, Object> requestBodyMap = new Map<String, Object>{
+            'contents' => new List<Object>{contentsMap}
+        };
+        
+        // Optional: Add generationConfig for more control (e.g. maxOutputTokens)
+        // Map<String, Object> generationConfig = new Map<String, Object>{
+        //    'maxOutputTokens' => 150 // Example: limit summary length
+        // };
+        // requestBodyMap.put('generationConfig', generationConfig);
+
+        request.setBody(JSON.serialize(requestBodyMap));
+        request.setTimeout(60000); // 60 seconds timeout
+
+        Http http = new Http();
+        String summary = '';
+
+        try {
+            HttpResponse response = http.send(request);
+            if (response.getStatusCode() == 200) {
+                Map<String, Object> result = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
+                System.debug('Gemini API Response: ' + response.getBody());
+
+                List<Object> candidates = (List<Object>) result.get('candidates');
+                if (candidates != null && !candidates.isEmpty()) {
+                    Map<String, Object> firstCandidate = (Map<String, Object>) candidates[0];
+                    Map<String, Object> content = (Map<String, Object>) firstCandidate.get('content');
+                    List<Object> parts = (List<Object>) content.get('parts');
+                    if (parts != null && !parts.isEmpty()) {
+                        Map<String, Object> firstPart = (Map<String, Object>) parts[0];
+                        summary = (String) firstPart.get('text');
+                    } else {
+                         summary = 'Error: No summary content found in response.';
+                    }
+                } else {
+                    summary = 'Error: No candidates found in API response.';
+                    System.debug('No candidates in response: ' + response.getBody());
+                }
+            } else {
+                summary = 'Error: API call failed with status ' + response.getStatusCode() + ' - ' + response.getStatus();
+                System.debug('Error from Gemini API: ' + response.getBody());
+            }
+        } catch (Exception e) {
+            summary = 'Error: Exception during API call - ' + e.getMessage();
+            System.debug('Exception: ' + e.getMessage() + ' Stacktrace: ' + e.getStackTraceString());
+            // Consider throwing AuraHandledException for better LWC error handling
+            // throw new AuraHandledException(e.getMessage());
+        }
+        return summary.stripHtmlTags(); // Basic sanitization
+    }
+}
+            </code></pre>
+            <h3>Key Points:</h3>
+            <ul>
+                <li><strong><code>@AuraEnabled(cacheable=false)</code></strong>: Makes the method callable from an LWC. <code>cacheable=false</code> is needed because it performs a callout.</li>
+                <li><strong>API Key Retrieval</strong>: Shows how to get the API key (ideally from Custom Settings).</li>
+                <li><strong>Named Credential</strong>: Uses <code>callout:Google_Gemini_API/...</code> syntax.</li>
+                <li><strong>Request Body</strong>: Constructs the JSON payload required by the Gemini API (<code>gemini-1.5-flash</code> model).</li>
+                <li><strong><code>x-goog-api-key</code> header</strong>: This is where the API key is passed.</li>
+                <li><strong>JSON Deserialization</strong>: Parses the API response to extract the summary. The structure might vary slightly based on Gemini API versions, so always check their docs.</li>
+                <li><strong>Error Handling</strong>: Basic try-catch block. In production, you'd have more robust error logging and user feedback.</li>
+                <li><strong>Timeout</strong>: Set to 60 seconds; adjust as needed.</li>
+            </ul>
+             <div class="note">
+                <strong>Field to Summarize:</strong> The current Apex method takes <code>textToSummarize</code> as a parameter. Your LWC will be responsible for fetching this text from the Knowledge Article record. Alternatively, you could pass <code>recordId</code> to Apex and have Apex query the field. The example LWC will demonstrate passing the text.
+            </div>
+        </div>
+
+        <div class="slide" id="slide6">
+            <h2>Step 4: Lightning Web Component (LWC) ⚡</h2>
+            <p>Create an LWC named <code>knowledgeCompanion</code> to trigger the summarization and display results.</p>
+
+            <h3>1. <code>knowledgeCompanion.html</code></h3>
+            <pre><code class="language-html">
+&lt;template&gt;
+    &lt;lightning-card title="Knowledge Companion: AI Summariser" icon-name="utility:summarydetail"&gt;
+        &lt;div class="slds-p-around_medium"&gt;
+            &lt;lightning-button
+                label="AI Summarise Content"
+                variant="brand"
+                onclick={handleSummariseClick}
+                disabled={isLoading}
+                icon-name="utility:magicwand"&gt;
+            &lt;/lightning-button&gt;
+
+            &lt;template if:true={isLoading}&gt;
+                &lt;div class="slds-m-top_medium"&gt;
+                    &lt;lightning-spinner alternative-text="Loading..." size="medium"&gt;&lt;/lightning-spinner&gt;
+                    &lt;p&gt;Generating summary, please wait...&lt;/p&gt;
+                &lt;/div&gt;
+            &lt;/template&gt;
+
+            &lt;template if:true={error}&gt;
+                &lt;div class="slds-m-top_medium slds-text-color_error"&gt;
+                    &lt;p&gt;{error}&lt;/p&gt;
+                &lt;/div&gt;
+            &lt;/template&gt;
+        &lt;/div&gt;
+    &lt;/lightning-card&gt;
+
+    &lt;!-- Modal for displaying summary --&gt;
+    &lt;template if:true={isModalOpen}&gt;
+        &lt;section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open"&gt;
+            &lt;div class="slds-modal__container"&gt;
+                &lt;header class="slds-modal__header"&gt;
+                    &lt;button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}&gt;
+                        &lt;lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"&gt;&lt;/lightning-icon&gt;
+                        &lt;span class="slds-assistive-text"&gt;Close&lt;/span&gt;
+                    &lt;/button&gt;
+                    &lt;h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate"&gt;AI Generated Summary&lt;/h2&gt;
+                &lt;/header&gt;
+                &lt;div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1"&gt;
+                    &lt;p style="white-space: pre-wrap;"&gt;{summaryText}&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;footer class="slds-modal__footer"&gt;
+                    &lt;lightning-button label="Close" title="Close" onclick={closeModal}&gt;&lt;/lightning-button&gt;
+                &lt;/footer&gt;
+            &lt;/div&gt;
+        &lt;/section&gt;
+        &lt;div class="slds-backdrop slds-backdrop_open" role="presentation"&gt;&lt;/div&gt;
+    &lt;/template&gt;
+&lt;/template&gt;
+            </code></pre>
+
+            <h3>2. <code>knowledgeCompanion.js</code></h3>
+            <pre><code class="language-javascript">
+import { LightningElement, api, wire, track } from 'lwc';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import getSummary from '@salesforce/apex/GeminiAPIService.getSummary';
+
+// Import the field from Knowledge__kav you want to summarize.
+// Replace 'Knowledge__kav.Content_for_Summarization__c' with your actual field API name.
+// Example: For standard 'Article Body' in a specific article type, it might be different.
+// Find the correct API name in Object Manager > Knowledge > Fields & Relationships.
+// Or for a FAQ, it might be Knowledge__kav.Question__c + Knowledge__kav.Answer__c
+import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Content_for_Summarization__c'; // MODIFY AS NEEDED
+
+export default class KnowledgeCompanion extends LightningElement {
+    @api recordId; // Automatically populated when on a record page
+
+    @track summaryText = '';
+    @track isLoading = false;
+    @track error;
+    @track isModalOpen = false;
+
+    // Wire adapter to get the content from the Knowledge Article record
+    // Ensure KNOWLEDGE_CONTENT_FIELD is correctly imported and references your desired field
+    @wire(getRecord, { recordId: '$recordId', fields: [KNOWLEDGE_CONTENT_FIELD] })
+    wiredArticle;
+
+    get articleContent() {
+        return getFieldValue(this.wiredArticle.data, KNOWLEDGE_CONTENT_FIELD);
+    }
+
+    async handleSummariseClick() {
+        this.isLoading = true;
+        this.error = undefined;
+        this.summaryText = '';
+
+        const contentToSummarize = this.articleContent;
+
+        if (!contentToSummarize || contentToSummarize.trim() === '') {
+            this.error = 'No content found in the specified field to summarize.';
+            this.isLoading = false;
+            return;
+        }
+        
+        // Strip HTML tags from rich text before sending for summarization
+        let plainTextContent = this.stripHtml(contentToSummarize);
+
+        try {
+            // Pass recordId (optional, if Apex needs it) and the text content
+            const result = await getSummary({ recordId: this.recordId, textToSummarize: plainTextContent });
+            if (result && !result.toLowerCase().startsWith('error:')) {
+                this.summaryText = result;
+                this.isModalOpen = true;
+            } else {
+                this.error = result || 'Failed to get summary from API.';
+            }
+        } catch (e) {
+            console.error('Error calling Apex getSummary:', e);
+            this.error = e.body ? e.body.message : (e.message || 'An unknown error occurred.');
+        } finally {
+            this.isLoading = false;
+        }
+    }
+    
+    stripHtml(html) {
+        let doc = new DOMParser().parseFromString(html, 'text/html');
+        return doc.body.textContent || "";
+    }
+
+    openModal() {
+        this.isModalOpen = true;
+    }
+
+    closeModal() {
+        this.isModalOpen = false;
+        this.summaryText = ''; // Clear summary on close
+    }
+}
+            </code></pre>
+
+            <h3>3. <code>knowledgeCompanion.js-meta.xml</code></h3>
+            <pre><code class="language-xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata"&gt;
+    &lt;apiVersion&gt;59.0&lt;/apiVersion&gt;
+    &lt;isExposed&gt;true&lt;/isExposed&gt;
+    &lt;targets&gt;
+        &lt;target&gt;lightning__RecordPage&lt;/target&gt;
+    &lt;/targets&gt;
+    &lt;targetConfigs&gt;
+        &lt;targetConfig targets="lightning__RecordPage"&gt;
+            &lt;objects&gt;
+                &lt;object&gt;Knowledge__kav&lt;/object&gt; 
+                &lt;!-- Add other objects if you want to use it elsewhere --&gt;
+            &lt;/objects&gt;
+        &lt;/targetConfig&gt;
+    &lt;/targetConfigs&gt;
+&lt;/LightningComponentBundle&gt;
+            </code></pre>
+            <h3>Key LWC Points:</h3>
+            <ul>
+                <li><strong><code>@api recordId</code></strong>: Gets the current record's ID.</li>
+                <li><strong><code>@wire(getRecord, ...)</code></strong>: Fetches the content from the specified field on the Knowledge Article. <strong>Crucially, update <code>KNOWLEDGE_CONTENT_FIELD</code> to point to the correct API name of the rich text field you want to summarize.</strong></li>
+                <li><strong><code>stripHtml()</code></strong>: A simple utility to remove HTML tags from rich text content before sending it to the API, as Gemini generally expects plain text.</li>
+                <li><strong><code>handleSummariseClick()</code></strong>: Calls the Apex <code>getSummary</code> method.</li>
+                <li><strong><code>isLoading</code>, <code>error</code>, <code>isModalOpen</code></strong>: Trackers for UI state.</li>
+                <li><strong>SLDS Modal</strong>: Uses standard SLDS markup for the modal display. The LWC <code>lightning-modal</code> base component could also be used for a simpler modal structure if preferred.</li>
+                <li><strong>XML Configuration</strong>: Exposes the LWC for Lightning Record Pages, specifically for the <code>Knowledge__kav</code> object.</li>
+            </ul>
+            <p>After deploying these files, add the LWC to your Knowledge Article Lightning Record Page via the Lightning App Builder.</p>
+        </div>
+
+        <div class="slide" id="slide7">
+            <h2>Step 5: Simulation & Visuals 📊</h2>
+
+            <h3>Workflow Animation (Conceptual D3.js)</h3>
+            <p>This D3.js animation visualizes the data flow when you click "AI Summarise".</p>
+            <div id="workflowAnimation"></div>
+            <button onclick="startWorkflowAnimation()" class="slds-button slds-button_neutral slds-m-top_small">Replay Animation</button>
+
+            <h3>Before/After Summary View (Interactive Toggle)</h3>
+            <div class="summary-toggle-container">
+                <p>Simulate how a long piece of text can be condensed. Click the button to toggle between the original content and its summary.</p>
+                <button onclick="toggleSummaryView()" class="slds-button slds-button_brand">Toggle Original/Summary</button>
+                <div id="originalTextView" class="summary-text-area">
+                    <h4>Original Document Text (Example)</h4>
+                    <p>The Q4 Global Sales Initiative, codenamed "Project Everest," aims to expand market penetration in emerging APAC regions by 15% and increase overall recurring revenue by 10% through strategic partnerships and a revamped digital marketing strategy. Key performance indicators (KPIs) will include new customer acquisition rates, average deal size, and customer lifetime value. The initiative will involve cross-functional teams from Sales, Marketing, and Product Development, with a projected timeline of six months, starting January 1st. Bi-weekly progress reports will be submitted to the executive leadership team, outlining achievements, challenges, and mitigation strategies. A dedicated budget of $2.5 million has been allocated for this initiative, covering marketing campaigns, sales incentives, and technology upgrades. Training sessions for the sales team on new product features and market positioning are scheduled for mid-December. The success of Project Everest is critical for achieving the company's annual growth targets and strengthening its competitive position in the global market. All team members are expected to fully commit to their roles and responsibilities to ensure the project's objectives are met within the stipulated timeframe and budget.</p>
+                </div>
+                <div id="summaryAfterView" class="summary-text-area">
+                    <h4>AI Generated Summary (Example)</h4>
+                    <p>"Project Everest," a 6-month, $2.5M Q4 initiative, targets a 15% APAC market expansion and 10% recurring revenue growth via partnerships and digital marketing. KPIs include customer acquisition, deal size, and lifetime value. Cross-functional teams will report bi-weekly to executives. Success is vital for annual growth and market position.</p>
+                </div>
+            </div>
+            <div class="note">
+                The D3.js animation script below is conceptual. You would typically refine positions, timing, and appearance further.
+            </div>
+        </div>
+
+        <div class="slide" id="slide8">
+            <h2>Congratulations & Next Steps 🎉</h2>
+            <p>You've successfully built a "Knowledge Companion" that leverages the power of Generative AI within Salesforce!</p>
+
+            <h3>What You've Accomplished 🏆</h3>
+            <ul>
+                <li><strong>AI Integration:</strong> Connected Salesforce to the Google Gemini API for advanced text summarization.</li>
+                <li><strong>Custom UI/UX:</strong> Developed a Lightning Web Component (LWC) to provide a user-friendly interface for triggering AI summaries.</li>
+                <li><strong>Apex Callouts:</strong> Implemented Apex code to securely call external APIs using Named Credentials.</li>
+                <li><strong>LWC-Apex Communication:</strong> Mastered how LWCs interact with Apex controllers to fetch and process data.</li>
+                <li><strong>Practical Application:</strong> Gained hands-on experience in solving a real-world problem – information overload – using cutting-edge AI.</li>
+            </ul>
+
+            <h3>Potential Project Implementations & Enhancements 🚀</h3>
+            <p>Think about how you can adapt or extend this project:</p>
+            <ul>
+                <li><strong>Summarize Other Objects:</strong> Apply this to Cases (description, comments), Accounts (notes, call logs), Emails, or Chatter threads.</li>
+                <li><strong>Batch Summarization:</strong> Create a batch Apex job to summarize many records overnight.</li>
+                <li><strong>Custom Prompts:</strong> Allow users to provide custom instructions to the AI for different summarization styles (e.g., "summarize for an executive," "extract key action items").</li>
+                <li><strong>Sentiment Analysis:</strong> Extend the API call to also perform sentiment analysis on the text.</li>
+                <li><strong>Record Update:</strong> Option to save the summary back to a field on the record.</li>
+                <li><strong>Flow Integration:</strong> Trigger summarization from a Salesforce Flow.</li>
+            </ul>
+
+            <h3>Further Reading & Resources 📚</h3>
+            <ul>
+                <li><a href="https://ai.google.dev/docs/gemini_api_overview" target="_blank">Google Gemini API Documentation</a></li>
+                <li><a href="https://ai.google.dev/models/gemini" target="_blank">Google Gemini Models (including Flash 1.5)</a></li>
+                <li><a href="https://developer.salesforce.com/docs/" target="_blank">Salesforce Developer Guide</a></li>
+                <li><a href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc" target="_blank">Lightning Web Components Dev Guide</a></li>
+                <li><a href="https://trailhead.salesforce.com/en/content/learn/modules/apex_integration_services" target="_blank">Trailhead: Apex Integration Services</a></li>
+                <li><a href="https://trailhead.salesforce.com/en/content/learn/trails/build-lightning-web-components" target="_blank">Trailhead: Build Lightning Web Components</a></li>
+            </ul>
+            <p>Keep exploring, keep building, and happy coding!</p>
+        </div>
+    </div>
+
+    <div class="navigation-buttons">
+        <button id="prevBtn" onclick="changeSlide(-1)">❮ Previous</button>
+        <button id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const prevButton = document.getElementById('prevBtn');
+        const nextButton = document.getElementById('nextBtn');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+            currentSlide = index;
+            updateNavButtons();
+
+            // If slide 7 is active, initialize or restart its specific animations
+            if (index === 6) { // Slide 7 (0-indexed)
+                startWorkflowAnimation();
+            }
+        }
+
+        function changeSlide(step) {
+            let newSlideIndex = currentSlide + step;
+            if (newSlideIndex >= 0 && newSlideIndex < totalSlides) {
+                showSlide(newSlideIndex);
+            }
+        }
+        
+        function updateNavButtons() {
+            prevButton.disabled = currentSlide === 0;
+            nextButton.disabled = currentSlide === totalSlides - 1;
+        }
+
+        // Initialize first slide
+        showSlide(0);
+
+        // --- Slide 7: D3.js Workflow Animation ---
+        function startWorkflowAnimation() {
+            const svgContainer = d3.select("#workflowAnimation");
+            svgContainer.selectAll("*").remove(); // Clear previous animation
+
+            const width = svgContainer.node().getBoundingClientRect().width;
+            const height = svgContainer.node().getBoundingClientRect().height;
+            const svg = svgContainer.append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            const nodes = [
+                { id: 1, name: "User Clicks Summarise (LWC)", x: width * 0.15, y: height * 0.3 },
+                { id: 2, name: "Apex Callout", x: width * 0.35, y: height * 0.3 },
+                { id: 3, name: "Salesforce Sends Request", x: width * 0.5, y: height * 0.1 },
+                { id: 4, name: "Gemini API Processes", x: width * 0.7, y: height * 0.1 },
+                { id: 5, name: "Gemini Responds", x: width * 0.5, y: height * 0.7 },
+                { id: 6, name: "Apex Receives Response", x: width * 0.35, y: height * 0.5 },
+                { id: 7, name: "Summary Displayed (LWC Modal)", x: width * 0.15, y: height * 0.5 }
+            ];
+
+            const links = [
+                { source: nodes[0], target: nodes[1], label: "1. UI Event" },
+                { source: nodes[1], target: nodes[2], label: "2. HTTP Request" },
+                { source: nodes[2], target: nodes[3], label: "3. To Gemini" },
+                { source: nodes[3], target: nodes[4], label: "4. AI Response" },
+                { source: nodes[4], target: nodes[5], label: "5. Back to SF" },
+                { source: nodes[5], target: nodes[6], label: "6. Update UI" }
+            ];
+
+            const nodeElements = svg.selectAll("g.node")
+                .data(nodes)
+                .enter().append("g")
+                .attr("transform", d => `translate(${d.x},${d.y})`);
+
+            nodeElements.append("circle")
+                .attr("r", 15)
+                .style("fill", "#00A1E0");
+
+            nodeElements.append("text")
+                .text(d => d.name)
+                .attr("x", 20)
+                .attr("y", 5)
+                .style("font-size", "12px")
+                .style("fill", "#333");
+
+            let delay = 0;
+
+            links.forEach((link, i) => {
+                const path = svg.append("line")
+                    .attr("x1", link.source.x)
+                    .attr("y1", link.source.y)
+                    .attr("x2", link.source.x) // Start with no length
+                    .attr("y2", link.source.y)
+                    .attr("stroke", "#aaa")
+                    .attr("stroke-width", 2)
+                    .attr("marker-end", "url(#arrow)");
+
+                svg.append("defs").append("marker")
+                    .attr("id", "arrow")
+                    .attr("viewBox", "0 -5 10 10")
+                    .attr("refX", 10)
+                    .attr("refY", 0)
+                    .attr("markerWidth", 6)
+                    .attr("markerHeight", 6)
+                    .attr("orient", "auto")
+                    .append("path")
+                    .attr("d", "M0,-5L10,0L0,5")
+                    .style("fill", "#aaa");
+                
+                const label = svg.append("text")
+                    .text(link.label)
+                    .attr("x", (link.source.x + link.target.x) / 2)
+                    .attr("y", (link.source.y + link.target.y) / 2 - 5)
+                    .style("font-size", "10px")
+                    .style("fill", "#555")
+                    .style("opacity", 0);
+
+
+                // Animate circle fill and path drawing sequentially
+                d3.select(nodeElements.nodes()[i]).select("circle")
+                    .transition()
+                    .delay(delay)
+                    .duration(500)
+                    .style("fill", "orange");
+                
+                path.transition()
+                    .delay(delay + 500)
+                    .duration(1000)
+                    .attr("x2", link.target.x)
+                    .attr("y2", link.target.y)
+                    .on("end", () => {
+                         d3.select(nodeElements.nodes()[i]).select("circle").style("fill", "#5cb85c"); // Mark as done
+                         if(nodes[i+1]) {
+                            d3.select(nodeElements.nodes()[i+1]).select("circle").style("fill", "orange"); // Highlight next
+                         }
+                    });
+                
+                label.transition()
+                    .delay(delay + 700)
+                    .duration(500)
+                    .style("opacity", 1);
+
+                delay += 1500; // Time for each step animation
+            });
+             // Final node highlight
+            d3.select(nodeElements.nodes()[nodes.length-1]).select("circle")
+                .transition()
+                .delay(delay)
+                .duration(500)
+                .style("fill", "#5cb85c");
+        }
+        
+        // --- Slide 7: Before/After Toggle ---
+        function toggleSummaryView() {
+            const originalView = document.getElementById('originalTextView');
+            const summaryView = document.getElementById('summaryAfterView');
+            const button = document.querySelector('.summary-toggle-container button');
+
+            if (summaryView.style.display === 'none' || summaryView.style.display === '') {
+                originalView.style.display = 'none';
+                summaryView.style.display = 'block';
+                button.textContent = 'Show Original Text';
+            } else {
+                originalView.style.display = 'block';
+                summaryView.style.display = 'none';
+                button.textContent = 'Show AI Summary Example';
+            }
+        }
+
+        // --- Basic Syntax Highlighter (Conceptual) ---
+        // A more robust solution would use a library, but this is for self-containment
+        function basicSyntaxHighlight() {
+            document.querySelectorAll('pre code').forEach(block => {
+                let html = block.innerHTML;
+                // Apex/Java-like keywords
+                html = html.replace(/\b(public|private|static|void|String|Id|Map|List|if|else|for|while|try|catch|finally|return|new|with sharing|class|@AuraEnabled|@api|@wire|@track|import|export|default|const|let|async|await|true|false|null)\b/g, '<span class="token keyword">$&</span>');
+                // Strings
+                html = html.replace(/('.*?'|".*?")/g, '<span class="token string">$&</span>');
+                // Comments
+                html = html.replace(/(\/\/.*|\/\*[\s\S]*?\*\/)/g, '<span class="token comment">$&</span>');
+                // Annotations
+                html = html.replace(/(@[A-Za-z_]+)/g, '<span class="token class-name">$&</span>'); // Simple annotation
+                 // HTML tags
+                html = html.replace(/(&lt;\/?[\w\s="'-\/\.%]+&gt;)/g, function(match) {
+                    let inner = match.replace(/&lt;\/?([\w-]+)/, '&lt;/<span class="token tag">$1</span>'); // Tag name
+                    inner = inner.replace(/([\w-]+)=(".*?"|'.*?')/g, '<span class="token attr-name">$1</span>=<span class="token attr-value">$2</span>'); // Attributes
+                    return inner;
+                });
+                block.innerHTML = html;
+            });
+        }
+        // Apply basic syntax highlighting on load
+        // This is very rudimentary; complex code might not render perfectly.
+        // Consider using a more sophisticated library if needed, or pre-processing.
+        document.addEventListener('DOMContentLoaded', basicSyntaxHighlight);
+
+    </script>
+</body>
+</html>
