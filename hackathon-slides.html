@@ -276,122 +276,11 @@
             <h2>Step 3: Apex Code Walkthrough 👨‍💻</h2>
             <p>This Apex class (<code>GeminiAPIService.cls</code>) will make the callout to the Gemini API.</p>
             <p><strong>Action:</strong> Create this Apex class in your Salesforce org.</p>
-            <pre><code class="language-apex">
-// File: GeminiAPIService.cls
-public with sharing class GeminiAPIService {
-
-    // --- IMPORTANT: API Key Handling for the Lab ---
-    // For this lab, we'll use a placeholder. In a real scenario,
-    // retrieve this securely (e.g., from a Protected Custom Setting/Metadata).
-    private static String getApiKey() {
-        // TODO: REPLACE 'YOUR_ACTUAL_GEMINI_API_KEY' with your real API key for this lab.
-        // This is NOT for production.
-        String apiKey = 'YOUR_ACTUAL_GEMINI_API_KEY'; 
-
-        if (apiKey == 'YOUR_ACTUAL_GEMINI_API_KEY' || String.isBlank(apiKey)) {
-            // This basic check helps during the lab to ensure the key was replaced.
-            System.debug(LoggingLevel.ERROR, 
-                'CRITICAL_SETUP_ERROR: API Key is still the placeholder or is blank in GeminiAPIService.getApiKey(). Please replace it.');
-            // In a real app, you might throw a custom exception here.
-        }
-        return apiKey;
-    }
-
-    @AuraEnabled(cacheable=false) // cacheable=false because it performs a callout
-    public static String getSummary(Id recordId, String textToSummarize) {
-        // Basic input validation
-        if (String.isBlank(textToSummarize)) {
-            System.debug('GeminiAPIService.getSummary: textToSummarize was blank for recordId: ' + recordId);
-            return 'Error: No content was provided for summarization.';
-        }
-
-        String apiKey = getApiKey();
-        // Further check if API key placeholder was not replaced
-        if (String.isBlank(apiKey) || apiKey == 'YOUR_ACTUAL_GEMINI_API_KEY') {
-            return 'Error: Gemini API Key is not configured in Apex. Please update GeminiAPIService.cls.';
-        }
-
-        // Prepare the HTTP request
-        HttpRequest request = new HttpRequest();
-        
-        // Endpoint: Using Named Credential 'Google_Gemini_API' (handles base URL)
-        // and appending the specific path for the Gemini Flash 1.5 model.
-        request.setEndpoint('callout:Google_Gemini_API/v1beta/models/gemini-1.5-flash:generateContent');
-        request.setMethod('POST');
-        
-        // Set Headers
-        request.setHeader('Content-Type', 'application/json; charset=utf-8');
-        // The API key is passed in the 'x-goog-api-key' header for Gemini API
-        request.setHeader('x-goog-api-key', apiKey);
-
-        // Construct the Request Body for Gemini API
-        // Structure: {"contents":[{"parts":[{"text": "your text here"}]}]}
-        Map&lt;String, Object&gt; textPart = new Map&lt;String, Object&gt;{ 'text' => textToSummarize };
-        Map&lt;String, Object&gt; partsContainer = new Map&lt;String, Object&gt;{ 'parts' => new List&lt;Object&gt;{ textPart } };
-        Map&lt;String, Object&gt; requestBodyMap = new Map&lt;String, Object&gt;{ 'contents' => new List&lt;Object&gt;{ partsContainer } };
-        
-        // You can also add 'generationConfig' to control output, e.g., max tokens, temperature
-        // Map&lt;String, Object&gt; generationConfig = new Map&lt;String, Object&gt;{
-        //    'maxOutputTokens' => 150, 
-        //    'temperature' => 0.7 
-        // };
-        // requestBodyMap.put('generationConfig', generationConfig);
-        
-        request.setBody(JSON.serialize(requestBodyMap));
-        request.setTimeout(60000); // 60 seconds timeout
-
-        // Perform the callout
-        Http http = new Http();
-        String summaryResponseText = '';
-
-        try {
-            HttpResponse response = http.send(request);
-            System.debug('Gemini API Callout Status Code: ' + response.getStatusCode());
-            System.debug('Gemini API Callout Response Body: ' + response.getBody());
-
-            if (response.getStatusCode() == 200) {
-                Map&lt;String, Object&gt; result = (Map&lt;String, Object&gt;) JSON.deserializeUntyped(response.getBody());
-                
-                // Navigate the Gemini API JSON response structure to get the text
-                // Expected: result -> candidates (list) -> [0] -> content -> parts (list) -> [0] -> text
-                List&lt;Object&gt; candidates = (List&lt;Object&gt;) result.get('candidates');
-                if (candidates != null && !candidates.isEmpty()) {
-                    Map&lt;String, Object&gt; firstCandidate = (Map&lt;String, Object&gt;) candidates[0];
-                    Map&lt;String, Object&gt; content = (Map&lt;String, Object&gt;) firstCandidate.get('content');
-                    if (content != null) {
-                        List&lt;Object&gt; parts = (List&lt;Object&gt;) content.get('parts');
-                        if (parts != null && !parts.isEmpty()) {
-                            Map&lt;String, Object&gt; firstPart = (Map&lt;String, Object&gt;) parts[0];
-                            summaryResponseText = (String) firstPart.get('text');
-                        } else { summaryResponseText = 'Error: No "parts" found in Gemini API response content.'; }
-                    } else { summaryResponseText = 'Error: No "content" found in Gemini API response candidate.'; }
-                } else {
-                    summaryResponseText = 'Error: No "candidates" found in Gemini API response.';
-                    // Check if there's a direct error message from the API
-                    if (result.containsKey('error')) {
-                       Map&lt;String, Object&gt; errorDetails = (Map&lt;String, Object&gt;)result.get('error');
-                       if (errorDetails != null && errorDetails.containsKey('message')) {
-                           summaryResponseText += ' API Error: ' + errorDetails.get('message');
-                       }
-                    }
-                }
-            } else {
-                // Non-200 response from API
-                summaryResponseText = 'Error: Gemini API call failed with Status Code ' + response.getStatusCode() + '. Response: ' + response.getBody();
-            }
-        } catch (System.CalloutException e) {
-            summaryResponseText = 'Error: Callout exception - ' + e.getMessage();
-            System.debug(LoggingLevel.ERROR, 'GeminiAPIService CalloutException: ' + e.getMessage() + '\\n' + e.getStackTraceString());
-        } catch (Exception e) {
-            summaryResponseText = 'Error: An unexpected error occurred - ' + e.getMessage();
-            System.debug(LoggingLevel.ERROR, 'GeminiAPIService Generic Exception: ' + e.getMessage() + '\\n' + e.getStackTraceString());
-        }
-
-        // Basic HTML tag stripping from the summary, if any were generated.
-        return summaryResponseText != null ? summaryResponseText.stripHtmlTags() : 'Error: Received a null summary response.';
-    }
-}
-            </code></pre>
+            <pre>
+                <code class="language-apex">
+         
+                </code>
+            </pre>
             <p class="note"><strong>Remember to replace <code>'YOUR_ACTUAL_GEMINI_API_KEY'</code> in the Apex code with your valid Gemini API Key.</strong></p>
         </div>
 
@@ -402,220 +291,18 @@ public with sharing class GeminiAPIService {
             <h3>1. <code>knowledgeCompanion.html</code></h3>
             <p>This file defines the structure and appearance of your component.</p>
             <pre><code class="language-html">
-&lt;!-- File: knowledgeCompanion.html --&gt;
-&lt;template&gt;
-    &lt;lightning-card title="Knowledge Companion: AI Summariser" icon-name="utility:summarydetail"&gt;
-        &lt;div class="slds-p-around_medium"&gt;
-            &lt;!-- Button to trigger the summarization --&gt;
-            &lt;lightning-button
-                label="AI Summarise Content"
-                variant="brand"
-                onclick={handleSummariseClick}
-                disabled={isLoading}
-                icon-name="utility:magicwand"&gt;
-            &lt;/lightning-button&gt;
-
-            &lt;!-- Loading Spinner: Shown while waiting for the API response --&gt;
-            &lt;template if:true={isLoading}&gt;
-                &lt;div class="slds-m-top_medium slds-is-relative" style="height: 50px;"&gt;
-                    &lt;lightning-spinner alternative-text="Loading summary..." size="medium"&gt;&lt;/lightning-spinner&gt;
-                &lt;/div&gt;
-            &lt;/template&gt;
-
-            &lt;!-- Error Message Display --&gt;
-            &lt;template if:true={error}&gt;
-                &lt;div class="slds-m-top_medium slds-text-color_error"&gt;
-                    &lt;p&gt;&lt;strong&gt;Error:&lt;/strong&gt; {error}&lt;/p&gt;
-                &lt;/div&gt;
-            &lt;/template&gt;
-        &lt;/div&gt;
-    &lt;/lightning-card&gt;
-
-    &lt;!-- Modal to display the summary --&gt;
-    &lt;template if:true={isModalOpen}&gt;
-        &lt;section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open"&gt;
-            &lt;div class="slds-modal__container"&gt;
-                &lt;header class="slds-modal__header"&gt;
-                    &lt;button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}&gt;
-                        &lt;lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"&gt;&lt;/lightning-icon&gt;
-                        &lt;span class="slds-assistive-text"&gt;Close&lt;/span&gt;
-                    &lt;/button&gt;
-                    &lt;h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate"&gt;AI Generated Summary&lt;/h2&gt;
-                &lt;/header&gt;
-                &lt;div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1"&gt;
-                    &lt;!-- The 'white-space: pre-wrap' style helps preserve line breaks from the summary --&gt;
-                    &lt;p style="white-space: pre-wrap;"&gt;{summaryText}&lt;/p&gt;
-                &lt;/div&gt;
-                &lt;footer class="slds-modal__footer"&gt;
-                    &lt;lightning-button label="Close" title="Close" onclick={closeModal}&gt;&lt;/lightning-button&gt;
-                &lt;/footer&gt;
-            &lt;/div&gt;
-        &lt;/section&gt;
-        &lt;div class="slds-backdrop slds-backdrop_open" role="presentation"&gt;&lt;/div&gt;
-    &lt;/template&gt;
-&lt;/template&gt;
+// File: knowledgeCompanion.html
             </code></pre>
-
             <h3 style="margin-top: 2em;">2. <code>knowledgeCompanion.js</code></h3>
             <p>This file contains the component's JavaScript logic.</p>
             <pre><code class="language-javascript">
 // File: knowledgeCompanion.js
-import { LightningElement, api, wire, track } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-// Import the Apex method
-import getSummaryFromApex from '@salesforce/apex/GeminiAPIService.getSummary';
-
-// --- IMPORTANT: Field API Name to Summarize ---
-// You MUST update the line below to point to the API name of the rich text field 
-// on your Knowledge__kav object that contains the main content you want to summarize.
-// To find the API name: 
-// 1. Go to Setup > Object Manager > Knowledge.
-// 2. Click on "Fields & Relationships".
-// 3. Find your rich text field (e.g., "Content for Summarization", "Article Body", "Answer", etc.).
-// 4. The "Field Name" column shows the API name (e.g., Content_for_Summarization__c).
-// Example: import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.MyCustomArticleBody__c';
-import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Content_for_Summarization__c'; 
-// <span class="token important-comment">/* TODO: Lab Participant - Update the line above with your specific field API name! */</span>
-
-export default class KnowledgeCompanion extends LightningElement {
-    @api recordId; // Automatically gets the ID of the record page it's on
-
-    // Tracked properties to manage UI state and data
-    @track summaryText = '';
-    @track isLoading = false;
-    @track error;
-    @track isModalOpen = false;
-
-    _wiredArticleData; // Internal storage for wired record data
-
-    // Wire service to fetch the content of the specified field from the current Knowledge Article
-    @wire(getRecord, { recordId: '$recordId', fields: [KNOWLEDGE_CONTENT_FIELD] })
-    wiredArticle({ error, data }) {
-        if (data) {
-            this._wiredArticleData = data; // Store the fetched record data
-            this.error = undefined; // Clear any previous error
-            // console.log('Article data loaded:', JSON.stringify(data));
-        } else if (error) {
-            console.error('LWC Error - Failed to load article content via @wire:', JSON.stringify(error));
-            this.error = 'Failed to load article content. Details: ' + 
-                         (error.body?.message || error.message || 'Unknown wire error.');
-            this._wiredArticleData = undefined;
-        }
-    }
-
-    // Getter to extract the actual field value from the wired data
-    get articleContentToSummarize() {
-        if (this._wiredArticleData) {
-            return getFieldValue(this._wiredArticleData, KNOWLEDGE_CONTENT_FIELD);
-        }
-        return undefined;
-    }
-
-    // Handles the click event of the "AI Summarise Content" button
-    async handleSummariseClick() {
-        this.isLoading = true;  // Show spinner
-        this.error = undefined; // Clear previous errors
-        this.summaryText = '';  // Clear previous summary
-
-        const contentValue = this.articleContentToSummarize;
-
-        if (!contentValue || String(contentValue).trim() === '') {
-            this.error = \`The field '\${KNOWLEDGE_CONTENT_FIELD.fieldApiName}' is empty or contains no text to summarize.\`;
-            this.isLoading = false;
-            return;
-        }
-        
-        // Remove HTML tags from rich text content before sending to API
-        let plainTextContent = this.stripHtml(String(contentValue));
-
-        if (!plainTextContent || plainTextContent.trim() === '') {
-            this.error = 'The content became empty after attempting to strip HTML tags. Original content might have only contained HTML structures.';
-            this.isLoading = false;
-            return;
-        }
-
-        // Call the Apex method
-        try {
-            // console.log('Sending to Apex for summarization:', plainTextContent.substring(0,100) + "...");
-            const result = await getSummaryFromApex({ 
-                recordId: this.recordId, // Pass recordId if Apex needs it for context
-                textToSummarize: plainTextContent 
-            });
-            
-            // console.log('Raw summary from Apex:', result);
-            if (result) {
-                // Check if Apex returned an error string
-                if (result.toLowerCase().startsWith('error:')) {
-                    this.error = result; // Display error from Apex
-                    console.error('Error from Apex summarization:', result);
-                } else {
-                    this.summaryText = result; // Store successful summary
-                    this.isModalOpen = true;   // Open the modal
-                }
-            } else {
-                this.error = 'Received an empty or null response from the summarization service.';
-                console.error('LWC: Apex returned empty or null result.');
-            }
-        } catch (e) {
-            console.error('LWC Error - Calling Apex getSummaryFromApex:', JSON.stringify(e));
-            this.error = 'An error occurred while trying to get the summary. Details: ' + 
-                         (e.body?.message || e.message || 'Unknown Apex call error.');
-        } finally {
-            this.isLoading = false; // Hide spinner
-        }
-    }
-    
-    // Utility function to strip HTML tags from a string
-    stripHtml(html) {
-        if (!html) return "";
-        try {
-            // Use DOMParser for more robust HTML stripping
-            let doc = new DOMParser().parseFromString(html, 'text/html');
-            return doc.body.textContent || "";
-        } catch (e) {
-            // Fallback for environments where DOMParser might be an issue or for very simple cases
-            console.warn("DOMParser for stripHtml failed or not available, using regex fallback.", e);
-            return html.replace(/<[^>]*>?/gm, ''); // Basic regex, less reliable
-        }
-    }
-
-    // Handles closing the summary modal
-    closeModal() {
-        this.isModalOpen = false;
-        this.summaryText = ''; // Clear summary when modal is closed
-    }
-}
             </code></pre>
 
             <h3 style="margin-top: 2em;">3. <code>knowledgeCompanion.js-meta.xml</code></h3>
             <p>This file defines the metadata for the LWC, like where it can be used.</p>
             <pre><code class="language-xml">
-&lt;!-- File: knowledgeCompanion.js-meta.xml --&gt;
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata"&gt;
-    &lt;!-- Set the API version for your org --&gt;
-    &lt;apiVersion&gt;59.0&lt;/apiVersion&gt; 
-    &lt;!-- Make the component available in App Builder --&gt;
-    &lt;isExposed&gt;true&lt;/isExposed&gt;
-    
-    &lt;!-- Define where this component can be used --&gt;
-    &lt;targets&gt;
-        &lt;target&gt;lightning__RecordPage&lt;/target&gt; &lt;!-- To place on record pages --&gt;
-    &lt;/targets&gt;
 
-    &lt;!-- Configuration for when placed on a record page --&gt;
-    &lt;targetConfigs&gt;
-        &lt;targetConfig targets="lightning__RecordPage"&gt;
-            &lt;!-- Specify which SObject record pages this LWC can be added to --&gt;
-            &lt;objects&gt;
-                &lt;object&gt;Knowledge__kav&lt;/object&gt; 
-                &lt;!-- You could add other objects here if you adapt the LWC --&gt;
-                &lt;!-- e.g., &lt;object&gt;Case&lt;/object&gt; --&gt;
-            &lt;/objects&gt;
-            &lt;!-- No specific design-time properties needed for this POC LWC --&gt;
-        &lt;/targetConfig&gt;
-    &lt;/targetConfigs&gt;
-&lt;/LightningComponentBundle&gt;
             </code></pre>
             <p class="note">After creating these three files in your Salesforce DX project or Developer Console, deploy them to your org. Then, you can add the `knowledgeCompanion` LWC to your Knowledge Article Lightning Record Pages using the Lightning App Builder.</p>
         </div>
@@ -623,7 +310,7 @@ export default class KnowledgeCompanion extends LightningElement {
         <div class="slide" id="slide7">
             <h2>Step 5: Simulation & Visuals 📊</h2>
             <h3>Workflow Animation</h3>
-            <p>This D3.js animation visualizes the data flow when you click "AI Summarise". Click "Replay Animation" to restart it.</p>
+            <p>This animation visualizes the data flow when you click "AI Summarise". Click "Replay Animation" to restart it.</p>
             <div id="workflowAnimation"></div>
             <button onclick="startWorkflowAnimation()" class="slds-button slds-button_neutral slds-m-top_small">Replay Animation</button>
 
