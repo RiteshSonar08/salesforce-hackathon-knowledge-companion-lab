@@ -278,7 +278,71 @@
             <p><strong>Action:</strong> Create this Apex class in your Salesforce org.</p>
             <pre>
                 <code class="language-apex">
-         
+public with sharing class GeminiAPIService {
+    @AuraEnabled(cacheable=false)
+    public static String getPageSummaryFromGemini(String htmlText) {
+		String GEMINI_API_KEY = 'YOUR_ACTUAL_GEMINI_API_KEY';
+        String endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+GEMINI_API_KEY;
+
+        // Ensure text is within token limit
+        if (String.isBlank(htmlText) || htmlText.length() < 100) {
+            return 'Insufficient content for summarisation.';
+        }
+
+        // Build Gemini prompt
+		String prompt = 'You are an AI assistant trained to summarize web content into a short, well-structured, HTML-formatted summary. ' +
+			'The input includes raw visible text from an internal Salesforce Experience Cloud page. ' +
+			'Please ignore navigation menus, headers, footers, search bars, and unrelated UI text. ' +
+			'Focus only on meaningful main content such as policy text, announcements, structured descriptions, and business explanations.\n\n' +
+			'Provide your output in HTML format using bullet points (i.e., use <ul><li>...</li></ul>) when possible. ' +
+			'Avoid repeating text or adding boilerplate language.\n\n' +
+			'Here is the extracted page text:\n\n' + htmlText;
+
+        // Build JSON payload
+        Map<String, Object> requestBody = new Map<String, Object>{
+            'contents' => new List<Object>{
+                new Map<String, Object>{
+                    'parts' => new List<Object>{
+                        new Map<String, Object>{
+                            'text' => prompt
+                        }
+                    }
+                }
+            }
+        };
+
+        // Prepare callout
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(endpoint);
+        req.setMethod('POST');
+        req.setHeader('Content-Type', 'application/json');
+        req.setTimeout(60000); // optional
+        req.setBody(JSON.serialize(requestBody));
+
+        Http http = new Http();
+        try {
+            HttpResponse res = http.send(req);
+            if (res.getStatusCode() == 200) {
+                Map<String, Object> jsonResponse = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+                List<Object> candidates = (List<Object>) jsonResponse.get('candidates');
+                if (!candidates.isEmpty()) {
+                    Map<String, Object> firstCandidate = (Map<String, Object>) candidates[0];
+                    Map<String, Object> content = (Map<String, Object>) firstCandidate.get('content');
+                    List<Object> parts = (List<Object>) content.get('parts');
+                    if (!parts.isEmpty()) {
+                        Map<String, Object> part = (Map<String, Object>) parts[0];
+                        return (String) part.get('text');
+                    }
+                }
+                return 'No summary returned from Gemini.';
+            } else {
+                return 'Error from Gemini API: ' + res.getStatusCode() + ' - ' + res.getBody();
+            }
+        } catch (Exception ex) {
+            return 'Exception during Gemini API callout: ' + ex.getMessage();
+        }
+    }
+}
                 </code>
             </pre>
             <p class="note"><strong>Remember to replace <code>'YOUR_ACTUAL_GEMINI_API_KEY'</code> in the Apex code with your valid Gemini API Key.</strong></p>
@@ -292,17 +356,102 @@
             <p>This file defines the structure and appearance of your component.</p>
             <pre><code class="language-html">
 // File: knowledgeCompanion.html
+<template>
+    <div class="slds-p-around_medium">
+        <lightning-button
+            label={AISUMMARIZEBUTTON}
+            onclick={handleSummarize}
+            class="slds-m-bottom_medium ai-button">
+        </lightning-button>
+    </div>
+    <template if:true={isLoading}>
+        <div class="spinner-container">
+            <lightning-spinner alternative-text="Summarising..." size="medium"></lightning-spinner>
+        </div>
+    </template>
+    <template if:true={showModal}>
+        <section class="modal-backdrop">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2>Page Summary</h2>
+                    <button class="close-button" onclick={handleCloseModal}>×</button>
+                </div>
+                <div class="modal-body">
+                    <lightning-formatted-rich-text value={summary}></lightning-formatted-rich-text>
+                </div>
+            </div>
+        </section>
+    </template>
+</template>
             </code></pre>
             <h3 style="margin-top: 2em;">2. <code>knowledgeCompanion.js</code></h3>
             <p>This file contains the component's JavaScript logic.</p>
             <pre><code class="language-javascript">
 // File: knowledgeCompanion.js
+import { LightningElement } from 'lwc';
+import getPageSummaryFromGemini from '@salesforce/apex/GeminiAPIService.getPageSummaryFromGemini';
+
+export default class knowledgeCompanion extends LightningElement {
+    AISUMMARIZEBUTTON = 'AI Summarise';
+    
+    showModal = false;
+    summary = '';
+    isLoading = false;
+    handleSummarize() {
+        console.log('🟢 AI Summarise button clicked');
+
+        const mainContent = document.documentElement.outerText || '';
+
+        if (!mainContent || mainContent.length < 100) {
+            alert('Page content is too short to summarise.');
+            return;
+        }
+
+        this.isLoading = true; // show spinner
+
+        getPageSummaryFromGemini({ htmlText: mainContent })
+            .then(result => {
+                const cleaned = result
+                    .replace(/```html/g, '')
+                    .replace(/```/g, '')
+                    .trim();
+
+                this.summary = cleaned;
+                this.showModal = true;
+                console.log('✅ Gemini Summary:', result);
+            })
+            .catch(error => {
+                console.error('❌ Error from Apex:', error);
+                alert('Failed to fetch summary.');
+            })
+            .finally(() => {
+                this.isLoading = false; // hide spinner
+            });
+    }
+
+    handleCloseModal() {
+        this.showModal = false;
+    }
+}
             </code></pre>
 
             <h3 style="margin-top: 2em;">3. <code>knowledgeCompanion.js-meta.xml</code></h3>
             <p>This file defines the metadata for the LWC, like where it can be used.</p>
             <pre><code class="language-xml">
-
+<?xml version="1.0"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<apiVersion>62.0</apiVersion>
+	<isExposed>true</isExposed>
+	<targets>
+		<target>lightning__AppPage</target>
+		<target>lightning__HomePage</target>
+		<target>lightning__RecordPage</target>
+		<target>lightningCommunity__Default</target>
+		<target>lightningCommunity__Page</target>
+		<target>lightningCommunity__Page_Layout</target>
+		<target>lightningCommunity__Theme_Layout</target>
+	</targets>
+</LightningComponentBundle>
             </code></pre>
             <p class="note">After creating these three files in your Salesforce DX project or Developer Console, deploy them to your org. Then, you can add the `knowledgeCompanion` LWC to your Knowledge Article Lightning Record Pages using the Lightning App Builder.</p>
         </div>
