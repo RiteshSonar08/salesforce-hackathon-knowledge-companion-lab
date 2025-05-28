@@ -149,56 +149,78 @@
             opacity: 1;
         }
 
+        /* Updated Navigation Buttons Container */
         .navigation-buttons {
-            display: flex; /* Crucial for spacing buttons */
-            justify-content: space-between; /* Puts space between buttons */
-            align-items: center; /* Vertically align buttons if they have different heights */
-            padding: 20px 40px;
-            background-color: #f0f0f0;
-            border-top: 1px solid #ccc;
-            width: 90%;
-            max-width: 1000px; /* Ensure it matches .slide-container max-width */
-            box-sizing: border-box;
-            margin: 0 auto 20px auto; 
-            border-bottom-left-radius: 8px; 
-            border-bottom-right-radius: 8px;
+            display: inline-flex; /* Shrink to content */
+            align-items: center;
+            background-color: #e9ecef; /* Light grey pill background */
+            border-radius: 30px;      /* Pill shape */
+            padding: 6px 8px;         /* Padding around buttons and counter */
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            margin: 30px auto;      /* Centering and spacing */
+            border: 1px solid #d1d9e0;
         }
 
-        .navigation-buttons button { /* Refined Prev/Next buttons */
-            background-color: #0070d2; 
-            color: white;
+        /* Updated Individual Navigation Buttons and Counter */
+        .navigation-buttons button,
+        .slide-counter {
+            font-size: 15px; /* Slightly smaller for a sleeker look */
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 25px; /* Fully rounded ends */
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+            margin: 0 3px; /* Small gap between elements */
+        }
+
+        .navigation-buttons button {
+            background-color: #d8dfe3; /* Default background for prev button (like disabled) */
+            color: #5a6670;       /* Default text color */
             border: none;
-            padding: 10px 22px; 
-            text-align: center;
-            text-decoration: none;
-            display: inline-flex; 
-            align-items: center;   
-            justify-content: center; 
-            font-size: 16px;         
-            font-weight: 500;        
-            line-height: 1.5;        
-            border-radius: 5px;      
             cursor: pointer;
-            min-width: 100px;        
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
-            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
+            padding: 9px 18px;  /* Adjusted padding */
+            min-width: 90px;
         }
-        .navigation-buttons button:hover:not(:disabled) {
-            background-color: #005fb2; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-            transform: translateY(-1px); 
+        
+        /* Style for Next button when it's not disabled (active look) */
+        .navigation-buttons button#nextBtn:not(:disabled) {
+            background-color: #007bff; /* Blue */
+            color: white;
         }
-        .navigation-buttons button:active:not(:disabled) {
-            background-color: #004080; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            transform: translateY(0px); 
+        /* Style for Previous button when it's not disabled */
+        .navigation-buttons button#prevBtn:not(:disabled) {
+            background-color: #007bff; /* Blue */
+            color: white;
         }
+        
+        /* Hover for enabled buttons */
+        .navigation-buttons button:not(:disabled):hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            color: white; /* Ensure text remains white */
+            transform: translateY(-1px);
+        }
+
+        /* Disabled state (primarily for Previous on first slide, Next on last) */
         .navigation-buttons button:disabled {
-            background-color: #c0c0c0;
-            color: #6c757d; 
+            background-color: #d8dfe3; /* Light grey, matching initial prev button */
+            color: #9ba5ae;       /* Lighter text for disabled */
             cursor: not-allowed;
-            box-shadow: none;
             transform: none;
+        }
+         /* Ensure disabled hover doesn't change style */
+        .navigation-buttons button:disabled:hover {
+            background-color: #d8dfe3; 
+            color: #9ba5ae;  
+        }
+
+        .slide-counter {
+            color: #343a40; /* Darker text for counter */
+            padding: 9px 15px;
+            background-color: transparent; /* No background for counter text area */
+            white-space: nowrap;
+            min-width: 50px; /* Ensure space for X / YY */
+            text-align: center;
         }
         
         .replay-button { 
@@ -563,7 +585,7 @@ export default class KnowledgeCompanion extends LightningElement {
 
     @wire(getRecord, { recordId: '$recordId', fields: [KNOWLEDGE_CONTENT_FIELD] })
     wiredArticle({ error, data }) {
-        if (this._articleContentLoaded) return; // Process only once
+        if (this._articleContentLoaded) return; 
 
         if (data) {
             const contentValue = getFieldValue(data, KNOWLEDGE_CONTENT_FIELD);
@@ -589,7 +611,6 @@ export default class KnowledgeCompanion extends LightningElement {
     }
 
     async fetchSummary(textContent) {
-        // isLoading is already true from initialization
         this.error = undefined;
         try {
             const result = await getPageSummaryFromGemini({ articleFieldContent: textContent });
@@ -649,13 +670,13 @@ export default class KnowledgeCompanion extends LightningElement {
             <ol>
                 <li>Navigate to <strong>Setup</strong> (Gear icon ⚙️) &gt; <strong>Object Manager</strong>.</li>
                 <li>Find and select the <strong>Knowledge</strong> object.</li>
-                <li>In the left-hand navigation, click on <strong>Buttons, Links, and Actions</strong>.</li>
-                <li>Click the <strong>New Action</strong> button.</li>
+                <li>In the left-hand navigation for the Knowledge object, click on <strong>Buttons, Links, and Actions</strong>.</li>
+                <li>Click the <strong>New Action</strong> button in the top right.</li>
                 <li>Configure the New Action:
                     <ul>
                         <li><strong>Action Type:</strong> Select <code>Lightning Web Component</code>.</li>
                         <li><strong>Lightning Web Component:</strong> Select <code>c:knowledgeCompanion</code> (or your LWC's name).</li>
-                        <li><strong>Height:</strong> Default is fine, or set to <code>Flexible Page Height</code> or a specific value like <code>400px</code>.</li>
+                        <li><strong>Height:</strong> You can leave this as default or set a specific height like <code>600px</code>. The LWC's content will determine the actual height needed.</li>
                         <li><strong>Label:</strong> Enter <code>AI Summarise</code> (This appears on the button).</li>
                         <li><strong>Name:</strong> (Auto-populates, e.g., <code>AI_Summarise</code>).</li>
                     </ul>
@@ -753,6 +774,7 @@ req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-lat
 
     </div> <div class="navigation-buttons">
         <button id="prevBtn" onclick="changeSlide(-1)">❮ Previous</button>
+        <span id="slideCounter" class="slide-counter">1 / 11</span>
         <button id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
     </div>
 
@@ -764,11 +786,18 @@ req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-lat
         const prevButton = document.getElementById('prevBtn');
         const nextButton = document.getElementById('nextBtn');
         const progressBar = document.getElementById('progressBar');
+        const slideCounterElement = document.getElementById('slideCounter');
 
-        function updateProgressBar() {
-            if (progressBar && totalSlides > 0) {
+
+        function updateProgressBarAndCounter() {
+            if (totalSlides > 0) {
                 const progressPercentage = ((currentSlide + 1) / totalSlides) * 100;
-                progressBar.style.width = progressPercentage + '%';
+                if (progressBar) {
+                    progressBar.style.width = progressPercentage + '%';
+                }
+                if (slideCounterElement) {
+                    slideCounterElement.textContent = (currentSlide + 1) + ' / ' + totalSlides;
+                }
             }
         }
 
@@ -782,7 +811,7 @@ req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-lat
             });
             currentSlide = index;
             updateNavButtons();
-            updateProgressBar();
+            updateProgressBarAndCounter(); // Combined update
 
             // Simulation & Visuals is Slide 5 (index 4)
             if (index === 4) { 
@@ -835,8 +864,9 @@ req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-lat
 
         document.addEventListener('DOMContentLoaded', () => {
             if (slides.length > 0) {
-                if (prevButton && nextButton) { showSlide(0); } 
-                else { console.error("Navigation buttons not found."); }
+                if (prevButton && nextButton && slideCounterElement) { // Check for slideCounterElement too
+                    showSlide(0); 
+                } else { console.error("Navigation elements (buttons or counter) not found."); }
             } else {
                 console.error("No slides found.");
                 if(prevButton) prevButton.disabled = true;
