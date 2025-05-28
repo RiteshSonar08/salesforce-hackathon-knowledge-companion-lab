@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            line-height: 1.6;
+            line-height: 1.7; /* Increased for readability */
             margin: 0;
             padding: 0;
             background-color: #f4f7f9;
@@ -16,15 +16,34 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            font-size: 17px; /* Slightly larger base font */
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1001; /* Above modal backdrop */
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%; /* Initial width */
+            background-color: #0070d2; /* Salesforce blue */
+            transition: width 0.3s ease-out;
         }
 
         .slide-container {
             width: 90%;
             max-width: 1000px;
-            margin: 20px auto;
+            margin: 40px auto 20px auto; /* Increased top margin for progress bar */
             background-color: #fff;
             border: 1px solid #ddd;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Slightly enhanced shadow */
+            border-radius: 8px; /* Added border-radius */
             overflow: hidden;
         }
 
@@ -45,7 +64,7 @@
         }
 
         h1, h2, h3, h4 {
-            color: #003972; /* Salesforce Blue */
+            color: #003972; 
             margin-bottom: 0.75em;
         }
         h1 { font-size: 2.2em; text-align: center; margin-bottom: 1em; color: #001B35; }
@@ -53,22 +72,31 @@
         h3 { font-size: 1.4em; margin-top: 1.2em; }
         h4 { font-size: 1.1em; font-style: italic; color: #555;}
 
-
         p, ul, ol {
             margin-bottom: 1em;
         }
 
         ul, ol {
-            padding-left: 20px;
+            padding-left: 25px; /* Slightly more padding for lists */
         }
-        li { margin-bottom: 0.5em; }
+        li { margin-bottom: 0.6em; } /* Slightly more spacing for list items */
 
-        code { /* For inline code */
+        a {
+            color: #0070d2;
+            text-decoration: none;
+            transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
+        }
+        a:hover {
+            color: #005fb2;
+            text-decoration: underline;
+        }
+
+        code { 
             font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
             background-color: #eef1f3;
             padding: 0.2em 0.4em;
-            border-radius: 3px;
-            font-size: 0.9em;
+            border-radius: 4px; /* Consistent border-radius */
+            font-size: 0.88em; /* Adjusted relative to new body font */
         }
 
         .code-block-wrapper {
@@ -76,19 +104,19 @@
             margin-bottom: 1em;
         }
 
-        pre { /* For code blocks */
-            background-color: #2d2d2d; /* Dark background */
-            color: #f8f8f2; /* Light text */
-            padding: 15px;
-            padding-top: 40px; /* Extra padding for the copy button */
-            border-radius: 5px;
-            overflow-x: auto; /* Allow horizontal scrolling for long lines */
-            font-size: 0.85em; 
-            line-height: 1.5;
+        pre { 
+            background-color: #2d2d2d; 
+            color: #f0f0f0; /* Brighter white for better contrast on dark */
+            padding: 20px; /* Increased padding */
+            padding-top: 45px; 
+            border-radius: 6px; /* Consistent border-radius */
+            overflow-x: auto; 
+            font-size: 0.88em; 
+            line-height: 1.6; /* Increased line-height for code */
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             white-space: pre; 
         }
-        pre code { /* Reset styles for <code> inside <pre> */
+        pre code { 
             background-color: transparent;
             padding: 0;
             font-size: 1em; 
@@ -98,16 +126,17 @@
         
         .copy-code-button {
             position: absolute;
-            top: 5px;
-            right: 5px;
+            top: 8px; /* Adjusted position */
+            right: 8px;
             background-color: #0070d2;
             color: white;
-            border: none;
-            padding: 5px 10px;
+            border: 1px solid #005fb2; /* Added subtle border */
+            padding: 6px 12px; /* Adjusted padding */
             font-size: 0.8em;
-            border-radius: 3px;
+            font-weight: bold;
+            border-radius: 4px;
             cursor: pointer;
-            opacity: 0.7;
+            opacity: 0.8;
             transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
         }
         .copy-code-button:hover {
@@ -115,10 +144,10 @@
             background-color: #005fb2;
         }
         .copy-code-button.copied {
-            background-color: #28a745; /* Green for success */
+            background-color: #28a745; 
+            border-color: #1e7e34;
             opacity: 1;
         }
-
 
         .navigation-buttons {
             display: flex;
@@ -130,9 +159,11 @@
             max-width: 1000px;
             box-sizing: border-box;
             margin: 0 auto 20px auto; 
+            border-bottom-left-radius: 8px; /* Match slide container */
+            border-bottom-right-radius: 8px;
         }
 
-        .navigation-buttons button { /* Standard Prev/Next buttons */
+        .navigation-buttons button { 
             background-color: #0070d2;
             color: white;
             border: none;
@@ -140,16 +171,15 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
+            font-size: 1em; /* Relative to body font */
+            font-weight: 500;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         .navigation-buttons button:hover:not(:disabled) {
             background-color: #005fb2;
         }
-
         .navigation-buttons button:disabled {
             background-color: #c0c0c0;
             cursor: not-allowed;
@@ -159,19 +189,26 @@
             background-color: #5cb85c; 
             color: white;
             border: none;
-            padding: 8px 15px;
-            font-size: 0.9em;
-            border-radius: 4px;
+            padding: 10px 18px; /* Harmonized padding */
+            font-size: 0.95em; /* Harmonized size */
+            font-weight: bold;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 10px; 
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin-top: 15px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .replay-button:hover {
             background-color: #4cae4c; 
+            transform: translateY(-1px);
+        }
+        .replay-button:active {
+            transform: translateY(0px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
-        .summary-toggle-button { /* New style for "Show AI Summary Example" button */
-            background-color: #ff7f50; /* Coral color */
+        .summary-toggle-button { 
+            background-color: #ff7f50; 
             color: white;
             border: none;
             padding: 10px 18px;
@@ -181,57 +218,72 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.1s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-right: 10px; /* Add some spacing if other buttons are nearby */
         }
         .summary-toggle-button:hover {
-            background-color: #ff6347; /* Tomato - darker coral */
-            transform: translateY(-1px); /* Slight lift effect */
+            background-color: #ff6347; 
+            transform: translateY(-1px); 
         }
         .summary-toggle-button:active {
-            transform: translateY(0px); /* Button press effect */
+            transform: translateY(0px);
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
-
         .note {
-            background-color: #fff3cd;
-            border-left: 5px solid #ffeeba;
-            padding: 10px 15px;
-            margin: 15px 0;
-            border-radius: 3px;
+            padding: 12px 18px; /* Increased padding */
+            margin: 20px 0; /* Increased margin */
+            border-radius: 6px; /* Consistent border-radius */
+            border-left-width: 6px; /* Thicker border */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow */
         }
-        .note strong { color: #856404; }
+        .note strong { font-weight: 600; } /* Slightly bolder */
+        .note::before {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        /* Specific note types */
+        .note-general { background-color: #eef1f3; border-left-color: #0070d2; color: #003972; }
+        .note-general::before { content: "ℹ️"; }
+        .note-important { background-color: #fff3cd; border-left-color: #ffeeba; color: #856404;}
+        .note-important::before { content: "⚠️"; }
+        .note-action { background-color: #d4edda; border-left-color: #c3e6cb; color: #155724;}
+        .note-action::before { content: "➡️"; }
+        .note-tip { background-color: #d1ecf1; border-left-color: #bee5eb; color: #0c5460;}
+        .note-tip::before { content: "💡"; }
+
 
         .modal { 
             display: none; position: fixed; z-index: 1000;
             left: 0; top: 0; width: 100%; height: 100%;
-            overflow: auto; background-color: rgba(0,0,0,0.4);
+            overflow: auto; background-color: rgba(0,0,0,0.5); /* Darker backdrop */
         }
         .modal-content {
-            background-color: #fefefe; margin: 15% auto; padding: 20px;
-            border: 1px solid #888; width: 60%; border-radius: 8px;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+            background-color: #fefefe; margin: 10% auto; /* Adjusted margin */ padding: 25px; /* Increased padding */
+            border: 1px solid #ccc; width: 65%; max-width: 700px; /* Max width */ border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         .modal-content h3 { margin-top: 0;}
 
         #workflowAnimation {
-            width: 100%; height: 400px; border: 1px solid #eee;
-            margin-top: 20px; background-color: #f9f9f9;
+            width: 100%; height: 400px; border: 1px solid #e0e0e0; /* Softer border */
+            margin-top: 20px; background-color: #f9f9f9; border-radius: 6px; /* Added radius */
         }
         #workflowAnimation svg { display: block; width: 100%; height: 100%;}
 
         .summary-toggle-container {
-            margin-top: 20px; padding: 15px; background-color: #e9ecef; border-radius: 5px;
+            margin-top: 20px; padding: 20px; background-color: #e9ecef; border-radius: 6px;
         }
-        /* .summary-toggle-container button { margin-bottom: 10px;}  Replaced by .summary-toggle-button styling */
         .summary-text-area {
-            border: 1px dashed #ccc; padding: 10px; min-height: 100px; background-color: #fff;
-            margin-top: 15px; /* Added margin-top for spacing after button */
+            border: 1px dashed #ced4da; padding: 15px; min-height: 100px; background-color: #fff;
+            margin-top: 15px; border-radius: 4px;
         }
         #summaryAfterView { display: none; }
     </style>
 </head>
 <body>
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
 
     <h1>🚀 Salesforce Developer Lab: Knowledge Companion - Document Summariser 📄</h1>
 
@@ -281,6 +333,9 @@
             <ul>
                 <li>Basic understanding of Salesforce Apex and Lightning Web Components.</li>
             </ul>
+            <div class="note note-tip">
+                <strong>Tip:</strong> Ensure your browser pop-up blocker is not interfering with any Salesforce or Google AI Studio authentication steps if you explore creating your own key later (see Appendix).
+            </div>
         </div>
 
         <div class="slide" id="slide4">
@@ -293,9 +348,9 @@
                 <li>The Apex code will then construct the API endpoint URL and include this key for authentication.</li>
             </ul>
             <h3>2. Important Note: API Key in Endpoint vs. Named Credentials</h3>
-            <div class="note">
+            <div class="note note-important">
                 <p><strong>For Lab Simplicity:</strong> We are putting the API key directly into the Apex code and constructing the endpoint URL with it.</p>
-                <p><strong>⚠️ Security Best Practice (for real projects): DO NOT hardcode API keys or include them directly in endpoint URLs in your code.</strong> Use Named Credentials or retrieve keys from Protected Custom Settings/Metadata.</p>
+                <p><strong>Security Best Practice (for real projects): DO NOT hardcode API keys or include them directly in endpoint URLs in your code.</strong> Use Named Credentials or retrieve keys from Protected Custom Settings/Metadata.</p>
                 <p>An appendix slide provides details on obtaining your own key and setting up Named Credentials for future reference.</p>
             </div>
         </div>
@@ -306,9 +361,9 @@
             <h3>Workflow Animation</h3>
             <p>This D3.js animation visualizes the data flow when you click "AI Summarise". Click "Replay Animation" to restart it.</p>
             <div id="workflowAnimation"></div>
-            <button onclick="startWorkflowAnimation()" class="replay-button">🎨 Replay Animation</button>
+            <button onclick="startWorkflowAnimation()" class="replay-button">🎨 Replay Animation</button> 
 
-            <h3 class="slds-m-top_large">Before/After Summary View (Summarise Example)</h3>
+            <h3 class="slds-m-top_large">Before/After Summary View (Summarise Example)</h3> 
             <div class="summary-toggle-container">
                 <p>This is a static example to simulate how long text can be condensed. Click the button to toggle between the original content and its AI-generated summary.</p>
                 <button id="toggleSummaryBtn" onclick="toggleSummaryView()" class="summary-toggle-button">✨ Show AI Summary Example</button> 
@@ -326,9 +381,11 @@
         <div class="slide" id="slide6">
             <h2>Lab Step 3: Apex Code Walkthrough 👨‍💻</h2>
             <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API using the latest Flash model (e.g., Gemini Flash 1.5 or newer) and the provided API key.</p>
-            <p><strong>Action:</strong> Create this Apex class in your Salesforce org.</p>
+            <div class="note note-action">
+                <strong>Action:</strong> Create this Apex class in your Salesforce org.
+            </div>
             <div class="code-block-wrapper">
-                <button class="copy-code-button" aria-label="Copy Apex Code">Copy</button>
+                <button class="copy-code-button" aria-label="Copy Apex Code">📋 Copy</button>
                 <pre><code class="language-apex">
 // File: GeminiAPIService.cls
 public with sharing class GeminiAPIService {
@@ -411,18 +468,21 @@ public with sharing class GeminiAPIService {
 }
                 </code></pre>
             </div>
-            <div class="note">
-                <strong>Action:</strong> Copy the Apex code. In Salesforce Developer Console, create <code>GeminiAPIService.cls</code>. Paste and **replace <code>'KEY_PROVIDED_BY_INSTRUCTOR'</code>**. Save.
+            <div class="note note-important">
+                <strong>Remember to replace <code>'KEY_PROVIDED_BY_INSTRUCTOR'</code> in the Apex code with your valid Gemini API Key.</strong>
             </div>
         </div>
 
         <div class="slide" id="slide7">
             <h2>Lab Step 4: Lightning Web Component (LWC) ⚡</h2>
             <p>Create an LWC named <code>knowledgeCompanion</code> for the Knowledge Article record page.</p>
+            <div class="note note-action">
+                <strong>Action:</strong> Create these three LWC files. **Remember to update the <code>KNOWLEDGE_CONTENT_FIELD</code> import in <code>knowledgeCompanion.js</code>**. Deploy and add to your Knowledge Article page.
+            </div>
 
             <h3>1. <code>knowledgeCompanion.html</code></h3>
             <div class="code-block-wrapper">
-                <button class="copy-code-button" aria-label="Copy LWC HTML">Copy</button>
+                <button class="copy-code-button" aria-label="Copy LWC HTML">📋 Copy</button>
                 <pre><code class="language-html">
 &lt;!-- File: knowledgeCompanion.html --&gt;
 &lt;template&gt;
@@ -468,7 +528,7 @@ public with sharing class GeminiAPIService {
 
             <h3 style="margin-top: 2em;">2. <code>knowledgeCompanion.js</code></h3>
             <div class="code-block-wrapper">
-                <button class="copy-code-button" aria-label="Copy LWC JavaScript">Copy</button>
+                <button class="copy-code-button" aria-label="Copy LWC JavaScript">📋 Copy</button>
                 <pre><code class="language-javascript">
 // File: knowledgeCompanion.js
 import { LightningElement, api, wire, track } from 'lwc';
@@ -509,8 +569,7 @@ export default class KnowledgeCompanion extends LightningElement {
         }
 
         try {
-            // Using 'articleFieldContent' as the parameter name to match the updated Apex method
-            const result = await getPageSummaryFromGemini({ articleFieldContent: plainTextContent });
+            const result = await getPageSummaryFromGemini({ articleFieldContent: plainTextContent }); // Match Apex param
             if (result) {
                 if (result.toLowerCase().startsWith('error:')) { this.error = result; } 
                 else { this.summaryText = result; this.isModalOpen = true; }
@@ -532,7 +591,7 @@ export default class KnowledgeCompanion extends LightningElement {
 
             <h3 style="margin-top: 2em;">3. <code>knowledgeCompanion.js-meta.xml</code></h3>
             <div class="code-block-wrapper">
-                <button class="copy-code-button" aria-label="Copy LWC XML">Copy</button>
+                <button class="copy-code-button" aria-label="Copy LWC XML">📋 Copy</button>
                 <pre><code class="language-xml">
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata"&gt;
@@ -551,17 +610,14 @@ export default class KnowledgeCompanion extends LightningElement {
 &lt;/LightningComponentBundle&gt;
                 </code></pre>
             </div>
-            <div class="note">
-                <strong>Action:</strong> Create these three LWC files. **Update <code>KNOWLEDGE_CONTENT_FIELD</code> in <code>knowledgeCompanion.js</code>**. Deploy and add to your Knowledge Article page.
-            </div>
         </div>
         
         <div class="slide" id="slide8">
             <h2>Alternative Approach: Salesforce Prompt Builder & Einstein ☁️</h2>
-            <p>While this lab focuses on direct integration with an external LLM like Gemini for learning purposes, Salesforce offers powerful native Generative AI tools like **Prompt Builder** within the Einstein 1 Platform. This allows you to create and manage AI prompts that leverage LLMs directly within Salesforce, often with tighter data integration and governance.</p>
+            <p>While this lab uses an external API, Salesforce offers powerful native Generative AI tools like **Prompt Builder** (part of the Einstein 1 Platform). This tool allows you to create, test, and manage AI prompts that leverage Large Language Models (LLMs) directly within Salesforce, often providing tighter data integration, better governance, and adherence to the Einstein Trust Layer.</p>
             
             <h3>Using Prompt Builder for Knowledge Article Summarization</h3>
-            <p>Prompt Builder enables you to craft reusable and context-aware prompts for various tasks, including summarization of specific record fields.</p>
+            <p>Prompt Builder enables you to craft reusable and context-aware prompts for various tasks, including summarization of specific record fields from objects like Knowledge Articles.</p>
 
             <h4>Conceptual Steps with Prompt Builder:</h4>
             <ol>
@@ -571,60 +627,50 @@ export default class KnowledgeCompanion extends LightningElement {
                 <li>
                     <strong>Create a New Prompt Template:</strong>
                     <ul>
-                        <li>Click "New Prompt Template".</li>
-                        <li>Select a type, often "Record Summary" or a general "Template with Grounding" if summarizing specific field data. For a Knowledge Article, you might start with a general template.</li>
-                        <li>Give it a descriptive name (e.g., `Knowledge_Article_Field_Summarizer`).</li>
-                        <li>Select the object you are working with (e.g., `KnowledgeArticleVersion`).</li>
+                        <li>Click "New Prompt Template". Choose a starting point, often a "Record Summary" type if available and suitable, or a more general "Template with Grounding" for flexibility.</li>
+                        <li>Name it (e.g., `Knowledge_Article_Field_Summary_Template`).</li>
+                        <li>Select the relevant SObject (e.g., `KnowledgeArticleVersion`).</li>
                     </ul>
                 </li>
                 <li>
                     <strong>Design the Prompt Text:</strong>
                     <ul>
-                        <li>Write clear instructions for the LLM.</li>
-                        <li>Use **merge fields** to dynamically insert the content of your Knowledge Article field. For example, if your field is `Content_for_Summarization__c`, you might use something like `{!$Record.Content_for_Summarization__c}` (syntax may vary slightly based on context - check Prompt Builder's UI for exact merge field syntax for the selected object).</li>
-                        <li>Specify the desired output format (e.g., "Provide a concise summary in 3-5 bullet points using HTML `&lt;ul&gt;&lt;li&gt;` tags.").</li>
-                        <li>Example prompt structure:
-                            <div class="code-block-wrapper">
-                                <button class="copy-code-button" aria-label="Copy Prompt Builder Example">Copy</button>
-                                <pre><code class="language-text">
-Task: Summarize the key information from the following Salesforce Knowledge Article content.
-Focus on the main purpose, key instructions, or critical takeaways.
-Output the summary in a short paragraph followed by 3-5 bullet points in HTML format.
-
-Knowledge Article Content:
-{!$Record.Content_for_Summarization__c}
-                                </code></pre>
-                            </div>
-                        </li>
+                        <li>Write clear instructions for the LLM. This is where you define the desired output, tone, and format.</li>
+                        <li>Use **merge fields** to dynamically insert content from your Knowledge Article record. For example, to include the content of a field with API name `Content_for_Summarization__c`, you'd use a merge field like `{!$Record.Content_for_Summarization__c}` (verify exact syntax in Prompt Builder).</li>
+                        <li>Specify output requirements: "Summarize the following Knowledge Article content into 3-5 concise bullet points. The summary should be in HTML format, using `&lt;ul&gt;` and `&lt;li&gt;` tags. Focus on the primary purpose and key actionable information."</li>
                     </ul>
                 </li>
                 <li>
                     <strong>Grounding (Optional but Powerful):</strong>
                     <ul>
-                        <li>You can ground the prompt with related Salesforce data to provide more context to the LLM, potentially leading to more relevant summaries. For a Knowledge Article, this might include its title, category, or related Case information if applicable.</li>
+                        <li>Ground your prompt with relevant Salesforce data by referencing other fields from the Knowledge Article (e.g., `{!$Record.Title}`) or even fields from related records to give the LLM more context for a richer, more accurate summary.</li>
                     </ul>
                 </li>
                 <li>
-                    <strong>Test and Refine:</strong> Use the testing interface within Prompt Builder. Select a sample Knowledge Article record to see how the merge fields populate and how the LLM responds. Iterate on your prompt text until the summaries are accurate and helpful.
+                    <strong>Select an LLM & Test:</strong>
+                    <ul>
+                        <li>Choose from the Large Language Models made available by Salesforce through the Einstein 1 Platform.</li>
+                        <li>Use the built-in testing interface. Provide a sample Knowledge Article record ID to see how the merge fields populate and how the LLM responds to your prompt. Iterate on your prompt text based on the results.</li>
+                    </ul>
                 </li>
                 <li>
-                    <strong>Save and Activate:</strong> Once satisfied, save and activate your prompt template.
+                    <strong>Save and Activate:</strong> Once you're satisfied with the prompt's performance, save and activate the template.
                 </li>
                 <li>
                     <strong>Integrate and Invoke:</strong>
                     <ul>
-                        <li>**Flow:** Call the activated Prompt Template from a Screen Flow (e.g., a flow launched by a button on the Knowledge Article page). The Flow passes the record context to the prompt and can display the result.</li>
-                        <li>**Apex:** Use Invocable Apex to call the prompt template if more complex server-side logic is needed. The `PromptTemplateService.execute` method can be used.</li>
-                        <li>**LWC:** An LWC can trigger the Flow or Apex method that invokes the prompt, similar to how this lab's LWC calls Apex.</li>
+                        <li>**Flow:** Call the activated Prompt Template from a Salesforce Flow (e.g., a Screen Flow launched by a button on the Knowledge Article page). The Flow passes the record context (Record ID) to the prompt template and can then display the LLM's response.</li>
+                        <li>**Apex:** Use Invocable Apex (`PromptTemplateService.execute` method) to execute the prompt template if you need more complex server-side logic or want to trigger it from other contexts.</li>
+                        <li>**LWC:** A custom LWC can initiate the Flow or call the Apex method that invokes the prompt template.</li>
                     </ul>
                 </li>
             </ol>
             <h4>Benefits of Using Prompt Builder:</h4>
             <ul>
-                <li>**Declarative AI:** Build and manage prompts with low-code tools.</li>
-                <li>**Salesforce Data Integration:** Natively uses merge fields and grounding with CRM data.</li>
+                <li>**Declarative AI:** Build and manage sophisticated prompts with low-code tools.</li>
+                <li>**Deep Salesforce Data Integration:** Seamlessly use merge fields and grounding with your CRM data.</li>
                 <li>**Reusability & Governance:** Centrally manage, version, and control access to prompt templates.</li>
-                <li>**Leverages Einstein Trust Layer:** Benefits from Salesforce's built-in data security, privacy, and responsible AI measures.</li>
+                <li>**Leverages Einstein Trust Layer:** Adheres to Salesforce's data security, privacy, and responsible AI principles.</li>
             </ul>
         </div>
 
@@ -633,7 +679,7 @@ Knowledge Article Content:
             <h3>What You've Accomplished in this Lab 🏆</h3>
             <ul>
                 <li>Set up pre-requisites including Salesforce org configuration and using a provided API key.</li>
-                <li>Developed an Apex class to make callouts to the Gemini API for text summarization.</li>
+                <li>Developed an Apex class to make callouts to the Gemini API.</li>
                 <li>Updated the Apex prompt for Knowledge Article summarization.</li>
                 <li>Built an LWC to provide a UI on a Knowledge Article record page.</li>
                 <li>Implemented LWC-to-Apex communication for AI summarization.</li>
@@ -681,7 +727,7 @@ Knowledge Article Content:
                         <li>**Custom Headers (Recommended for API Key):**
                             <ul>
                                 <li>Header Name: `x-goog-api-key`</li>
-                                <li>Header Value: Your actual API Key. (For production, retrieve this from a custom setting in Apex and set the header there, or if the Named Credential supports merge fields from protected settings, use that.)</li>
+                                <li>Header Value: Your actual API Key. (For production, retrieve this from a custom setting in Apex and set the header there, or use a formula if available for your setup.)</li>
                             </ul>
                         </li>
                         <li>Save.</li>
@@ -689,18 +735,19 @@ Knowledge Article Content:
                 </li>
                 <li><strong>Update Apex to Use Named Credential:</strong>
                     <div class="code-block-wrapper">
-                        <button class="copy-code-button" aria-label="Copy Apex Named Credential Example">Copy</button>
+                        <button class="copy-code-button" aria-label="Copy Apex Named Credential Example">📋 Copy</button>
                         <pre><code class="language-apex">
-// Example Apex using Named Credential (if key is in Named Credential Custom Header)
+// Example Apex using Named Credential
 HttpRequest req = new HttpRequest();
+// Endpoint uses 'callout:' + Named Credential Name
 req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-latest:generateContent');
 req.setMethod('POST');
 req.setHeader('Content-Type', 'application/json; charset=utf-8');
-// API key is handled by the Named Credential's custom header setting if configured there.
-// If not in NC header, retrieve from secure storage and set here:
+// API key is handled by the Named Credential's custom header if configured there.
+// Otherwise, retrieve from secure storage and set here:
 // String apiKey = getApiKeyFromSecureStorage(); 
 // req.setHeader('x-goog-api-key', apiKey); 
-// ... rest of request ...
+// ... rest of request body setup and callout ...
                         </code></pre>
                     </div>
                 </li>
@@ -719,6 +766,15 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
         const totalSlides = slides.length;
         const prevButton = document.getElementById('prevBtn');
         const nextButton = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+
+
+        function updateProgressBar() {
+            if (progressBar && totalSlides > 0) {
+                const progressPercentage = ((currentSlide + 1) / totalSlides) * 100;
+                progressBar.style.width = progressPercentage + '%';
+            }
+        }
 
         function showSlide(index) {
             if (!slides || slides.length === 0) { console.error("Slides not found."); return; }
@@ -730,6 +786,8 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             });
             currentSlide = index;
             updateNavButtons();
+            updateProgressBar();
+
 
             // Simulation & Visuals is now Slide 5 (index 4)
             if (index === 4) { 
@@ -751,7 +809,6 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
         
         // --- Copy Code Functionality ---
         function copyCode(buttonElement) {
-            // Find the <pre> element. Assumes <pre> is the next sibling of the button's parent div.
             const wrapper = buttonElement.parentElement;
             const preElement = wrapper.querySelector('pre');
             
@@ -760,16 +817,16 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
                 if (codeElement) {
                     const codeToCopy = codeElement.textContent || "";
                     navigator.clipboard.writeText(codeToCopy).then(() => {
-                        buttonElement.textContent = 'Copied!';
+                        buttonElement.innerHTML = '✓ Copied!'; // Use innerHTML for icon
                         buttonElement.classList.add('copied');
                         setTimeout(() => {
-                            buttonElement.textContent = 'Copy';
+                            buttonElement.innerHTML = '📋 Copy'; // Use innerHTML for icon
                             buttonElement.classList.remove('copied');
                         }, 2000);
                     }).catch(err => {
                         console.error('Failed to copy code: ', err);
                         buttonElement.textContent = 'Error';
-                        setTimeout(() => { buttonElement.textContent = 'Copy'; }, 2000);
+                        setTimeout(() => { buttonElement.innerHTML = '📋 Copy'; }, 2000);
                     });
                 } else { console.error("Copy Code: <code> element not found inside <pre>.");}
             } else { console.error("Copy Code: <pre> element not found relative to button.");}
@@ -777,7 +834,7 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
         
         function initializeCopyButtons() {
             document.querySelectorAll('.copy-code-button').forEach(button => {
-                // Remove any old listeners to be safe if this function is ever called multiple times
+                button.innerHTML = '📋 Copy'; // Initialize with icon
                 button.onclick = null; 
                 button.addEventListener('click', function() { copyCode(this); });
             });
@@ -798,7 +855,7 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             const summaryView = document.getElementById('summaryAfterView');
             if (toggleBtn && summaryView) {
                  if (summaryView.style.display === 'none' || summaryView.style.display === '') {
-                    toggleBtn.textContent = '✨ Show AI Summary Example'; // Keep icon if desired
+                    toggleBtn.innerHTML = '✨ Show AI Summary Example'; // Use innerHTML for icon
                 } else {
                     toggleBtn.textContent = 'Show Original Text';
                 }
@@ -847,9 +904,9 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             const button = document.getElementById('toggleSummaryBtn');
             if (summaryView && originalView && button) {
                 if (summaryView.style.display === 'none' || summaryView.style.display === '') {
-                    originalView.style.display = 'none'; summaryView.style.display = 'block'; button.textContent = 'Show Original Text';
+                    originalView.style.display = 'none'; summaryView.style.display = 'block'; button.innerHTML = 'Show Original Text'; // Use innerHTML for icon
                 } else {
-                    originalView.style.display = 'block'; summaryView.style.display = 'none'; button.textContent = '✨ Show AI Summary Example';
+                    originalView.style.display = 'block'; summaryView.style.display = 'none'; button.innerHTML = '✨ Show AI Summary Example'; // Use innerHTML for icon
                 }
             }
         }
