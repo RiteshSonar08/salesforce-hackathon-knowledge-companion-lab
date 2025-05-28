@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            line-height: 1.7; /* Increased for readability */
+            line-height: 1.7; 
             margin: 0;
             padding: 0;
             background-color: #f4f7f9;
@@ -16,7 +16,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 17px; /* Slightly larger base font */
+            font-size: 17px; 
         }
 
         .progress-bar-container {
@@ -26,24 +26,24 @@
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 1001; /* Above modal backdrop */
+            z-index: 1001; 
         }
 
         .progress-bar {
             height: 100%;
-            width: 0%; /* Initial width */
-            background-color: #0070d2; /* Salesforce blue */
+            width: 0%; 
+            background-color: #0070d2; 
             transition: width 0.3s ease-out;
         }
 
         .slide-container {
             width: 90%;
             max-width: 1000px;
-            margin: 40px auto 20px auto; /* Increased top margin for progress bar */
+            margin: 40px auto 20px auto; 
             background-color: #fff;
             border: 1px solid #ddd;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Slightly enhanced shadow */
-            border-radius: 8px; /* Added border-radius */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            border-radius: 8px; 
             overflow: hidden;
         }
 
@@ -77,9 +77,9 @@
         }
 
         ul, ol {
-            padding-left: 25px; /* Slightly more padding for lists */
+            padding-left: 25px; 
         }
-        li { margin-bottom: 0.6em; } /* Slightly more spacing for list items */
+        li { margin-bottom: 0.6em; } 
 
         a {
             color: #0070d2;
@@ -95,8 +95,8 @@
             font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
             background-color: #eef1f3;
             padding: 0.2em 0.4em;
-            border-radius: 4px; /* Consistent border-radius */
-            font-size: 0.88em; /* Adjusted relative to new body font */
+            border-radius: 4px; 
+            font-size: 0.88em; 
         }
 
         .code-block-wrapper {
@@ -106,13 +106,13 @@
 
         pre { 
             background-color: #2d2d2d; 
-            color: #f0f0f0; /* Brighter white for better contrast on dark */
-            padding: 20px; /* Increased padding */
+            color: #f0f0f0; 
+            padding: 20px; 
             padding-top: 45px; 
-            border-radius: 6px; /* Consistent border-radius */
+            border-radius: 6px; 
             overflow-x: auto; 
             font-size: 0.88em; 
-            line-height: 1.6; /* Increased line-height for code */
+            line-height: 1.6; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             white-space: pre; 
         }
@@ -126,12 +126,12 @@
         
         .copy-code-button {
             position: absolute;
-            top: 8px; /* Adjusted position */
+            top: 8px; 
             right: 8px;
             background-color: #0070d2;
             color: white;
-            border: 1px solid #005fb2; /* Added subtle border */
-            padding: 6px 12px; /* Adjusted padding */
+            border: 1px solid #005fb2; 
+            padding: 6px 12px; 
             font-size: 0.8em;
             font-weight: bold;
             border-radius: 4px;
@@ -159,7 +159,7 @@
             max-width: 1000px;
             box-sizing: border-box;
             margin: 0 auto 20px auto; 
-            border-bottom-left-radius: 8px; /* Match slide container */
+            border-bottom-left-radius: 8px; 
             border-bottom-right-radius: 8px;
         }
 
@@ -171,7 +171,7 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 1em; /* Relative to body font */
+            font-size: 1em; 
             font-weight: 500;
             border-radius: 5px;
             cursor: pointer;
@@ -189,8 +189,8 @@
             background-color: #5cb85c; 
             color: white;
             border: none;
-            padding: 10px 18px; /* Harmonized padding */
-            font-size: 0.95em; /* Harmonized size */
+            padding: 10px 18px; 
+            font-size: 0.95em; 
             font-weight: bold;
             border-radius: 5px;
             cursor: pointer;
@@ -229,19 +229,17 @@
         }
 
         .note {
-            padding: 12px 18px; /* Increased padding */
-            margin: 20px 0; /* Increased margin */
-            border-radius: 6px; /* Consistent border-radius */
-            border-left-width: 6px; /* Thicker border */
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow */
+            padding: 12px 18px; 
+            margin: 20px 0; 
+            border-radius: 6px; 
+            border-left-width: 6px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
         }
-        .note strong { font-weight: 600; } /* Slightly bolder */
+        .note strong { font-weight: 600; } 
         .note::before {
             font-weight: bold;
             margin-right: 8px;
         }
-
-        /* Specific note types */
         .note-general { background-color: #eef1f3; border-left-color: #0070d2; color: #003972; }
         .note-general::before { content: "ℹ️"; }
         .note-important { background-color: #fff3cd; border-left-color: #ffeeba; color: #856404;}
@@ -251,22 +249,18 @@
         .note-tip { background-color: #d1ecf1; border-left-color: #bee5eb; color: #0c5460;}
         .note-tip::before { content: "💡"; }
 
+        /* Styles for LWC Modal when it's the main content of the Quick Action screen */
+        .lwc-modal-container { /* A wrapper for the LWC if it acts as a modal */
+            padding: 0; /* Remove padding if LWC handles its own internal padding */
+        }
+        .lwc-modal-content { /* LWC should use SLDS modal structure internally */
+            /* min-height: 300px; /* Ensure a minimum height for the modal content */
+        }
 
-        .modal { 
-            display: none; position: fixed; z-index: 1000;
-            left: 0; top: 0; width: 100%; height: 100%;
-            overflow: auto; background-color: rgba(0,0,0,0.5); /* Darker backdrop */
-        }
-        .modal-content {
-            background-color: #fefefe; margin: 10% auto; /* Adjusted margin */ padding: 25px; /* Increased padding */
-            border: 1px solid #ccc; width: 65%; max-width: 700px; /* Max width */ border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .modal-content h3 { margin-top: 0;}
 
         #workflowAnimation {
-            width: 100%; height: 400px; border: 1px solid #e0e0e0; /* Softer border */
-            margin-top: 20px; background-color: #f9f9f9; border-radius: 6px; /* Added radius */
+            width: 100%; height: 400px; border: 1px solid #e0e0e0; 
+            margin-top: 20px; background-color: #f9f9f9; border-radius: 6px; 
         }
         #workflowAnimation svg { display: block; width: 100%; height: 100%;}
 
@@ -307,8 +301,8 @@
             <p>By the end of this lab, you will have built a solution that can:</p>
             <ul>
                 <li>Summarize content from a rich text area field on a Salesforce Knowledge Article using the Gemini API.</li>
-                <li>Trigger this summarization process via a custom Lightning Web Component (LWC) button.</li>
-                <li>Display the AI-generated summary clearly within a modal dialog on the screen.</li>
+                <li>Trigger this summarization process via a **Quick Action button** on the Knowledge Article page, which launches a Lightning Web Component (LWC).</li>
+                <li>The LWC will display the AI-generated summary clearly within a modal dialog.</li>
                 <li><strong>Explore your creativity</strong> in crafting effective prompts to the Gemini API to summarize different types of content from a Knowledge Article field in innovative ways.</li>
             </ul>
             <p>This hands-on experience will cover Salesforce configuration, Apex development, and LWC creation.</p>
@@ -350,7 +344,7 @@
             <h3>2. Important Note: API Key in Endpoint vs. Named Credentials</h3>
             <div class="note note-important">
                 <p><strong>For Lab Simplicity:</strong> We are putting the API key directly into the Apex code and constructing the endpoint URL with it.</p>
-                <p><strong>Security Best Practice (for real projects): DO NOT hardcode API keys or include them directly in endpoint URLs in your code.</strong> Use Named Credentials or retrieve keys from Protected Custom Settings/Metadata.</p>
+                <p><strong>⚠️ Security Best Practice (for real projects): DO NOT hardcode API keys or include them directly in endpoint URLs in your code.</strong> Use Named Credentials or retrieve keys from Protected Custom Settings/Metadata.</p>
                 <p>An appendix slide provides details on obtaining your own key and setting up Named Credentials for future reference.</p>
             </div>
         </div>
@@ -359,7 +353,7 @@
             <h2>Lab Step 2: Simulation & Visuals 📊</h2>
             <p>Before diving into code, let's visualize the data flow and an example of the summarization we aim to achieve.</p>
             <h3>Workflow Animation</h3>
-            <p>This D3.js animation visualizes the data flow when you click "AI Summarise". Click "Replay Animation" to restart it.</p>
+            <p>This D3.js animation visualizes the data flow when a user clicks the "AI Summarise" Quick Action.</p>
             <div id="workflowAnimation"></div>
             <button onclick="startWorkflowAnimation()" class="replay-button">🎨 Replay Animation</button> 
 
@@ -380,9 +374,9 @@
 
         <div class="slide" id="slide6">
             <h2>Lab Step 3: Apex Code Walkthrough 👨‍💻</h2>
-            <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API using the latest Flash model (e.g., Gemini Flash 1.5 or newer) and the provided API key.</p>
+            <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API using the latest Flash model and the provided API key.</p>
             <div class="note note-action">
-                <strong>Action:</strong> Create this Apex class in your Salesforce org.
+                <strong>Action:</strong> Create this Apex class in your Salesforce org. Remember to replace the placeholder API key.
             </div>
             <div class="code-block-wrapper">
                 <button class="copy-code-button" aria-label="Copy Apex Code">📋 Copy</button>
@@ -468,65 +462,85 @@ public with sharing class GeminiAPIService {
 }
                 </code></pre>
             </div>
-            <div class="note note-important">
-                <strong>Remember to replace <code>'KEY_PROVIDED_BY_INSTRUCTOR'</code> in the Apex code with your valid Gemini API Key.</strong>
-            </div>
         </div>
 
         <div class="slide" id="slide7">
-            <h2>Lab Step 4: Lightning Web Component (LWC) ⚡</h2>
-            <p>Create an LWC named <code>knowledgeCompanion</code> for the Knowledge Article record page.</p>
+            <h2>Lab Step 4: Lightning Web Component (LWC) for Modal Display ⚡</h2>
+            <p>This LWC (<code>knowledgeCompanion</code>) will now primarily serve as the UI for the modal popup that displays the summary. It will be launched by a Quick Action.</p>
             <div class="note note-action">
-                <strong>Action:</strong> Create these three LWC files. **Remember to update the <code>KNOWLEDGE_CONTENT_FIELD</code> import in <code>knowledgeCompanion.js</code>**. Deploy and add to your Knowledge Article page.
+                <strong>Action:</strong> Create/Update these LWC files. Remember to update the <code>KNOWLEDGE_CONTENT_FIELD</code> import in the JS file.
             </div>
 
-            <h3>1. <code>knowledgeCompanion.html</code></h3>
+            <h3>1. <code>knowledgeCompanion.html</code> (LWC Template as Modal)</h3>
             <div class="code-block-wrapper">
                 <button class="copy-code-button" aria-label="Copy LWC HTML">📋 Copy</button>
                 <pre><code class="language-html">
 &lt;!-- File: knowledgeCompanion.html --&gt;
 &lt;template&gt;
-    &lt;lightning-card title="Knowledge Article Summarizer" icon-name="utility:summarydetail"&gt;
-        &lt;div class="slds-p-around_medium"&gt;
-            &lt;lightning-button
-                label="Summarise Article Content"
-                variant="brand"
-                onclick={handleSummarizeArticleField}
-                disabled={isLoading}
-                icon-name="utility:magicwand"&gt;
-            &lt;/lightning-button&gt;
-            &lt;template if:true={isLoading}&gt;
-                &lt;div class="slds-m-top_medium slds-is-relative" style="height: 50px;"&gt;
-                    &lt;lightning-spinner alternative-text="Loading summary..." size="medium"&gt;&lt;/lightning-spinner&gt;
+    &lt;!-- This LWC's template IS the modal content when launched by a Quick Action --&gt;
+    &lt;div class="lwc-modal-container"&gt; 
+        &lt;!-- Standard SLDS Modal structure. 
+             The Quick Action framework might provide its own header/footer, 
+             or you might need to implement the full modal structure if the LWC takes over the whole screen.
+             For an ActionScreen, the LWC often just provides the body.
+             Let's assume the LWC provides the full modal structure for clarity here.
+        --&gt;
+        &lt;template if:true={isModalActuallyOpen}&gt; &lt;!-- Renamed internal flag --&gt;
+            &lt;section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open"&gt;
+                &lt;div class="slds-modal__container"&gt;
+                    &lt;header class="slds-modal__header"&gt;
+                        &lt;!-- Quick Actions launched as screen components don't usually have a close button here. 
+                             The framework provides Save/Cancel. We'll keep it for standalone testing. 
+                             You may need to remove this button if it conflicts with Quick Action provided buttons. --&gt;
+                        &lt;button if:false={hideLwcCloseButton} class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleCloseModalProgrammatically}&gt;
+                            &lt;lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"&gt;&lt;/lightning-icon&gt;
+                            &lt;span class="slds-assistive-text"&gt;Close&lt;/span&gt;
+                        &lt;/button&gt;
+                        &lt;h2 class="slds-modal__title slds-hyphenate"&gt;AI Knowledge Article Summary&lt;/h2&gt;
+                    &lt;/header&gt;
+                    &lt;div class="slds-modal__content slds-p-around_medium lwc-modal-content"&gt;
+                        &lt;template if:true={isLoading}&gt;
+                            &lt;div class="slds-is-relative slds-m-vertical_large" style="height: 80px;"&gt;
+                                &lt;lightning-spinner alternative-text="Generating summary..." size="medium"&gt;&lt;/lightning-spinner&gt;
+                                &lt;p class="slds-align_absolute-center" style="top: 60px;"&gt;Thinking...&lt;/p&gt;
+                            &lt;/div&gt;
+                        &lt;/template&gt;
+                        &lt;template if:false={isLoading}&gt;
+                            &lt;template if:true={error}&gt;
+                                &lt;div class="slds-text-color_error"&gt;
+                                    &lt;p&gt;&lt;strong&gt;Error:&lt;/strong&gt; {error}&lt;/p&gt;
+                                &lt;/div&gt;
+                            &lt;/template&gt;
+                            &lt;template if:false={error}&gt;
+                                &lt;lightning-formatted-rich-text value={summaryText}&gt;&lt;/lightning-formatted-rich-text&gt;
+                                &lt;p if:false={summaryText}&gt;No summary available for this article yet.&lt;/p&gt;
+                            &lt;/template&gt;
+                        &lt;/template&gt;
+                    &lt;/div&gt;
+                    &lt;footer class="slds-modal__footer"&gt;
+                        &lt;!-- Quick Action framework typically provides a "Finish" or "Cancel" button.
+                             This button is for standalone testing or if the LWC controls its own closure. --&gt;
+                        &lt;lightning-button if:false={hideLwcCloseButton} label="Done" title="Done" variant="brand" onclick={handleCloseModalProgrammatically}&gt;&lt;/lightning-button&gt;
+                    &lt;/footer&gt;
                 &lt;/div&gt;
-            &lt;/template&gt;
-            &lt;template if:true={error}&gt;
-                &lt;div class="slds-m-top_medium slds-text-color_error"&gt;&lt;p&gt;&lt;strong&gt;Error:&lt;/strong&gt; {error}&lt;/p&gt;&lt;/div&gt;
-            &lt;/template&gt;
-        &lt;/div&gt;
-    &lt;/lightning-card&gt;
-    &lt;template if:true={isModalOpen}&gt;
-        &lt;section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open"&gt;
-            &lt;div class="slds-modal__container"&gt;
-                &lt;header class="slds-modal__header"&gt;
-                    &lt;button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}&gt;
-                        &lt;lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"&gt;&lt;/lightning-icon&gt;
-                    &lt;/button&gt;
-                    &lt;h2 class="slds-modal__title slds-hyphenate"&gt;Article Summary&lt;/h2&gt;
-                &lt;/header&gt;
-                &lt;div class="slds-modal__content slds-p-around_medium"&gt;
-                    &lt;lightning-formatted-rich-text value={summaryText}&gt;&lt;/lightning-formatted-rich-text&gt;
-                &lt;/div&gt;
-                &lt;footer class="slds-modal__footer"&gt;&lt;lightning-button label="Close" title="Close" onclick={closeModal}&gt;&lt;/lightning-button&gt;&lt;/footer&gt;
-            &lt;/div&gt;
-        &lt;/section&gt;
-        &lt;div class="slds-backdrop slds-backdrop_open" role="presentation"&gt;&lt;/div&gt;
-    &lt;/template&gt;
+            &lt;/section&gt;
+            &lt;div class="slds-backdrop slds-backdrop_open"&gt;&lt;/div&gt;
+        &lt;/template&gt;
+
+        &lt;!-- Fallback content if modal isn't open (e.g., if LWC is placed directly on a page not as action) --&gt;
+        &lt;template if:false={isModalActuallyOpen}&gt; 
+            &lt;lightning-card title="Knowledge Summarizer"&gt;
+                &lt;p class="slds-p-horizontal_small"&gt;This component is designed to be launched as a Quick Action.&lt;/p&gt;
+                &lt;p if:true={isLoading} class="slds-p-horizontal_small"&gt;Loading summary...&lt;/p&gt;
+                &lt;p if:true={error} class="slds-p-horizontal_small slds-text-color_error"&gt;Error: {error}&lt;/p&gt;
+            &lt;/lightning-card&gt;
+        &lt;/template&gt;
+    &lt;/div&gt;
 &lt;/template&gt;
                 </code></pre>
             </div>
 
-            <h3 style="margin-top: 2em;">2. <code>knowledgeCompanion.js</code></h3>
+            <h3 style="margin-top: 2em;">2. <code>knowledgeCompanion.js</code> (Updated for Quick Action)</h3>
             <div class="code-block-wrapper">
                 <button class="copy-code-button" aria-label="Copy LWC JavaScript">📋 Copy</button>
                 <pre><code class="language-javascript">
@@ -534,48 +548,68 @@ public with sharing class GeminiAPIService {
 import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getPageSummaryFromGemini from '@salesforce/apex/GeminiAPIService.getPageSummaryFromGemini';
+import { CloseActionScreenEvent } from 'lightning/actions'; // For closing the action modal
 
 // TODO: LAB PARTICIPANT - Update this import for YOUR Knowledge Article field.
-// Example: import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Your_Custom_Field_API_Name__c';
 import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Content_for_Summarization__c'; 
 
 export default class KnowledgeCompanion extends LightningElement {
-    @api recordId;
-    @track summaryText = ''; @track isLoading = false; @track error; @track isModalOpen = false;
-    _wiredArticleData;
+    @api recordId; // Automatically provided by the Quick Action context
 
+    @track summaryText = '';
+    @track isLoading = true; // Start loading immediately
+    @track error;
+    @track isModalActuallyOpen = true; // Assume LWC is the modal content
+    @track hideLwcCloseButton = false; // Set to true if Quick Action provides its own close mechanism
+
+    _articleContentLoaded = false;
+
+    // Wire service to fetch the content of the specified field
     @wire(getRecord, { recordId: '$recordId', fields: [KNOWLEDGE_CONTENT_FIELD] })
     wiredArticle({ error, data }) {
-        if (data) { this._wiredArticleData = data; this.error = undefined; }
-        else if (error) { this.error = 'Failed to load article content. Check LWC field API name & permissions.'; console.error('LWC wire error:', JSON.stringify(error));}
+        if (data) {
+            const contentValue = getFieldValue(data, KNOWLEDGE_CONTENT_FIELD);
+            this._articleContentLoaded = true;
+            if (!contentValue || String(contentValue).trim() === '') {
+                this.error = \`Field '\${KNOWLEDGE_CONTENT_FIELD.fieldApiName}' is empty.\`;
+                this.isLoading = false;
+            } else {
+                let plainTextContent = this.stripHtml(String(contentValue));
+                if (!plainTextContent || plainTextContent.trim() === '') {
+                    this.error = 'Content empty after HTML stripping.';
+                    this.isLoading = false;
+                } else {
+                    this.fetchSummary(plainTextContent);
+                }
+            }
+        } else if (error) {
+            this.error = 'Failed to load article content. Check LWC field API name & permissions.';
+            console.error('LWC @wire(getRecord) error:', JSON.stringify(error));
+            this.isLoading = false;
+            this._articleContentLoaded = true; // Mark as loaded to prevent re-trigger if error
+        }
     }
 
-    get articleContent() {
-        return this._wiredArticleData ? getFieldValue(this._wiredArticleData, KNOWLEDGE_CONTENT_FIELD) : undefined;
-    }
-
-    async handleSummarizeArticleField() {
-        this.isLoading = true; this.error = undefined; this.summaryText = '';
-        const contentValue = this.articleContent;
-
-        if (!contentValue || String(contentValue).trim() === '') {
-            this.error = \`Field '\${KNOWLEDGE_CONTENT_FIELD.fieldApiName}' is empty.\`;
-            this.isLoading = false; return;
-        }
-        
-        let plainTextContent = this.stripHtml(String(contentValue));
-        if (!plainTextContent || plainTextContent.trim() === '') {
-            this.error = 'Content empty after HTML stripping.'; this.isLoading = false; return;
-        }
-
+    async fetchSummary(textContent) {
+        this.isLoading = true;
+        this.error = undefined;
         try {
-            const result = await getPageSummaryFromGemini({ articleFieldContent: plainTextContent }); // Match Apex param
+            const result = await getPageSummaryFromGemini({ articleFieldContent: textContent });
             if (result) {
-                if (result.toLowerCase().startsWith('error:')) { this.error = result; } 
-                else { this.summaryText = result; this.isModalOpen = true; }
-            } else { this.error = 'Empty response from service.'; }
-        } catch (e) { this.error = 'Error calling Apex: ' + (e.body?.message || e.message); console.error('LWC Apex call error:', JSON.stringify(e));}
-        finally { this.isLoading = false; }
+                if (result.toLowerCase().startsWith('error:')) { 
+                    this.error = result; 
+                } else { 
+                    this.summaryText = result; 
+                }
+            } else { 
+                this.error = 'Empty response from summarization service.'; 
+            }
+        } catch (e) { 
+            this.error = 'Error calling Apex: ' + (e.body?.message || e.message); 
+            console.error('LWC Apex call error:', JSON.stringify(e));
+        } finally { 
+            this.isLoading = false; 
+        }
     }
     
     stripHtml(html) {
@@ -584,12 +618,30 @@ export default class KnowledgeCompanion extends LightningElement {
         catch (e) { return html.replace(/<[^>]*>?/gm, ''); }
     }
 
-    closeModal() { this.isModalOpen = false; this.summaryText = ''; }
+    // This method allows the LWC to be closed if it's a screen action
+    handleCloseModalProgrammatically() {
+        this.isModalActuallyOpen = false; // Hide LWC content if not using CloseActionScreenEvent
+        // For actual Quick Action screen components, use CloseActionScreenEvent
+        this.dispatchEvent(new CloseActionScreenEvent());
+    }
+
+    // If you want to hide the LWC's own close buttons when hosted in a quick action
+    connectedCallback() {
+        // A simple check, Quick Action context might not always provide these properties directly
+        // You might need a more robust way to detect if it's in a quick action modal
+        if (this.recordId && typeof this.dispatchEvent === 'function') {
+             // This is a heuristic. A better way is if the action context passes a flag.
+             // For now, we assume if it has a recordId, it's likely in an action.
+            // this.hideLwcCloseButton = true; 
+            // ^ Decided to keep LWC close button for now, as QA framework also has one.
+            //   If it causes double buttons, then set this to true.
+        }
+    }
 }
                 </code></pre>
             </div>
 
-            <h3 style="margin-top: 2em;">3. <code>knowledgeCompanion.js-meta.xml</code></h3>
+            <h3 style="margin-top: 2em;">3. <code>knowledgeCompanion.js-meta.xml</code> (Updated Targets)</h3>
             <div class="code-block-wrapper">
                 <button class="copy-code-button" aria-label="Copy LWC XML">📋 Copy</button>
                 <pre><code class="language-xml">
@@ -598,98 +650,104 @@ export default class KnowledgeCompanion extends LightningElement {
     &lt;apiVersion&gt;59.0&lt;/apiVersion&gt; 
     &lt;isExposed&gt;true&lt;/isExposed&gt;
     &lt;targets&gt;
-        &lt;target&gt;lightning__RecordPage&lt;/target&gt;
+        &lt;target&gt;lightning__RecordPage&lt;/target&gt; 
+        &lt;target&gt;lightning__RecordAction&lt;/target&gt; &lt;!-- For headless quick actions --&gt;
+        &lt;target&gt;lightning__ActionScreen&lt;/target&gt; &lt;!-- Add this target for LWC to be used as a screen in a Quick Action --&gt;
     &lt;/targets&gt;
     &lt;targetConfigs&gt;
-        &lt;targetConfig targets="lightning__RecordPage"&gt;
+        &lt;targetConfig targets="lightning__RecordPage,lightning__ActionScreen"&gt;
             &lt;objects&gt;
                 &lt;object&gt;Knowledge__kav&lt;/object&gt;
             &lt;/objects&gt;
+            &lt;!-- To make it available as a screen action, no specific properties needed here unless you want to configure them --&gt;
         &lt;/targetConfig&gt;
     &lt;/targetConfigs&gt;
 &lt;/LightningComponentBundle&gt;
                 </code></pre>
             </div>
         </div>
-        
-        <div class="slide" id="slide8">
-            <h2>Alternative Approach: Salesforce Prompt Builder & Einstein ☁️</h2>
-            <p>While this lab uses an external API, Salesforce offers powerful native Generative AI tools like **Prompt Builder** (part of the Einstein 1 Platform). This tool allows you to create, test, and manage AI prompts that leverage Large Language Models (LLMs) directly within Salesforce, often providing tighter data integration, better governance, and adherence to the Einstein Trust Layer.</p>
-            
-            <h3>Using Prompt Builder for Knowledge Article Summarization</h3>
-            <p>Prompt Builder enables you to craft reusable and context-aware prompts for various tasks, including summarization of specific record fields from objects like Knowledge Articles.</p>
 
-            <h4>Conceptual Steps with Prompt Builder:</h4>
+        <div class="slide" id="slide8">
+            <h2>Lab Step 5: Add "AI Summarise" Button to Knowledge Page 🖱️</h2>
+            <p>Now, let's create a Quick Action on the Knowledge Article object to launch the LWC you just built.</p>
+            <div class="note note-action">
+                <strong>Action:</strong> Follow these steps in your Salesforce org.
+            </div>
             <ol>
-                <li>
-                    <strong>Access Prompt Builder:</strong> Navigate to "Prompt Builder" in Salesforce Setup.
-                </li>
-                <li>
-                    <strong>Create a New Prompt Template:</strong>
+                <li>Navigate to <strong>Setup</strong> (Gear icon ⚙️).</li>
+                <li>Go to <strong>Object Manager</strong>.</li>
+                <li>Find and select the <strong>Knowledge</strong> object. (It might be listed as "Knowledge" or "Knowledge Article Version" depending on your view; typically you want "Knowledge").</li>
+                <li>In the left-hand navigation for the Knowledge object, click on <strong>Buttons, Links, and Actions</strong>.</li>
+                <li>Click the <strong>New Action</strong> button in the top right.</li>
+                <li>Configure the New Action:
                     <ul>
-                        <li>Click "New Prompt Template". Choose a starting point, often a "Record Summary" type if available and suitable, or a more general "Template with Grounding" for flexibility.</li>
-                        <li>Name it (e.g., `Knowledge_Article_Field_Summary_Template`).</li>
-                        <li>Select the relevant SObject (e.g., `KnowledgeArticleVersion`).</li>
+                        <li><strong>Action Type:</strong> Select <code>Lightning Web Component</code>.</li>
+                        <li><strong>Lightning Web Component:</strong> Select <code>c:knowledgeCompanion</code> (or the name you gave your LWC).</li>
+                        <li><strong>Height:</strong> You can leave this as default or set a specific height like <code>600px</code>. The LWC's content will determine the actual height needed.</li>
+                        <li><strong>Label:</strong> Enter <code>AI Summarise</code> (This is what users will see on the button).</li>
+                        <li><strong>Name:</strong> This will likely auto-populate (e.g., <code>AI_Summarise</code>).</li>
+                        <li><strong>Icon:</strong> You can leave the default or choose one that represents AI or summarization if available.</li>
                     </ul>
                 </li>
+                <li>Click <strong>Save</strong>.</li>
+                <li>After saving, you might be taken to a page to predefine field values. For this LWC, since it uses <code>@api recordId</code> automatically, no predefined values are typically needed. You can just click **Save** again if prompted or navigate away.</li>
                 <li>
-                    <strong>Design the Prompt Text:</strong>
+                    Now, add this new action to the Page Layout:
                     <ul>
-                        <li>Write clear instructions for the LLM. This is where you define the desired output, tone, and format.</li>
-                        <li>Use **merge fields** to dynamically insert content from your Knowledge Article record. For example, to include the content of a field with API name `Content_for_Summarization__c`, you'd use a merge field like `{!$Record.Content_for_Summarization__c}` (verify exact syntax in Prompt Builder).</li>
-                        <li>Specify output requirements: "Summarize the following Knowledge Article content into 3-5 concise bullet points. The summary should be in HTML format, using `&lt;ul&gt;` and `&lt;li&gt;` tags. Focus on the primary purpose and key actionable information."</li>
-                    </ul>
-                </li>
-                <li>
-                    <strong>Grounding (Optional but Powerful):</strong>
-                    <ul>
-                        <li>Ground your prompt with relevant Salesforce data by referencing other fields from the Knowledge Article (e.g., `{!$Record.Title}`) or even fields from related records to give the LLM more context for a richer, more accurate summary.</li>
-                    </ul>
-                </li>
-                <li>
-                    <strong>Select an LLM & Test:</strong>
-                    <ul>
-                        <li>Choose from the Large Language Models made available by Salesforce through the Einstein 1 Platform.</li>
-                        <li>Use the built-in testing interface. Provide a sample Knowledge Article record ID to see how the merge fields populate and how the LLM responds to your prompt. Iterate on your prompt text based on the results.</li>
-                    </ul>
-                </li>
-                <li>
-                    <strong>Save and Activate:</strong> Once you're satisfied with the prompt's performance, save and activate the template.
-                </li>
-                <li>
-                    <strong>Integrate and Invoke:</strong>
-                    <ul>
-                        <li>**Flow:** Call the activated Prompt Template from a Salesforce Flow (e.g., a Screen Flow launched by a button on the Knowledge Article page). The Flow passes the record context (Record ID) to the prompt template and can then display the LLM's response.</li>
-                        <li>**Apex:** Use Invocable Apex (`PromptTemplateService.execute` method) to execute the prompt template if you need more complex server-side logic or want to trigger it from other contexts.</li>
-                        <li>**LWC:** A custom LWC can initiate the Flow or call the Apex method that invokes the prompt template.</li>
+                        <li>Still within the Knowledge object manager, go to <strong>Page Layouts</strong>.</li>
+                        <li>Identify the page layout(s) used for viewing Knowledge Articles (e.g., "Knowledge Layout"). Click **Edit** for that layout.</li>
+                        <li>In the page layout editor palette at the top, find the **Mobile & Lightning Actions** category.</li>
+                        <li>Your new "AI Summarise" action should be listed there. Drag it from the palette down into the **"Salesforce Mobile and Lightning Experience Actions"** section on the page layout. Place it where you'd like it to appear in the action button list.</li>
+                        <li>Click <strong>Save** on the page layout editor.</li>
                     </ul>
                 </li>
             </ol>
+            <p><strong>Testing:</strong> Navigate to a Knowledge Article record. You should now see the "AI Summarise" button in the actions bar. Clicking it should launch your LWC, which will then automatically fetch the article content (from the field specified in your LWC's JS) and display the summary from Gemini AI in a modal.</p>
+            <div class="note note-tip">
+                If the button doesn't appear immediately, you might need to ensure the page layout you edited is assigned to your user profile or is the default for that record type. Sometimes a hard refresh (Ctrl+Shift+R or Cmd+Shift+R) of the record page is also helpful.
+            </div>
+        </div>
+        
+        <div class="slide" id="slide9">
+            <h2>Alternative Approach: Salesforce Prompt Builder & Einstein ☁️</h2>
+            <p>While this lab uses an external API, Salesforce offers powerful native Generative AI tools like **Prompt Builder** (part of the Einstein 1 Platform). This tool allows you to create, test, and manage AI prompts that leverage LLMs directly within Salesforce, often providing tighter data integration, better governance, and adherence to the Einstein Trust Layer.</p>
+            <h3>Using Prompt Builder for Knowledge Article Summarization</h3>
+            <p>Prompt Builder enables you to craft reusable and context-aware prompts for various tasks, including summarization of specific record fields from objects like Knowledge Articles.</p>
+            <h4>Conceptual Steps with Prompt Builder:</h4>
+            <ol>
+                <li><strong>Access Prompt Builder:</strong> Navigate to "Prompt Builder" in Salesforce Setup.</li>
+                <li><strong>Create a New Prompt Template:</strong> Choose a type (e.g., "Record Summary" or "Template with Grounding"). Name it and select the `KnowledgeArticleVersion` object.</li>
+                <li><strong>Design the Prompt Text:</strong> Write clear instructions for the LLM. Use **merge fields** like `{!$Record.Your_Field_API_Name__c}` to insert Knowledge Article content. Specify the desired output format (e.g., "Summarize... into 3-5 bullet points using HTML `&lt;ul&gt;&lt;li&gt;` tags.").</li>
+                <li><strong>Grounding (Optional):</strong> Ground your prompt with related Salesforce data (e.g., `{!$Record.Title}`) for more context.</li>
+                <li><strong>Select an LLM & Test:</strong> Choose from Salesforce-provided LLMs. Test with sample Knowledge Article record IDs to refine your prompt.</li>
+                <li><strong>Save and Activate:</strong> Save and activate your prompt template.</li>
+                <li><strong>Integrate and Invoke:</strong> Call the activated Prompt Template from a **Flow** (launched by a button), **Apex** (using `PromptTemplateService.execute`), or an **LWC** that triggers the Flow/Apex.</li>
+            </ol>
             <h4>Benefits of Using Prompt Builder:</h4>
             <ul>
-                <li>**Declarative AI:** Build and manage sophisticated prompts with low-code tools.</li>
-                <li>**Deep Salesforce Data Integration:** Seamlessly use merge fields and grounding with your CRM data.</li>
+                <li>**Declarative AI:** Build and manage prompts with low-code tools.</li>
+                <li>**Salesforce Data Integration:** Natively uses merge fields and grounding with CRM data.</li>
                 <li>**Reusability & Governance:** Centrally manage, version, and control access to prompt templates.</li>
                 <li>**Leverages Einstein Trust Layer:** Adheres to Salesforce's data security, privacy, and responsible AI principles.</li>
             </ul>
         </div>
 
-        <div class="slide" id="slide9">
+        <div class="slide" id="slide10">
             <h2>Congratulations & Next Steps 🎉</h2>
             <h3>What You've Accomplished in this Lab 🏆</h3>
             <ul>
-                <li>Set up pre-requisites including Salesforce org configuration and using a provided API key.</li>
-                <li>Developed an Apex class to make callouts to the Gemini API.</li>
-                <li>Updated the Apex prompt for Knowledge Article summarization.</li>
-                <li>Built an LWC to provide a UI on a Knowledge Article record page.</li>
-                <li>Implemented LWC-to-Apex communication for AI summarization.</li>
-                <li>Considered alternative native Salesforce AI approaches using Prompt Builder.</li>
+                <li>Set up pre-requisites for the lab.</li>
+                <li>Configured API key usage for Gemini API within Apex.</li>
+                <li>Developed an Apex class for summarization.</li>
+                <li>Built an LWC to display summaries, launched via a Quick Action.</li>
+                <li>Configured a Quick Action button on the Knowledge Article page.</li>
+                <li>Explored alternative native Salesforce AI approaches.</li>
             </ul>
             <h3>Potential Project Implementations & Enhancements 🚀</h3>
             <ul>
-                <li>Adapt to summarize other objects (Cases, Emails).</li>
-                <li>Experiment with different prompts for various summary styles.</li>
-                <li>Explore secure API key storage for your own projects (see Appendix).</li>
+                <li>Adapt to summarize other objects.</li>
+                <li>Experiment with different prompts.</li>
+                <li>Explore secure API key storage (see Appendix).</li>
             </ul>
             <h3>Further Reading & Resources 📚</h3>
             <ul>
@@ -700,58 +758,30 @@ export default class KnowledgeCompanion extends LightningElement {
             <p>Keep exploring, keep building, and happy coding!</p>
         </div>
 
-        <div class="slide" id="slide10">
+        <div class="slide" id="slide11">
             <h2>Appendix: For Your Reference ℹ️</h2>
             <p>This section provides information for your future projects beyond this lab's simplified setup.</p>
             <h3>A. How to Obtain Your Own Google Gemini API Key</h3>
             <ol>
-                <li>Go to <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>.</li>
-                <li>Sign in with your Google account.</li>
-                <li>You might need to enable the "Generative Language API" in a Google Cloud Project. Google AI Studio often guides you. Ensure billing is enabled for that project if required by Google Cloud for API usage beyond free tiers.</li>
-                <li>In Google AI Studio, click "Get API key" then "Create API key".</li>
-                <li>Copy the generated API key and store it securely.</li>
+                <li>Go to <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>. Sign in.</li>
+                <li>Enable the "Generative Language API" in a Google Cloud Project (ensure billing is enabled if needed for usage).</li>
+                <li>In Google AI Studio, click "Get API key" then "Create API key". Copy and store it securely.</li>
             </ol>
-
             <h3>B. Using Named Credentials in Salesforce (Best Practice)</h3>
-            <p>Named Credentials securely manage authentication and endpoint details.</p>
             <ol>
-                <li><strong>Store API Key Securely (Example):</strong> Use a Protected Custom Setting (e.g., `API_Keys__c` with a field `Gemini_Key__c`).</li>
-                <li><strong>Create Named Credential:</strong>
-                    <ul>
-                        <li>Setup &gt; Named Credentials &gt; New.</li>
-                        <li>**Label:** e.g., `My_Secure_Gemini_API`</li>
-                        <li>**Name:** (Auto-filled)</li>
-                        <li>**URL:** `https://generativelanguage.googleapis.com`</li>
-                        <li>**Identity Type:** `Anonymous`</li>
-                        <li>**Authentication Protocol:** `No Authentication`</li>
-                        <li>**Custom Headers (Recommended for API Key):**
-                            <ul>
-                                <li>Header Name: `x-goog-api-key`</li>
-                                <li>Header Value: Your actual API Key. (For production, retrieve this from a custom setting in Apex and set the header there, or use a formula if available for your setup.)</li>
-                            </ul>
-                        </li>
-                        <li>Save.</li>
-                    </ul>
-                </li>
-                <li><strong>Update Apex to Use Named Credential:</strong>
-                    <div class="code-block-wrapper">
-                        <button class="copy-code-button" aria-label="Copy Apex Named Credential Example">📋 Copy</button>
-                        <pre><code class="language-apex">
+                <li><strong>Store API Key Securely:</strong> Use a Protected Custom Setting.</li>
+                <li><strong>Create Named Credential:</strong> (Setup &gt; Named Credentials &gt; New). Label: `My_Secure_Gemini_API`, URL: `https://generativelanguage.googleapis.com`, Identity Type: `Anonymous`, Auth Protocol: `No Authentication`. Add Custom Header: Name: `x-goog-api-key`, Value: Your API Key (or formula to Custom Setting).</li>
+                <li><strong>Update Apex:</strong> Endpoint: `callout:My_Secure_Gemini_API/...`. API key is handled by Named Credential.</li>
+            </ol>
+            <div class="code-block-wrapper">
+                <button class="copy-code-button" aria-label="Copy Apex Named Credential Example">📋 Copy</button>
+                <pre><code class="language-apex">
 // Example Apex using Named Credential
 HttpRequest req = new HttpRequest();
-// Endpoint uses 'callout:' + Named Credential Name
 req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-latest:generateContent');
-req.setMethod('POST');
-req.setHeader('Content-Type', 'application/json; charset=utf-8');
-// API key is handled by the Named Credential's custom header if configured there.
-// Otherwise, retrieve from secure storage and set here:
-// String apiKey = getApiKeyFromSecureStorage(); 
-// req.setHeader('x-goog-api-key', apiKey); 
-// ... rest of request body setup and callout ...
-                        </code></pre>
-                    </div>
-                </li>
-            </ol>
+// ... rest of request (API key likely handled by NC custom header)
+                </code></pre>
+            </div>
         </div>
 
     </div> <div class="navigation-buttons">
@@ -767,7 +797,6 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
         const prevButton = document.getElementById('prevBtn');
         const nextButton = document.getElementById('nextBtn');
         const progressBar = document.getElementById('progressBar');
-
 
         function updateProgressBar() {
             if (progressBar && totalSlides > 0) {
@@ -788,8 +817,7 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             updateNavButtons();
             updateProgressBar();
 
-
-            // Simulation & Visuals is now Slide 5 (index 4)
+            // Simulation & Visuals is Slide 5 (index 4)
             if (index === 4) { 
                 startWorkflowAnimation();
             }
@@ -807,20 +835,18 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             if (nextButton) { nextButton.disabled = (currentSlide === totalSlides - 1); }
         }
         
-        // --- Copy Code Functionality ---
         function copyCode(buttonElement) {
             const wrapper = buttonElement.parentElement;
             const preElement = wrapper.querySelector('pre');
-            
             if (preElement) {
                 const codeElement = preElement.querySelector('code');
                 if (codeElement) {
                     const codeToCopy = codeElement.textContent || "";
                     navigator.clipboard.writeText(codeToCopy).then(() => {
-                        buttonElement.innerHTML = '✓ Copied!'; // Use innerHTML for icon
+                        buttonElement.innerHTML = '✓ Copied!';
                         buttonElement.classList.add('copied');
                         setTimeout(() => {
-                            buttonElement.innerHTML = '📋 Copy'; // Use innerHTML for icon
+                            buttonElement.innerHTML = '📋 Copy';
                             buttonElement.classList.remove('copied');
                         }, 2000);
                     }).catch(err => {
@@ -828,18 +854,17 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
                         buttonElement.textContent = 'Error';
                         setTimeout(() => { buttonElement.innerHTML = '📋 Copy'; }, 2000);
                     });
-                } else { console.error("Copy Code: <code> element not found inside <pre>.");}
-            } else { console.error("Copy Code: <pre> element not found relative to button.");}
+                } else { console.error("Copy Code: <code> element not found.");}
+            } else { console.error("Copy Code: <pre> element not found.");}
         }
         
         function initializeCopyButtons() {
             document.querySelectorAll('.copy-code-button').forEach(button => {
-                button.innerHTML = '📋 Copy'; // Initialize with icon
+                button.innerHTML = '📋 Copy';
                 button.onclick = null; 
                 button.addEventListener('click', function() { copyCode(this); });
             });
         }
-
 
         document.addEventListener('DOMContentLoaded', () => {
             if (slides.length > 0) {
@@ -855,7 +880,7 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             const summaryView = document.getElementById('summaryAfterView');
             if (toggleBtn && summaryView) {
                  if (summaryView.style.display === 'none' || summaryView.style.display === '') {
-                    toggleBtn.innerHTML = '✨ Show AI Summary Example'; // Use innerHTML for icon
+                    toggleBtn.innerHTML = '✨ Show AI Summary Example';
                 } else {
                     toggleBtn.textContent = 'Show Original Text';
                 }
@@ -872,13 +897,16 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             const svg = svgContainer.append("svg").attr("width", width).attr("height", height).attr("viewBox", `0 0 ${width} ${height}`).style("overflow", "visible");
             const nodeRadius = Math.min(width, height) * 0.05; const fontSize = Math.min(width, height) * 0.025;
             const nodesData = [
-                { id: 1, name: "User Clicks Summarise", x: width * 0.2, y: height * 0.3 }, { id: 2, name: "Apex Callout", x: width * 0.4, y: height * 0.3 },
-                { id: 3, name: "SF Sends Request", x: width * 0.5, y: height * 0.15 }, { id: 4, name: "Gemini API Processes", x: width * 0.7, y: height * 0.15 },
-                { id: 5, name: "Gemini Responds", x: width * 0.5, y: height * 0.85 }, { id: 6, name: "Apex Receives", x: width * 0.4, y: height * 0.7 },
-                { id: 7, name: "Summary Displayed", x: width * 0.2, y: height * 0.7 }
+                { id: 1, name: "User Clicks Summarise Action", x: width * 0.15, y: height * 0.3 }, // Updated text
+                { id: 2, name: "LWC Launches, Calls Apex", x: width * 0.35, y: height * 0.3 }, // Updated text
+                { id: 3, name: "Apex Sends Request", x: width * 0.5, y: height * 0.15 }, 
+                { id: 4, name: "Gemini API Processes", x: width * 0.7, y: height * 0.15 },
+                { id: 5, name: "Gemini Responds", x: width * 0.5, y: height * 0.85 }, 
+                { id: 6, name: "Apex Receives", x: width * 0.35, y: height * 0.7 },
+                { id: 7, name: "LWC Displays Summary in Modal", x: width * 0.15, y: height * 0.7 } // Updated text
             ];
             const linksData = [
-                { source: nodesData[0], target: nodesData[1], label: "1. UI Event" }, { source: nodesData[1], target: nodesData[2], label: "2. To SF Server" },
+                { source: nodesData[0], target: nodesData[1], label: "1. Action Click" }, { source: nodesData[1], target: nodesData[2], label: "2. To SF Server" },
                 { source: nodesData[2], target: nodesData[3], label: "3. To Gemini" }, { source: nodesData[3], target: nodesData[4], label: "4. AI Response" },
                 { source: nodesData[4], target: nodesData[5], label: "5. Back to SF" }, { source: nodesData[5], target: nodesData[6], label: "6. Update UI" }
             ];
@@ -904,9 +932,9 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             const button = document.getElementById('toggleSummaryBtn');
             if (summaryView && originalView && button) {
                 if (summaryView.style.display === 'none' || summaryView.style.display === '') {
-                    originalView.style.display = 'none'; summaryView.style.display = 'block'; button.innerHTML = 'Show Original Text'; // Use innerHTML for icon
+                    originalView.style.display = 'none'; summaryView.style.display = 'block'; button.innerHTML = '📄 Show Original Text';
                 } else {
-                    originalView.style.display = 'block'; summaryView.style.display = 'none'; button.innerHTML = '✨ Show AI Summary Example'; // Use innerHTML for icon
+                    originalView.style.display = 'block'; summaryView.style.display = 'none'; button.innerHTML = '✨ Show AI Summary Example';
                 }
             }
         }
