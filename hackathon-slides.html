@@ -150,39 +150,55 @@
         }
 
         .navigation-buttons {
-            display: flex;
-            justify-content: space-between;
+            display: flex; /* Crucial for spacing buttons */
+            justify-content: space-between; /* Puts space between buttons */
+            align-items: center; /* Vertically align buttons if they have different heights */
             padding: 20px 40px;
             background-color: #f0f0f0;
             border-top: 1px solid #ccc;
             width: 90%;
-            max-width: 1000px;
+            max-width: 1000px; /* Ensure it matches .slide-container max-width */
             box-sizing: border-box;
             margin: 0 auto 20px auto; 
             border-bottom-left-radius: 8px; 
             border-bottom-right-radius: 8px;
         }
 
-        .navigation-buttons button { 
-            background-color: #0070d2;
+        .navigation-buttons button { /* Refined Prev/Next buttons */
+            background-color: #0070d2; 
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 22px; 
             text-align: center;
             text-decoration: none;
-            display: inline-block;
-            font-size: 1em; 
-            font-weight: 500;
-            border-radius: 5px;
+            display: inline-flex; 
+            align-items: center;   
+            justify-content: center; 
+            font-size: 16px;         
+            font-weight: 500;        
+            line-height: 1.5;        
+            border-radius: 5px;      
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            min-width: 100px;        
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease-in-out;
         }
         .navigation-buttons button:hover:not(:disabled) {
-            background-color: #005fb2;
+            background-color: #005fb2; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transform: translateY(-1px); 
+        }
+        .navigation-buttons button:active:not(:disabled) {
+            background-color: #004080; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transform: translateY(0px); 
         }
         .navigation-buttons button:disabled {
             background-color: #c0c0c0;
+            color: #6c757d; 
             cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
         }
         
         .replay-button { 
@@ -249,15 +265,10 @@
         .note-tip { background-color: #d1ecf1; border-left-color: #bee5eb; color: #0c5460;}
         .note-tip::before { content: "💡"; }
 
-        /* Styles for LWC Modal when it's the main content of the Quick Action screen */
-        .lwc-modal-container { /* A wrapper for the LWC if it acts as a modal */
-            padding: 0; /* Remove padding if LWC handles its own internal padding */
+        .lwc-modal-container {
+            padding: 0; 
         }
-        .lwc-modal-content { /* LWC should use SLDS modal structure internally */
-            /* min-height: 300px; /* Ensure a minimum height for the modal content */
-        }
-
-
+      
         #workflowAnimation {
             width: 100%; height: 400px; border: 1px solid #e0e0e0; 
             margin-top: 20px; background-color: #f9f9f9; border-radius: 6px; 
@@ -374,7 +385,7 @@
 
         <div class="slide" id="slide6">
             <h2>Lab Step 3: Apex Code Walkthrough 👨‍💻</h2>
-            <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API using the latest Flash model and the provided API key.</p>
+            <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API using the latest Flash model (e.g., Gemini Flash 1.5 or newer) and the provided API key.</p>
             <div class="note note-action">
                 <strong>Action:</strong> Create this Apex class in your Salesforce org. Remember to replace the placeholder API key.
             </div>
@@ -477,21 +488,11 @@ public with sharing class GeminiAPIService {
                 <pre><code class="language-html">
 &lt;!-- File: knowledgeCompanion.html --&gt;
 &lt;template&gt;
-    &lt;!-- This LWC's template IS the modal content when launched by a Quick Action --&gt;
     &lt;div class="lwc-modal-container"&gt; 
-        &lt;!-- Standard SLDS Modal structure. 
-             The Quick Action framework might provide its own header/footer, 
-             or you might need to implement the full modal structure if the LWC takes over the whole screen.
-             For an ActionScreen, the LWC often just provides the body.
-             Let's assume the LWC provides the full modal structure for clarity here.
-        --&gt;
-        &lt;template if:true={isModalActuallyOpen}&gt; &lt;!-- Renamed internal flag --&gt;
+        &lt;template if:true={isModalActuallyOpen}&gt;
             &lt;section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open"&gt;
                 &lt;div class="slds-modal__container"&gt;
                     &lt;header class="slds-modal__header"&gt;
-                        &lt;!-- Quick Actions launched as screen components don't usually have a close button here. 
-                             The framework provides Save/Cancel. We'll keep it for standalone testing. 
-                             You may need to remove this button if it conflicts with Quick Action provided buttons. --&gt;
                         &lt;button if:false={hideLwcCloseButton} class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleCloseModalProgrammatically}&gt;
                             &lt;lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"&gt;&lt;/lightning-icon&gt;
                             &lt;span class="slds-assistive-text"&gt;Close&lt;/span&gt;
@@ -513,13 +514,11 @@ public with sharing class GeminiAPIService {
                             &lt;/template&gt;
                             &lt;template if:false={error}&gt;
                                 &lt;lightning-formatted-rich-text value={summaryText}&gt;&lt;/lightning-formatted-rich-text&gt;
-                                &lt;p if:false={summaryText}&gt;No summary available for this article yet.&lt;/p&gt;
+                                &lt;p if:false={summaryText}&gt;No summary available or generated.&lt;/p&gt;
                             &lt;/template&gt;
                         &lt;/template&gt;
                     &lt;/div&gt;
                     &lt;footer class="slds-modal__footer"&gt;
-                        &lt;!-- Quick Action framework typically provides a "Finish" or "Cancel" button.
-                             This button is for standalone testing or if the LWC controls its own closure. --&gt;
                         &lt;lightning-button if:false={hideLwcCloseButton} label="Done" title="Done" variant="brand" onclick={handleCloseModalProgrammatically}&gt;&lt;/lightning-button&gt;
                     &lt;/footer&gt;
                 &lt;/div&gt;
@@ -527,10 +526,9 @@ public with sharing class GeminiAPIService {
             &lt;div class="slds-backdrop slds-backdrop_open"&gt;&lt;/div&gt;
         &lt;/template&gt;
 
-        &lt;!-- Fallback content if modal isn't open (e.g., if LWC is placed directly on a page not as action) --&gt;
         &lt;template if:false={isModalActuallyOpen}&gt; 
             &lt;lightning-card title="Knowledge Summarizer"&gt;
-                &lt;p class="slds-p-horizontal_small"&gt;This component is designed to be launched as a Quick Action.&lt;/p&gt;
+                &lt;p class="slds-p-horizontal_small"&gt;This component is processing the summary.&lt;/p&gt;
                 &lt;p if:true={isLoading} class="slds-p-horizontal_small"&gt;Loading summary...&lt;/p&gt;
                 &lt;p if:true={error} class="slds-p-horizontal_small slds-text-color_error"&gt;Error: {error}&lt;/p&gt;
             &lt;/lightning-card&gt;
@@ -540,7 +538,7 @@ public with sharing class GeminiAPIService {
                 </code></pre>
             </div>
 
-            <h3 style="margin-top: 2em;">2. <code>knowledgeCompanion.js</code> (Updated for Quick Action)</h3>
+            <h3 style="margin-top: 2em;">2. <code>knowledgeCompanion.js</code></h3>
             <div class="code-block-wrapper">
                 <button class="copy-code-button" aria-label="Copy LWC JavaScript">📋 Copy</button>
                 <pre><code class="language-javascript">
@@ -548,25 +546,25 @@ public with sharing class GeminiAPIService {
 import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getPageSummaryFromGemini from '@salesforce/apex/GeminiAPIService.getPageSummaryFromGemini';
-import { CloseActionScreenEvent } from 'lightning/actions'; // For closing the action modal
+import { CloseActionScreenEvent } from 'lightning/actions';
 
 // TODO: LAB PARTICIPANT - Update this import for YOUR Knowledge Article field.
 import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Content_for_Summarization__c'; 
 
 export default class KnowledgeCompanion extends LightningElement {
-    @api recordId; // Automatically provided by the Quick Action context
-
+    @api recordId; 
     @track summaryText = '';
-    @track isLoading = true; // Start loading immediately
+    @track isLoading = true; 
     @track error;
-    @track isModalActuallyOpen = true; // Assume LWC is the modal content
-    @track hideLwcCloseButton = false; // Set to true if Quick Action provides its own close mechanism
+    @track isModalActuallyOpen = true; 
+    @track hideLwcCloseButton = false; 
 
     _articleContentLoaded = false;
 
-    // Wire service to fetch the content of the specified field
     @wire(getRecord, { recordId: '$recordId', fields: [KNOWLEDGE_CONTENT_FIELD] })
     wiredArticle({ error, data }) {
+        if (this._articleContentLoaded) return; // Process only once
+
         if (data) {
             const contentValue = getFieldValue(data, KNOWLEDGE_CONTENT_FIELD);
             this._articleContentLoaded = true;
@@ -586,30 +584,23 @@ export default class KnowledgeCompanion extends LightningElement {
             this.error = 'Failed to load article content. Check LWC field API name & permissions.';
             console.error('LWC @wire(getRecord) error:', JSON.stringify(error));
             this.isLoading = false;
-            this._articleContentLoaded = true; // Mark as loaded to prevent re-trigger if error
+            this._articleContentLoaded = true; 
         }
     }
 
     async fetchSummary(textContent) {
-        this.isLoading = true;
+        // isLoading is already true from initialization
         this.error = undefined;
         try {
             const result = await getPageSummaryFromGemini({ articleFieldContent: textContent });
             if (result) {
-                if (result.toLowerCase().startsWith('error:')) { 
-                    this.error = result; 
-                } else { 
-                    this.summaryText = result; 
-                }
-            } else { 
-                this.error = 'Empty response from summarization service.'; 
-            }
+                if (result.toLowerCase().startsWith('error:')) { this.error = result; } 
+                else { this.summaryText = result; }
+            } else { this.error = 'Empty response from summarization service.'; }
         } catch (e) { 
             this.error = 'Error calling Apex: ' + (e.body?.message || e.message); 
             console.error('LWC Apex call error:', JSON.stringify(e));
-        } finally { 
-            this.isLoading = false; 
-        }
+        } finally { this.isLoading = false; }
     }
     
     stripHtml(html) {
@@ -618,30 +609,14 @@ export default class KnowledgeCompanion extends LightningElement {
         catch (e) { return html.replace(/<[^>]*>?/gm, ''); }
     }
 
-    // This method allows the LWC to be closed if it's a screen action
     handleCloseModalProgrammatically() {
-        this.isModalActuallyOpen = false; // Hide LWC content if not using CloseActionScreenEvent
-        // For actual Quick Action screen components, use CloseActionScreenEvent
         this.dispatchEvent(new CloseActionScreenEvent());
-    }
-
-    // If you want to hide the LWC's own close buttons when hosted in a quick action
-    connectedCallback() {
-        // A simple check, Quick Action context might not always provide these properties directly
-        // You might need a more robust way to detect if it's in a quick action modal
-        if (this.recordId && typeof this.dispatchEvent === 'function') {
-             // This is a heuristic. A better way is if the action context passes a flag.
-             // For now, we assume if it has a recordId, it's likely in an action.
-            // this.hideLwcCloseButton = true; 
-            // ^ Decided to keep LWC close button for now, as QA framework also has one.
-            //   If it causes double buttons, then set this to true.
-        }
     }
 }
                 </code></pre>
             </div>
 
-            <h3 style="margin-top: 2em;">3. <code>knowledgeCompanion.js-meta.xml</code> (Updated Targets)</h3>
+            <h3 style="margin-top: 2em;">3. <code>knowledgeCompanion.js-meta.xml</code></h3>
             <div class="code-block-wrapper">
                 <button class="copy-code-button" aria-label="Copy LWC XML">📋 Copy</button>
                 <pre><code class="language-xml">
@@ -651,15 +626,13 @@ export default class KnowledgeCompanion extends LightningElement {
     &lt;isExposed&gt;true&lt;/isExposed&gt;
     &lt;targets&gt;
         &lt;target&gt;lightning__RecordPage&lt;/target&gt; 
-        &lt;target&gt;lightning__RecordAction&lt;/target&gt; &lt;!-- For headless quick actions --&gt;
-        &lt;target&gt;lightning__ActionScreen&lt;/target&gt; &lt;!-- Add this target for LWC to be used as a screen in a Quick Action --&gt;
+        &lt;target&gt;lightning__ActionScreen&lt;/target&gt; 
     &lt;/targets&gt;
     &lt;targetConfigs&gt;
         &lt;targetConfig targets="lightning__RecordPage,lightning__ActionScreen"&gt;
             &lt;objects&gt;
                 &lt;object&gt;Knowledge__kav&lt;/object&gt;
             &lt;/objects&gt;
-            &lt;!-- To make it available as a screen action, no specific properties needed here unless you want to configure them --&gt;
         &lt;/targetConfig&gt;
     &lt;/targetConfigs&gt;
 &lt;/LightningComponentBundle&gt;
@@ -674,38 +647,32 @@ export default class KnowledgeCompanion extends LightningElement {
                 <strong>Action:</strong> Follow these steps in your Salesforce org.
             </div>
             <ol>
-                <li>Navigate to <strong>Setup</strong> (Gear icon ⚙️).</li>
-                <li>Go to <strong>Object Manager</strong>.</li>
-                <li>Find and select the <strong>Knowledge</strong> object. (It might be listed as "Knowledge" or "Knowledge Article Version" depending on your view; typically you want "Knowledge").</li>
-                <li>In the left-hand navigation for the Knowledge object, click on <strong>Buttons, Links, and Actions</strong>.</li>
-                <li>Click the <strong>New Action</strong> button in the top right.</li>
+                <li>Navigate to <strong>Setup</strong> (Gear icon ⚙️) &gt; <strong>Object Manager</strong>.</li>
+                <li>Find and select the <strong>Knowledge</strong> object.</li>
+                <li>In the left-hand navigation, click on <strong>Buttons, Links, and Actions</strong>.</li>
+                <li>Click the <strong>New Action</strong> button.</li>
                 <li>Configure the New Action:
                     <ul>
                         <li><strong>Action Type:</strong> Select <code>Lightning Web Component</code>.</li>
-                        <li><strong>Lightning Web Component:</strong> Select <code>c:knowledgeCompanion</code> (or the name you gave your LWC).</li>
-                        <li><strong>Height:</strong> You can leave this as default or set a specific height like <code>600px</code>. The LWC's content will determine the actual height needed.</li>
-                        <li><strong>Label:</strong> Enter <code>AI Summarise</code> (This is what users will see on the button).</li>
-                        <li><strong>Name:</strong> This will likely auto-populate (e.g., <code>AI_Summarise</code>).</li>
-                        <li><strong>Icon:</strong> You can leave the default or choose one that represents AI or summarization if available.</li>
+                        <li><strong>Lightning Web Component:</strong> Select <code>c:knowledgeCompanion</code> (or your LWC's name).</li>
+                        <li><strong>Height:</strong> Default is fine, or set to <code>Flexible Page Height</code> or a specific value like <code>400px</code>.</li>
+                        <li><strong>Label:</strong> Enter <code>AI Summarise</code> (This appears on the button).</li>
+                        <li><strong>Name:</strong> (Auto-populates, e.g., <code>AI_Summarise</code>).</li>
                     </ul>
                 </li>
-                <li>Click <strong>Save</strong>.</li>
-                <li>After saving, you might be taken to a page to predefine field values. For this LWC, since it uses <code>@api recordId</code> automatically, no predefined values are typically needed. You can just click **Save** again if prompted or navigate away.</li>
+                <li>Click <strong>Save</strong>. (No predefined field values needed for this LWC).</li>
                 <li>
-                    Now, add this new action to the Page Layout:
+                    Add this new action to the Page Layout:
                     <ul>
-                        <li>Still within the Knowledge object manager, go to <strong>Page Layouts</strong>.</li>
-                        <li>Identify the page layout(s) used for viewing Knowledge Articles (e.g., "Knowledge Layout"). Click **Edit** for that layout.</li>
-                        <li>In the page layout editor palette at the top, find the **Mobile & Lightning Actions** category.</li>
-                        <li>Your new "AI Summarise" action should be listed there. Drag it from the palette down into the **"Salesforce Mobile and Lightning Experience Actions"** section on the page layout. Place it where you'd like it to appear in the action button list.</li>
+                        <li>Still in the Knowledge object manager, go to <strong>Page Layouts</strong>.</li>
+                        <li>Edit your active Knowledge Page Layout(s).</li>
+                        <li>In the palette, find **Mobile & Lightning Actions**.</li>
+                        <li>Drag your "AI Summarise" action into the **"Salesforce Mobile and Lightning Experience Actions"** section.</li>
                         <li>Click <strong>Save** on the page layout editor.</li>
                     </ul>
                 </li>
             </ol>
-            <p><strong>Testing:</strong> Navigate to a Knowledge Article record. You should now see the "AI Summarise" button in the actions bar. Clicking it should launch your LWC, which will then automatically fetch the article content (from the field specified in your LWC's JS) and display the summary from Gemini AI in a modal.</p>
-            <div class="note note-tip">
-                If the button doesn't appear immediately, you might need to ensure the page layout you edited is assigned to your user profile or is the default for that record type. Sometimes a hard refresh (Ctrl+Shift+R or Cmd+Shift+R) of the record page is also helpful.
-            </div>
+            <p><strong>Testing:</strong> Open a Knowledge Article. The "AI Summarise" button should be visible. Clicking it will launch your LWC modal, which will automatically fetch and display the summary.</p>
         </div>
         
         <div class="slide" id="slide9">
@@ -769,7 +736,7 @@ export default class KnowledgeCompanion extends LightningElement {
             </ol>
             <h3>B. Using Named Credentials in Salesforce (Best Practice)</h3>
             <ol>
-                <li><strong>Store API Key Securely:</strong> Use a Protected Custom Setting.</li>
+                <li><strong>Store API Key Securely (Example):</strong> Use a Protected Custom Setting.</li>
                 <li><strong>Create Named Credential:</strong> (Setup &gt; Named Credentials &gt; New). Label: `My_Secure_Gemini_API`, URL: `https://generativelanguage.googleapis.com`, Identity Type: `Anonymous`, Auth Protocol: `No Authentication`. Add Custom Header: Name: `x-goog-api-key`, Value: Your API Key (or formula to Custom Setting).</li>
                 <li><strong>Update Apex:</strong> Endpoint: `callout:My_Secure_Gemini_API/...`. API key is handled by Named Credential.</li>
             </ol>
@@ -897,13 +864,13 @@ req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-lat
             const svg = svgContainer.append("svg").attr("width", width).attr("height", height).attr("viewBox", `0 0 ${width} ${height}`).style("overflow", "visible");
             const nodeRadius = Math.min(width, height) * 0.05; const fontSize = Math.min(width, height) * 0.025;
             const nodesData = [
-                { id: 1, name: "User Clicks Summarise Action", x: width * 0.15, y: height * 0.3 }, // Updated text
-                { id: 2, name: "LWC Launches, Calls Apex", x: width * 0.35, y: height * 0.3 }, // Updated text
+                { id: 1, name: "User Clicks Summarise Action", x: width * 0.15, y: height * 0.3 }, 
+                { id: 2, name: "LWC Launches, Calls Apex", x: width * 0.35, y: height * 0.3 }, 
                 { id: 3, name: "Apex Sends Request", x: width * 0.5, y: height * 0.15 }, 
                 { id: 4, name: "Gemini API Processes", x: width * 0.7, y: height * 0.15 },
                 { id: 5, name: "Gemini Responds", x: width * 0.5, y: height * 0.85 }, 
                 { id: 6, name: "Apex Receives", x: width * 0.35, y: height * 0.7 },
-                { id: 7, name: "LWC Displays Summary in Modal", x: width * 0.15, y: height * 0.7 } // Updated text
+                { id: 7, name: "LWC Displays Summary in Modal", x: width * 0.15, y: height * 0.7 } 
             ];
             const linksData = [
                 { source: nodesData[0], target: nodesData[1], label: "1. Action Click" }, { source: nodesData[1], target: nodesData[2], label: "2. To SF Server" },
