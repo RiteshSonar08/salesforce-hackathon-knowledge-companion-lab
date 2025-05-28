@@ -172,7 +172,7 @@
             <h3>The Challenge: Information Overload 😩</h3>
             <p>In today's fast-paced environment, users are often confronted with vast amounts of text. Quickly understanding the essence of long documents like Salesforce <strong>Knowledge Articles</strong>, detailed <strong>Case Descriptions</strong>, or comprehensive <strong>Product Manuals</strong> is crucial but time-consuming.</p>
             <h3>The Solution: Knowledge Companion ✨</h3>
-            <p>This lab guides you in building a "Knowledge Companion" tool. Powered by the <strong>Gemini API</strong> (using the Gemini Flash 1.5 model), this tool integrates directly into Salesforce to provide instant summaries of lengthy text content. This significantly enhances productivity by allowing users to grasp key information at a glance.</p>
+            <p>This lab guides you in building a "Knowledge Companion" tool. Powered by the <strong>Gemini API</strong> (e.g., Gemini Flash 1.5 or newer compatible Flash models like a future Flash 2.0 if available), this tool integrates directly into Salesforce to provide instant summaries of lengthy text content. This significantly enhances productivity by allowing users to grasp key information at a glance.</p>
             <h3>Real-Life Use Cases 💡</h3>
             <ul>
                 <li><strong>Support Agents:</strong> Quickly summarize complex case histories or long knowledge articles to resolve issues faster.</li>
@@ -186,12 +186,12 @@
             <h2>Lab Goal 🎯</h2>
             <p>By the end of this lab, you will have built a solution that can:</p>
             <ul>
-                <li>Summarize content from a rich text area field (e.g., <code>Content_for_Summarization__c</code>) on a Salesforce Knowledge Article.</li>
-                <li>Trigger this summarization process via a custom Lightning Web Component (LWC) button ("AI Summarise") placed on the Knowledge Article page.</li>
+                <li>Summarize content from a rich text area field on a Salesforce Knowledge Article using the Gemini API.</li>
+                <li>Trigger this summarization process via a custom Lightning Web Component (LWC) button.</li>
                 <li>Display the AI-generated summary clearly within a modal dialog on the screen.</li>
-                <li><strong>Explore your creativity</strong> in crafting effective prompts to the Gemini API to summarize different types of content in innovative ways.</li>
+                <li><strong>Explore your creativity</strong> in crafting effective prompts to the Gemini API to summarize different types of content from a Knowledge Article field in innovative ways.</li>
             </ul>
-            <p>This hands-on experience will cover Salesforce configuration, Apex development for API callouts, and LWC creation for a seamless user interface.</p>
+            <p>This hands-on experience will cover Salesforce configuration, Apex development, and LWC creation.</p>
         </div>
 
         <div class="slide" id="slide3">
@@ -199,120 +199,127 @@
             <p>Before we begin building, please ensure you have the following:</p>
             <h3>1. Salesforce Developer Org</h3>
             <ul>
-                <li>A Salesforce Developer Edition org where you have admin privileges.</li>
-                <li>Salesforce Knowledge should be enabled in your org:
-                    <ul>
-                        <li>Navigate to <strong>Setup</strong> &gt; <strong>Knowledge</strong> &gt; <strong>Knowledge Settings</strong>.</li>
-                        <li>If not already enabled, check "Yes, I'd like to enable Salesforce Knowledge" and follow the setup wizard.</li>
-                    </ul>
-                </li>
-                <li>A custom field (e.g., Text Area (Rich) or Text Area (Long)) on the Knowledge Article object (API Name: <code>Knowledge__kav</code>) to hold the content you want to summarize. For example, <code>Content_for_Summarization__c</code>. Note down its API name.</li>
-                <li>Your user profile must have "API Enabled" system permission and CRUD permissions for Knowledge articles and your chosen custom field.</li>
+                <li>A Salesforce Developer Edition org with admin privileges.</li>
+                <li>Salesforce Knowledge enabled: (Setup &gt; Knowledge &gt; Knowledge Settings).</li>
+                <li>A custom field (e.g., Text Area (Rich) like <code>Content_for_Summarization__c</code>) on the Knowledge Article object (<code>Knowledge__kav</code>) for the text to be summarized. Note its API name.</li>
+                <li>Your user profile needs "API Enabled" system permission and CRUD permissions for Knowledge articles and your chosen field.</li>
             </ul>
             <h3>2. Google Gemini API Key (Provided for this Lab)</h3>
             <ul>
-                <li>For this lab, a **common Google Gemini API Key will be provided to you** by the instructors.
-                <li>You will use this provided key directly in the Apex code.</li>
+                <li>A **common Google Gemini API Key will be provided by the instructors.**</li>
+                <li>You will use this key directly in the Apex code as instructed.</li>
             </ul>
-            <h3>3. Basic Familiarity (Helpful but not strictly required)</h3>
+            <h3>3. Basic Familiarity (Helpful)</h3>
             <ul>
-                <li>Basic understanding of Salesforce Apex.</li>
-                <li>Basic understanding of Lightning Web Components (HTML, JavaScript).</li>
+                <li>Basic understanding of Salesforce Apex and Lightning Web Components.</li>
             </ul>
         </div>
 
         <div class="slide" id="slide4">
             <h2>Lab Step 1: Gemini API Configuration (Using Provided Key) 🔑</h2>
-            <p>For this lab, we will simplify the API key setup by using a common key provided by your instructors directly in the Apex code.</p>
+            <p>For this lab, we'll use the common API key provided by your instructors directly in the Apex code for simplicity.</p>
             
-            <h3>1. Understanding API Key Usage in this Lab</h3>
+            <h3>1. Using the Provided API Key</h3>
             <ul>
                 <li>You will receive a Gemini API Key from the lab instructors.</li>
-                <li>You will insert this key directly into a placeholder in the Apex class we create in the next step.</li>
-                <li>The Apex code will construct the API endpoint URL and include this key for authentication.</li>
+                <li>In the Apex class (in a later step), you will insert this key into a specific placeholder variable.</li>
+                <li>The Apex code will then construct the API endpoint URL and include this key for authentication.</li>
             </ul>
 
-            <h3>2. Important Note: API Key in Endpoint vs. Named Credentials (Best Practice)</h3>
+            <h3>2. Important Note: API Key in Endpoint vs. Named Credentials</h3>
             <div class="note">
-                <p><strong>For Lab Simplicity:</strong> We are putting the API key directly into the Apex code and potentially into the endpoint URL construction. This makes the lab setup quicker for everyone using a shared key.</p>
-                <p><strong>⚠️ Security Best Practice (for your future projects & production): DO NOT hardcode API keys or include them directly in endpoint URLs in your code.</strong></p>
+                <p><strong>For Lab Simplicity:</strong> We are putting the API key directly into the Apex code and constructing the endpoint URL with it. This simplifies setup for the lab.</p>
+                <p><strong>⚠️ Security Best Practice (for real projects): DO NOT hardcode API keys or include them directly in endpoint URLs in your code.</strong></p>
                 <ul>
-                    <li>The **recommended approach in Salesforce is to use Named Credentials**. Named Credentials securely store the endpoint URL and handle authentication details (like API keys, typically placed in custom headers or managed via other authentication flows) separately from your code.</li>
-                    <li>Another secure method is to store keys in **Protected Custom Settings/Metadata** and retrieve them in Apex.</li>
+                    <li>The **recommended Salesforce approach is to use Named Credentials**. They securely store endpoint URLs and handle authentication details (like API keys, often in custom headers) separately from code.</li>
+                    <li>Alternatively, store keys in **Protected Custom Settings/Metadata**.</li>
                 </ul>
-                <p>We will add an appendix slide at the end of this deck showing how to get your own API key and how to set up Named Credentials for your future reference.</p>
+                <p>An appendix slide provides details on obtaining your own key and setting up Named Credentials for future reference.</p>
             </div>
-            <p>In the next step, when we write the Apex code, you'll see where to place the provided API key.</p>
+            <p>You will be instructed where to place the provided API key in the Apex code later.</p>
         </div>
 
         <div class="slide" id="slide5">
-            <h2>Lab Step 2: Apex Code Walkthrough 👨‍💻</h2>
-            <p>This Apex class (<code>GeminiAPIService.cls</code>) will make the callout to the Gemini API using the provided API key.</p>
+            <h2>Lab Step 2: Simulation & Visuals 📊</h2>
+            <p>Before diving into code, let's visualize the data flow and an example of the summarization we aim to achieve.</p>
+            <h3>Workflow Animation</h3>
+            <p>This D3.js animation visualizes the data flow when you click "AI Summarise". Click "Replay Animation" to restart it.</p>
+            <div id="workflowAnimation"></div>
+            <button onclick="startWorkflowAnimation()" class="slds-button slds-button_neutral slds-m-top_small">Replay Animation</button>
+
+            <h3 class="slds-m-top_large">Before/After Summary View (Toggle Example)</h3>
+            <div class="summary-toggle-container">
+                <p>This is a static example to simulate how long text can be condensed. Click the button to toggle between the original content and its AI-generated summary.</p>
+                <button id="toggleSummaryBtn" onclick="toggleSummaryView()" class="slds-button slds-button_brand">Show AI Summary Example</button>
+                <div id="originalTextView" class="summary-text-area">
+                    <h4>Original Document Text (Example)</h4>
+                    <p>The Q4 Global Sales Initiative, codenamed "Project Everest," aims to expand market penetration in emerging APAC regions by 15% and increase overall recurring revenue by 10% through strategic partnerships and a revamped digital marketing strategy. Key performance indicators (KPIs) will include new customer acquisition rates, average deal size, and customer lifetime value. The initiative will involve cross-functional teams from Sales, Marketing, and Product Development, with a projected timeline of six months, starting January 1st. Bi-weekly progress reports will be submitted to the executive leadership team, outlining achievements, challenges, and mitigation strategies. A dedicated budget of $2.5 million has been allocated for this initiative, covering marketing campaigns, sales incentives, and technology upgrades. Training sessions for the sales team on new product features and market positioning are scheduled for mid-December. The success of Project Everest is critical for achieving the company's annual growth targets and strengthening its competitive position in the global market. All team members are expected to fully commit to their roles and responsibilities to ensure the project's objectives are met within the stipulated timeframe and budget.</p>
+                </div>
+                <div id="summaryAfterView" class="summary-text-area">
+                    <h4>AI Generated Summary (Example)</h4>
+                    <p>"Project Everest," a 6-month, $2.5M Q4 initiative, targets a 15% APAC market expansion and 10% recurring revenue growth via partnerships and digital marketing. KPIs include customer acquisition, deal size, and lifetime value. Cross-functional teams will report bi-weekly to executives. Success is vital for annual growth and market position.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide6">
+            <h2>Lab Step 3: Apex Code Walkthrough 👨‍💻</h2>
+            <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API using the latest Flash model (e.g., Gemini Flash 1.5 or newer compatible versions like Flash 2.0, if available and supported by the public API) and the provided API key.</p>
             <p><strong>Action:</strong> Create this Apex class in your Salesforce org.</p>
             <pre><code class="language-apex">
 // File: GeminiAPIService.cls
-// Purpose: Service class to interact with the Google Gemini API for text summarization.
 public with sharing class GeminiAPIService {
 
-    // Retrieves the Gemini API Key.
-    // FOR LAB PURPOSES: Replace the placeholder string with the API key provided by your instructor.
     private static String getProvidedApiKey() {
         // TODO: LAB PARTICIPANT - REPLACE 'KEY_PROVIDED_BY_INSTRUCTOR' WITH THE ACTUAL API KEY.
         String apiKey = 'KEY_PROVIDED_BY_INSTRUCTOR'; 
 
         if (String.isBlank(apiKey) || apiKey == 'KEY_PROVIDED_BY_INSTRUCTOR') {
-            System.debug(LoggingLevel.ERROR, 'GeminiAPIService.getProvidedApiKey(): API Key is missing or is still the placeholder. Please update it with the key from your instructor.');
+            System.debug(LoggingLevel.ERROR, 'GeminiAPIService: API Key is missing or is the placeholder. Update with the provided key.');
         }
         return apiKey;
     }
 
     @AuraEnabled(cacheable=false) 
-    public static String getPageSummaryFromGemini(String htmlText) {
-        String textToSummarize = htmlText;
-
-        if (String.isBlank(textToSummarize)) {
-            System.debug('GeminiAPIService.getPageSummaryFromGemini: Input text was blank.');
-            return 'Error: Input text for summarization is blank.';
+    public static String getPageSummaryFromGemini(String articleFieldContent) {
+        if (String.isBlank(articleFieldContent)) {
+            return 'Error: Knowledge Article field content is blank.';
         }
         
         String GEMINI_API_KEY = getProvidedApiKey();
-
         if (String.isBlank(GEMINI_API_KEY) || GEMINI_API_KEY == 'KEY_PROVIDED_BY_INSTRUCTOR') {
-            return 'Error: The provided Gemini API Key is not configured in Apex. Please update GeminiAPIService.cls.';
+            return 'Error: The provided Gemini API Key is not configured in Apex.';
         }
 
-        // Constructing the endpoint with the API key as a query parameter for lab simplicity.
-        // NOTE FOR PRODUCTION: For POST requests with a body, Gemini API typically prefers the 
-        // API key in the 'x-goog-api-key' header. Using Named Credentials would abstract this.
-        String endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_API_KEY;
+        // Using latest available Flash model. Replace 'gemini-1.5-flash-latest' 
+        // with a specific "Flash 2.0" model identifier if provided and available.
+        String modelIdentifier = 'gemini-1.5-flash-latest'; 
+        String endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/' + modelIdentifier + ':generateContent?key=' + GEMINI_API_KEY;
 
-        String prompt = 'You are an AI assistant trained to summarize web content into a short, well-structured, HTML-formatted summary. ' +
-            'The input includes raw visible text from an internal Salesforce Experience Cloud page. ' +
-            'Please ignore navigation menus, headers, footers, search bars, and unrelated UI text. ' +
-            'Focus only on meaningful main content such as policy text, announcements, structured descriptions, and business explanations.\n\n' +
-            'Provide your output in HTML format using bullet points (i.e., use &lt;ul&gt;&lt;li&gt;...&lt;/li&gt;&lt;/ul&gt;) when possible. ' +
-            'Avoid repeating text or adding boilerplate language.\n\n' +
-            'Here is the extracted page text:\n\n' + textToSummarize;
+        // Updated prompt for summarizing a Knowledge Article field
+        String prompt = 'You are an expert AI assistant. Your task is to summarize the content of a Salesforce Knowledge Article field. ' +
+            'The content might be technical, procedural, or informational. ' +
+            'Provide a concise, well-structured summary in HTML format. ' +
+            'Use bullet points (&lt;ul&gt;&lt;li&gt;...&lt;/li&gt;&lt;/ul&gt;) for lists or key takeaways where appropriate. ' +
+            'Focus on extracting the core information and main points from the provided text. ' +
+            'The summary should be easily readable and directly usable by someone looking for the essence of the article content. ' +
+            'Input text from Knowledge Article field:\n\n' + articleFieldContent;
 
         Map&lt;String, Object&gt; requestBody = new Map&lt;String, Object&gt;{
             'contents' => new List&lt;Object&gt;{
                 new Map&lt;String, Object&gt;{
                     'parts' => new List&lt;Object&gt;{
-                        new Map&lt;String, Object&gt;{
-                            'text' => prompt
-                        }
+                        new Map&lt;String, Object&gt;{ 'text' => prompt }
                     }
                 }
             }
+            // Optional: 'generationConfig': new Map<String, Object> { 'maxOutputTokens' => 200 }
         };
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint(endpoint); 
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json; charset=utf-8');
-        // If key is in URL, x-goog-api-key header might not be strictly needed, but often good practice to include if API supports both.
-        // For this lab version with key in URL, we can omit it here.
-        // req.setHeader('x-goog-api-key', GEMINI_API_KEY); 
         req.setTimeout(60000); 
         req.setBody(JSON.serialize(requestBody));
 
@@ -321,12 +328,11 @@ public with sharing class GeminiAPIService {
 
         try {
             HttpResponse res = http.send(req);
-            System.debug('Gemini API Callout Status: ' + res.getStatusCode() + ', Body: ' + res.getBody());
+            System.debug('Gemini API Callout Status: ' + res.getStatusCode() + ', Body Len: ' + (res.getBody() != null ? res.getBody().length() : 0));
 
             if (res.getStatusCode() == 200) {
                 Map&lt;String, Object&gt; jsonResponse = (Map&lt;String, Object&gt;) JSON.deserializeUntyped(res.getBody());
                 List&lt;Object&gt; candidates = (List&lt;Object&gt;) jsonResponse.get('candidates');
-                
                 if (candidates != null && !candidates.isEmpty()) {
                     Map&lt;String, Object&gt; firstCandidate = (Map&lt;String, Object&gt;) candidates[0];
                     Map&lt;String, Object&gt; content = (Map&lt;String, Object&gt;) firstCandidate.get('content');
@@ -335,8 +341,8 @@ public with sharing class GeminiAPIService {
                         if (parts != null && !parts.isEmpty()) {
                             Map&lt;String, Object&gt; part = (Map&lt;String, Object&gt;) parts[0];
                             summaryResult = (String) part.get('text');
-                        } else { summaryResult = 'Error: No "parts" in API response content.'; }
-                    } else { summaryResult = 'Error: No "content" in API response candidate.'; }
+                        } else { summaryResult = 'Error: No "parts" in API response.'; }
+                    } else { summaryResult = 'Error: No "content" in API candidate.'; }
                 } else { 
                     summaryResult = 'Error: No "candidates" in API response.';
                     if (jsonResponse.containsKey('error')) {
@@ -345,14 +351,11 @@ public with sharing class GeminiAPIService {
                     }
                 }
             } else {
-                summaryResult = 'Error from Gemini API: Status ' + res.getStatusCode() + '. Response: ' + res.getBody();
+                summaryResult = 'Error from Gemini API: Status ' + res.getStatusCode() + '. Details: ' + res.getBody();
             }
-        } catch (System.CalloutException cex) {
-            summaryResult = 'Error: Callout exception - ' + cex.getMessage();
-            System.debug(LoggingLevel.ERROR, 'GeminiAPIService CalloutException: ' + cex.getMessage() + '\\n' + cex.getStackTraceString());
-        } catch (Exception ex) {
-            summaryResult = 'Error: Exception during Gemini API callout - ' + ex.getMessage();
-            System.debug(LoggingLevel.ERROR, 'GeminiAPIService Generic Exception: ' + ex.getMessage() + '\\n' + ex.getStackTraceString());
+        } catch (Exception ex) { // Catch generic Exception for broader error capture
+            summaryResult = 'Error during API callout: ' + ex.getMessage();
+            System.debug(LoggingLevel.ERROR, 'GeminiAPIService Exception: ' + ex.getMessage() + '\\n' + ex.getStackTraceString());
         }
         return summaryResult;
     }
@@ -361,27 +364,19 @@ public with sharing class GeminiAPIService {
             <div class="note">
                 <strong>Action:</strong>
                 <ol>
-                    <li>Copy the Apex code above.</li>
-                    <li>In Salesforce Setup, go to Developer Console and create a new Apex Class named <code>GeminiAPIService</code>.</li>
-                    <li>Paste the code and **replace <code>'KEY_PROVIDED_BY_INSTRUCTOR'</code>** with the valid Gemini API Key provided during the lab.</li>
-                    <li>Save the class.</li>
-                    <li><strong>Comment on Named Credentials:</strong> For production, you would typically use a Named Credential. The endpoint in Apex would then be <code>'callout:Your_Named_Credential_Name/v1beta/models/gemini-1.5-flash:generateContent'</code> and the API key would be handled by the Named Credential setup (often as a custom header) or retrieved from a secure custom setting and added as a header in Apex, rather than being part of the endpoint URL string.</li>
+                    <li>Create/Update the Apex Class <code>GeminiAPIService</code>.</li>
+                    <li>Paste the code and **replace <code>'KEY_PROVIDED_BY_INSTRUCTOR'</code>** with the API Key given in the lab.</li>
+                    <li>Save.</li>
+                    <li><strong>Production Note:</strong> This method of including the API key in the endpoint URL is for lab simplicity. In production, use Named Credentials for the endpoint and manage the API key securely (e.g., in a custom header defined in the Named Credential, populated from a Protected Custom Setting).</li>
                 </ol>
             </div>
         </div>
 
-        <div class="slide" id="slide6">
-            <h2>Lab Step 3: Lightning Web Component (LWC) ⚡</h2>
-            <p>Create an LWC named <code>knowledgeCompanion</code> (or similar). This LWC will call the Apex method.</p>
-            <p>We'll show two versions of the LWC:
-                <br>A) Summarizing a specific field from a Knowledge Article (original lab goal).
-                <br>B) Summarizing the entire page's text (based on LWC code you previously shared).
-                <br>Choose the version that best fits your lab's focus.
-            </p>
+        <div class="slide" id="slide7">
+            <h2>Lab Step 4: Lightning Web Component (LWC) ⚡</h2>
+            <p>Create an LWC named <code>knowledgeCompanion</code>. This LWC will be placed on a Knowledge Article record page to summarize a specific field from that article.</p>
 
-            <h3>Version A: Summarizing a Specific Record Field</h3>
-            <p>This is best if your LWC is on a specific record page (like Knowledge__kav) and you want to summarize a field from that record.</p>
-            <h4>1. <code>knowledgeCompanion.html</code> (Version A)</h4>
+            <h3>1. <code>knowledgeCompanion.html</code></h3>
             <pre><code class="language-html">
 &lt;!-- File: knowledgeCompanion.html --&gt;
 &lt;template&gt;
@@ -394,29 +389,38 @@ public with sharing class GeminiAPIService {
                 disabled={isLoading}
                 icon-name="utility:magicwand"&gt;
             &lt;/lightning-button&gt;
+
             &lt;template if:true={isLoading}&gt;
                 &lt;div class="slds-m-top_medium slds-is-relative" style="height: 50px;"&gt;
                     &lt;lightning-spinner alternative-text="Loading summary..." size="medium"&gt;&lt;/lightning-spinner&gt;
                 &lt;/div&gt;
             &lt;/template&gt;
+
             &lt;template if:true={error}&gt;
-                &lt;div class="slds-m-top_medium slds-text-color_error"&gt;&lt;p&gt;&lt;strong&gt;Error:&lt;/strong&gt; {error}&lt;/p&gt;&lt;/div&gt;
+                &lt;div class="slds-m-top_medium slds-text-color_error"&gt;
+                    &lt;p&gt;&lt;strong&gt;Error:&lt;/strong&gt; {error}&lt;/p&gt;
+                &lt;/div&gt;
             &lt;/template&gt;
         &lt;/div&gt;
     &lt;/lightning-card&gt;
+
     &lt;template if:true={isModalOpen}&gt;
         &lt;section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open"&gt;
             &lt;div class="slds-modal__container"&gt;
                 &lt;header class="slds-modal__header"&gt;
                     &lt;button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}&gt;
                         &lt;lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"&gt;&lt;/lightning-icon&gt;
+                        &lt;span class="slds-assistive-text"&gt;Close&lt;/span&gt;
                     &lt;/button&gt;
                     &lt;h2 class="slds-modal__title slds-hyphenate"&gt;Article Summary&lt;/h2&gt;
                 &lt;/header&gt;
                 &lt;div class="slds-modal__content slds-p-around_medium"&gt;
+                    &lt;!-- Summary is expected to be HTML from the Apex prompt --&gt;
                     &lt;lightning-formatted-rich-text value={summaryText}&gt;&lt;/lightning-formatted-rich-text&gt;
                 &lt;/div&gt;
-                &lt;footer class="slds-modal__footer"&gt;&lt;lightning-button label="Close" title="Close" onclick={closeModal}&gt;&lt;/lightning-button&gt;&lt;/footer&gt;
+                &lt;footer class="slds-modal__footer"&gt;
+                    &lt;lightning-button label="Close" title="Close" onclick={closeModal}&gt;&lt;/lightning-button&gt;
+                &lt;/footer&gt;
             &lt;/div&gt;
         &lt;/section&gt;
         &lt;div class="slds-backdrop slds-backdrop_open" role="presentation"&gt;&lt;/div&gt;
@@ -424,79 +428,116 @@ public with sharing class GeminiAPIService {
 &lt;/template&gt;
             </code></pre>
 
-            <h4>2. <code>knowledgeCompanion.js</code> (Version A)</h4>
+            <h3 style="margin-top: 2em;">2. <code>knowledgeCompanion.js</code></h3>
             <pre><code class="language-javascript">
-// File: knowledgeCompanion.js (Version A: Summarizing a specific field)
+// File: knowledgeCompanion.js
 import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getPageSummaryFromGemini from '@salesforce/apex/GeminiAPIService.getPageSummaryFromGemini';
 
-// TODO: LAB PARTICIPANT - Update this import for YOUR Knowledge Article field.
-// Example: import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.MyCustomBody__c';
+// --- IMPORTANT: Field API Name to Summarize ---
+// TODO: LAB PARTICIPANT - Update this import to point to the API name of the 
+// rich text field on YOUR Knowledge__kav object that you want to summarize.
+// Example: import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Your_Custom_Field_API_Name__c';
 import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Content_for_Summarization__c'; 
+// Defaulting to 'Content_for_Summarization__c', change if your field is different.
 
 export default class KnowledgeCompanion extends LightningElement {
-    @api recordId;
+    @api recordId; // Automatically gets the ID of the record page
+
     @track summaryText = '';
     @track isLoading = false;
     @track error;
     @track isModalOpen = false;
     _wiredArticleData;
 
+    // Wire service to fetch the content of the specified field
     @wire(getRecord, { recordId: '$recordId', fields: [KNOWLEDGE_CONTENT_FIELD] })
     wiredArticle({ error, data }) {
         if (data) {
-            this._wiredArticleData = data; this.error = undefined;
+            this._wiredArticleData = data;
+            this.error = undefined;
         } else if (error) {
-            this.error = 'Failed to load article content. Check field API name & permissions.';
-            console.error('LWC wire error:', JSON.stringify(error));
+            this.error = 'Failed to load article content. Check LWC field API name & record access.';
+            console.error('LWC @wire(getRecord) error:', JSON.stringify(error));
+            this._wiredArticleData = undefined;
         }
     }
 
+    // Getter to extract the actual field value from the wired data
     get articleContent() {
-        return this._wiredArticleData ? getFieldValue(this._wiredArticleData, KNOWLEDGE_CONTENT_FIELD) : undefined;
+        if (this._wiredArticleData) {
+            return getFieldValue(this._wiredArticleData, KNOWLEDGE_CONTENT_FIELD);
+        }
+        return undefined;
     }
 
+    // Handles the click event of the "Summarise Article Content" button
     async handleSummarizeArticleField() {
-        this.isLoading = true; this.error = undefined; this.summaryText = '';
+        this.isLoading = true;
+        this.error = undefined;
+        this.summaryText = '';
+
         const contentValue = this.articleContent;
 
         if (!contentValue || String(contentValue).trim() === '') {
-            this.error = \`Field '\${KNOWLEDGE_CONTENT_FIELD.fieldApiName}' is empty.\`;
-            this.isLoading = false; return;
+            this.error = \`The field '\${KNOWLEDGE_CONTENT_FIELD.fieldApiName}' configured in the LWC is empty or contains no text to summarize on this record.\`;
+            this.isLoading = false;
+            return;
         }
         
+        // Remove HTML tags from rich text content before sending to API
         let plainTextContent = this.stripHtml(String(contentValue));
+
         if (!plainTextContent || plainTextContent.trim() === '') {
-            this.error = 'Content empty after HTML stripping.';
-            this.isLoading = false; return;
+            this.error = 'The content of the field became empty after attempting to strip HTML tags. Original content might have only contained HTML structures or was whitespace.';
+            this.isLoading = false;
+            return;
         }
 
         try {
-            const result = await getPageSummaryFromGemini({ htmlText: plainTextContent });
+            // Call the Apex method, passing the plain text content
+            const result = await getPageSummaryFromGemini({ articleFieldContent: plainTextContent }); // Match Apex param name
+            
             if (result) {
-                if (result.toLowerCase().startsWith('error:')) { this.error = result; } 
-                else { this.summaryText = result; this.isModalOpen = true; }
-            } else { this.error = 'Empty response from service.'; }
+                if (result.toLowerCase().startsWith('error:')) {
+                    this.error = result; // Display error from Apex
+                } else {
+                    this.summaryText = result; // Store successful summary (expected to be HTML)
+                    this.isModalOpen = true;   // Open the modal
+                }
+            } else {
+                this.error = 'Received an empty or null response from the summarization service.';
+            }
         } catch (e) {
-            this.error = 'Error calling Apex: ' + (e.body?.message || e.message);
-            console.error('LWC Apex call error:', JSON.stringify(e));
-        } finally { this.isLoading = false; }
+            this.error = 'An error occurred while trying to get the summary: ' + (e.body?.message || e.message);
+            console.error('LWC Error calling Apex getPageSummaryFromGemini:', JSON.stringify(e));
+        } finally {
+            this.isLoading = false; // Hide spinner
+        }
     }
     
+    // Utility function to strip HTML tags from a string
     stripHtml(html) {
         if (!html) return "";
         try {
             let doc = new DOMParser().parseFromString(html, 'text/html');
             return doc.body.textContent || "";
-        } catch (e) { return html.replace(/<[^>]*>?/gm, ''); }
+        } catch (e) {
+            // Basic fallback, less reliable for complex HTML
+            return html.replace(/<[^>]*>?/gm, '');
+        }
     }
 
-    closeModal() { this.isModalOpen = false; this.summaryText = ''; }
+    // Handles closing the summary modal
+    closeModal() {
+        this.isModalOpen = false;
+        this.summaryText = ''; // Clear summary when modal is closed
+    }
 }
             </code></pre>
 
-            <h4>3. <code>knowledgeCompanion.js-meta.xml</code> (Version A)</h4>
+            <h3 style="margin-top: 2em;">3. <code>knowledgeCompanion.js-meta.xml</code></h3>
             <pre><code class="language-xml">
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata"&gt;
@@ -514,240 +555,138 @@ export default class KnowledgeCompanion extends LightningElement {
     &lt;/targetConfigs&gt;
 &lt;/LightningComponentBundle&gt;
             </code></pre>
-
-            <hr style="margin: 2em 0;">
-            <h3>Version B: Summarizing Full Page Text (`document.documentElement.outerText`)</h3>
-            <p>This is the approach from the LWC code you provided earlier. It's suitable if the LWC is placed on a general page (like an Experience Cloud page) and you want to summarize its entire visible textual content.</p>
-             <h4>1. <code>knowledgeCompanion.html</code> (for Version B)</h4>
-            <pre><code class="language-html">
-&lt;!-- File: knowledgeCompanion.html (for Version B - full page text) --&gt;
-&lt;template&gt;
-    &lt;div class="slds-p-around_medium"&gt;
-        &lt;lightning-button
-            label="AI Summarise This Page"
-            onclick={handleSummarizeCurrentPageText}
-            class="slds-m-bottom_medium"
-            variant="brand"
-            disabled={isLoading}&gt;
-        &lt;/lightning-button&gt;
-    &lt;/div&gt;
-    &lt;template if:true={isLoading}&gt;
-        &lt;div class="slds-m-around_medium"&gt;
-            &lt;lightning-spinner alternative-text="Summarising page..." size="medium"&gt;&lt;/lightning-spinner&gt;
-        &lt;/div&gt;
-    &lt;/template&gt;
-    &lt;template if:true={error}&gt;
-         &lt;div class="slds-m-around_medium slds-text-color_error"&gt;
-            &lt;p&gt;&lt;strong&gt;Error:&lt;/strong&gt; {error}&lt;/p&gt;
-        &lt;/div&gt;
-    &lt;/template&gt;
-    &lt;template if:true={isModalOpen}&gt;
-        &lt;section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open"&gt;
-            &lt;div class="slds-modal__container"&gt;
-                &lt;header class="slds-modal__header"&gt;
-                    &lt;button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}&gt;
-                        &lt;lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"&gt;&lt;/lightning-icon&gt;
-                    &lt;/button&gt;
-                    &lt;h2 class="slds-modal__title slds-hyphenate"&gt;Page Summary&lt;/h2&gt;
-                &lt;/header&gt;
-                &lt;div class="slds-modal__content slds-p-around_medium"&gt;
-                    &lt;lightning-formatted-rich-text value={summaryText}&gt;&lt;/lightning-formatted-rich-text&gt;
-                &lt;/div&gt;
-                &lt;footer class="slds-modal__footer"&gt;
-                    &lt;lightning-button label="Close" onclick={closeModal}&gt;&lt;/lightning-button&gt;
-                &lt;/footer&gt;
-            &lt;/div&gt;
-        &lt;/section&gt;
-        &lt;div class="slds-backdrop slds-backdrop_open"&gt;&lt;/div&gt;
-    &lt;/template&gt;
-&lt;/template&gt;
-            </code></pre>
-            <h4>2. <code>knowledgeCompanion.js</code> (for Version B)</h4>
-            <pre><code class="language-javascript">
-// File: knowledgeCompanion.js (Version B: Summarizing document.documentElement.outerText)
-import { LightningElement, track } from 'lwc';
-import getPageSummaryFromGemini from '@salesforce/apex/GeminiAPIService.getPageSummaryFromGemini';
-
-export default class KnowledgeCompanionPageSummarizer extends LightningElement {
-    @track summaryText = '';
-    @track isLoading = false;
-    @track error;
-    @track isModalOpen = false;
-    // Using the label directly in HTML for simplicity, or you can use a getter:
-    // get AISUMMARIZEBUTTON() { return 'AI Summarise This Page'; }
-
-
-    async handleSummarizeCurrentPageText() {
-        this.isLoading = true;
-        this.error = undefined;
-        this.summaryText = '';
-        console.log('Attempting to summarize current page text using document.documentElement.outerText...');
-
-        const mainContent = document.documentElement.outerText || '';
-
-        if (!mainContent || mainContent.trim().length < 100) { 
-            this.error = 'Page content is too short or could not be extracted for summarization.';
-            this.isLoading = false;
-            // alert(this.error); // Consider if alert is best UX
-            return;
-        }
-
-        try {
-            const result = await getPageSummaryFromGemini({ htmlText: mainContent });
-            
-            if (result) {
-                if (result.toLowerCase().startsWith('error:')) {
-                    this.error = result;
-                } else {
-                    const cleanedResult = result.replace(/```html/gi, '').replace(/```/g, '').trim();
-                    this.summaryText = cleanedResult;
-                    this.isModalOpen = true;
-                }
-            } else {
-                this.error = 'Empty response from page summarization service.';
-            }
-        } catch (e) {
-            this.error = 'Error during page summarization: ' + (e.body?.message || e.message);
-            console.error('LWC Apex call error (page summarization):', JSON.stringify(e));
-        } finally {
-            this.isLoading = false;
-        }
-    }
-
-    closeModal() {
-        this.isModalOpen = false;
-        this.summaryText = '';
-    }
-}
-            </code></pre>
-             <h4>3. <code>knowledgeCompanion.js-meta.xml</code> (Version B - Example Targets)</h4>
-            <pre><code class="language-xml">
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata"&gt;
-    &lt;apiVersion&gt;59.0&lt;/apiVersion&gt; 
-    &lt;isExposed&gt;true&lt;/isExposed&gt;
-    &lt;targets&gt;
-        &lt;!-- Add targets appropriate for where you want to use this full-page summarizer --&gt;
-        &lt;target&gt;lightningCommunity__Page&lt;/target&gt;
-        &lt;target&gt;lightningCommunity__Default&lt;/target&gt;
-        &lt;!-- &lt;target&gt;lightning__AppPage&lt;/target&gt; --&gt;
-        &lt;!-- &lt;target&gt;lightning__HomePage&lt;/target&gt; --&gt;
-    &lt;/targets&gt;
-&lt;/LightningComponentBundle&gt;
-            </code></pre>
-        </div>
-
-        <div class="slide" id="slide7">
-            <h2>Lab Step 4: Simulation & Visuals 📊</h2>
-            <h3>Workflow Animation</h3>
-            <p>This D3.js animation visualizes the data flow. Click "Replay Animation" to restart it.</p>
-            <div id="workflowAnimation"></div>
-            <button onclick="startWorkflowAnimation()" class="slds-button slds-button_neutral slds-m-top_small">Replay Animation</button>
-
-            <h3 class="slds-m-top_large">Before/After Summary View (Toggle Example)</h3>
-            <div class="summary-toggle-container">
-                <p>This is a static example to simulate how long text can be condensed. Click the button to toggle.</p>
-                <button id="toggleSummaryBtn" onclick="toggleSummaryView()" class="slds-button slds-button_brand">Show AI Summary Example</button>
-                <div id="originalTextView" class="summary-text-area">
-                    <h4>Original Document Text (Example)</h4>
-                    <p>The Q4 Global Sales Initiative, codenamed "Project Everest," aims to expand market penetration in emerging APAC regions by 15% and increase overall recurring revenue by 10% through strategic partnerships and a revamped digital marketing strategy. Key performance indicators (KPIs) will include new customer acquisition rates, average deal size, and customer lifetime value. The initiative will involve cross-functional teams from Sales, Marketing, and Product Development, with a projected timeline of six months, starting January 1st. Bi-weekly progress reports will be submitted to the executive leadership team, outlining achievements, challenges, and mitigation strategies. A dedicated budget of $2.5 million has been allocated for this initiative, covering marketing campaigns, sales incentives, and technology upgrades. Training sessions for the sales team on new product features and market positioning are scheduled for mid-December. The success of Project Everest is critical for achieving the company's annual growth targets and strengthening its competitive position in the global market. All team members are expected to fully commit to their roles and responsibilities to ensure the project's objectives are met within the stipulated timeframe and budget.</p>
-                </div>
-                <div id="summaryAfterView" class="summary-text-area">
-                    <h4>AI Generated Summary (Example)</h4>
-                    <p>"Project Everest," a 6-month, $2.5M Q4 initiative, targets a 15% APAC market expansion and 10% recurring revenue growth via partnerships and digital marketing. KPIs include customer acquisition, deal size, and lifetime value. Cross-functional teams will report bi-weekly to executives. Success is vital for annual growth and market position.</p>
-                </div>
+            <div class="note">
+                <strong>Action:</strong> Create these three LWC files. **Remember to update the <code>KNOWLEDGE_CONTENT_FIELD</code> import in <code>knowledgeCompanion.js</code>** to match the API name of the field you want to summarize on your Knowledge Article object. Deploy and add to your Knowledge Article page layout.
             </div>
         </div>
-
+        
         <div class="slide" id="slide8">
+            <h2>Alternative Approach: Leveraging Salesforce Native AI ☁️</h2>
+            <p>While this lab focuses on direct integration with an external LLM like Gemini for learning purposes, it's important to be aware of Salesforce's evolving native AI capabilities.</p>
+            
+            <h3>Using Einstein and Platform AI Features</h3>
+            <p>Salesforce is increasingly embedding Generative AI into its platform (e.g., through Einstein GPT, Service Cloud AI, Sales Cloud AI, and features similar to "Agent Assist" or "Copilot" experiences). For tasks like summarization, especially within standard objects like Knowledge or Case, Salesforce may offer out-of-the-box or configurable solutions.</p>
+
+            <h4>Conceptual Steps for a Native Salesforce AI Summarization:</h4>
+            <ol>
+                <li>
+                    <strong>Identify Use Case & Object:</strong> Determine which object (e.g., Knowledge Article - <code>Knowledge__kav</code>) and which specific field (e.g., a rich text field like <code>Article_Body__c</code>) requires summarization.
+                </li>
+                <li>
+                    <strong>Explore Salesforce AI Services:</strong>
+                    <ul>
+                        <li>Check for existing Einstein features for that object (e.g., Einstein for Service might have Case Summarization, Einstein Article Recommendations for Knowledge).</li>
+                        <li>Look into features like Prompt Builder or specific "Copilot" actions that allow you to invoke LLMs managed by Salesforce.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Configure Prompt Templates (if applicable):</strong>
+                    <ul>
+                        <li>If using a feature like Prompt Builder, you would create a prompt template tailored for summarizing Knowledge Article content. This template guides the Salesforce-managed LLM.</li>
+                        <li>Example Prompt Focus: "Summarize this Knowledge Article field content into 3 key bullet points suitable for an support agent."</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Trigger Summarization:</strong>
+                    <ul>
+                        <li>This might be an out-of-the-box button provided by the Salesforce feature.</li>
+                        <li>It could be invoked via a Flow that calls a Prompt Template or an Invocable Apex action that interacts with the Salesforce AI services.</li>
+                        <li>A custom LWC could also trigger such a Flow or Apex action.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Display Summary:</strong>
+                    <ul>
+                        <li>The native feature might have its own UI for displaying summaries.</li>
+                        <li>Summaries could be displayed in standard components, custom LWCs, or even written back to a field (though real-time display is often preferred).</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h4>Benefits of Using Native Salesforce AI:</h4>
+            <ul>
+                <li><strong>Data Residency & Trust:</strong> Data typically stays within the Salesforce Trust Boundary.</li>
+                <li><strong>Contextual Awareness:</strong> Salesforce-managed LLMs can be more easily grounded with your specific org data and context.</li>
+                <li><strong>Simplified Integration:</strong> Often less custom code is needed compared to integrating with an external API. Configuration might be more prominent.</li>
+                <li><strong>Managed Service:</strong> Salesforce handles the underlying LLM infrastructure.</li>
+            </ul>
+            <p>As you continue your Salesforce development journey, keep an eye on new releases and features related to Generative AI on the Salesforce platform, as they can offer powerful and integrated solutions for use cases like document summarization.</p>
+        </div>
+
+        <div class="slide" id="slide9">
             <h2>Congratulations & Next Steps 🎉</h2>
             <h3>What You've Accomplished in this Lab 🏆</h3>
             <ul>
-                <li>Set up pre-requisites including Salesforce org configuration and understanding API key usage.</li>
-                <li>Configured the lab environment to use a provided Gemini API Key.</li>
-                <li>Developed an Apex class to make callouts to the Gemini API for text summarization.</li>
-                <li>Built a Lightning Web Component (LWC) to provide a user interface.</li>
-                <li>Implemented LWC-to-Apex communication to trigger the AI summarization.</li>
-                <li>Explored how prompts can be crafted to guide the AI's output.</li>
+                <li>Set up pre-requisites including Salesforce org configuration and understanding API key usage for the lab.</li>
+                <li>Configured the lab environment to use a provided Gemini API Key directly in Apex.</li>
+                <li>Developed an Apex class to make callouts to the Gemini API for text summarization, with an updated prompt for Knowledge Articles.</li>
+                <li>Built a Lightning Web Component (LWC) to provide a user interface on a Knowledge Article record page.</li>
+                <li>Implemented LWC-to-Apex communication to trigger the AI summarization of a specific article field.</li>
+                <li>Explored how prompts can be crafted to guide the AI's output and considered alternative native Salesforce AI approaches.</li>
             </ul>
             <h3>Potential Project Implementations & Enhancements 🚀</h3>
             <ul>
-                <li>Adapt to summarize Case descriptions, EmailMessage bodies, Account notes, or Chatter posts.</li>
-                <li>Implement batch Apex to summarize multiple records.</li>
-                <li>Experiment with different prompts for various summary styles or information extraction.</li>
-                <li>Integrate with Salesforce Flow or Process Builder.</li>
-                <li>Explore secure API key storage (Named Credentials, Protected Custom Settings) for your own projects.</li>
+                <li>Adapt to summarize other objects and fields (Cases, Emails, etc.).</li>
+                <li>Experiment with different prompts for various summary styles or information extraction from Knowledge Articles.</li>
+                <li>Explore secure API key storage (Named Credentials, Protected Custom Settings) for your own projects (see Appendix).</li>
             </ul>
             <h3>Further Reading & Resources 📚</h3>
             <ul>
                 <li><a href="https://ai.google.dev/docs/gemini_api_overview" target="_blank">Google Gemini API Documentation</a></li>
                 <li><a href="https://developer.salesforce.com/docs/" target="_blank">Salesforce Developer Guide</a></li>
                 <li><a href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc" target="_blank">Lightning Web Components Dev Guide</a></li>
-                <li>Trailhead: Search for "Apex Integration Services", "Lightning Web Components Basics".</li>
+                <li>Trailhead: Search for "Apex Integration Services", "Lightning Web Components Basics", "Einstein Generative AI".</li>
             </ul>
             <p>Keep exploring, keep building, and happy coding!</p>
         </div>
 
-        <div class="slide" id="slide9">
+        <div class="slide" id="slide10">
             <h2>Appendix: For Your Reference ℹ️</h2>
-            <p>This section provides information for your future projects beyond this lab.</p>
+            <p>This section provides information for your future projects beyond this lab's simplified setup.</p>
             <h3>A. How to Obtain Your Own Google Gemini API Key</h3>
             <ol>
                 <li>Go to <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>.</li>
-                <li>Sign in with your Google account. If you don't have one, you'll need to create it.</li>
-                <li>You might need to enable the "Generative Language API" in a Google Cloud Project associated with your account. Google AI Studio often guides you through this.
-                    <ul>
-                        <li>If creating a new project, ensure billing is enabled for that project if required by Google Cloud for API usage beyond free tiers.</li>
-                    </ul>
-                </li>
-                <li>In Google AI Studio, click on "Get API key".</li>
-                <li>Select or create a project, then click "Create API key".</li>
-                <li>Copy the generated API key and store it securely (e.g., in a password manager). <strong>Treat this key like a password.</strong></li>
+                <li>Sign in with your Google account.</li>
+                <li>You might need to enable the "Generative Language API" in a Google Cloud Project. Google AI Studio often guides you through this. Ensure billing is enabled for that project if required by Google Cloud for API usage beyond free tiers.</li>
+                <li>In Google AI Studio, click "Get API key" then "Create API key".</li>
+                <li>Copy the generated API key and store it securely.</li>
             </ol>
 
             <h3>B. Using Named Credentials in Salesforce (Best Practice for API Integration)</h3>
-            <p>Named Credentials provide a secure way to manage authentication and endpoint details for callouts, keeping sensitive information out of your code.</p>
+            <p>Named Credentials securely manage authentication and endpoint details for callouts.</p>
             <ol>
-                <li><strong>Store API Key Securely:</strong>
+                <li><strong>Store API Key Securely (Example):</strong> Use a Protected Custom Setting (e.g., `API_Keys__c` with a field `Gemini_Key__c`).</li>
+                <li><strong>Create Named Credential:</strong>
                     <ul>
-                        <li>Use a **Protected Custom Setting** or **Protected Custom Metadata Type** to store your Gemini API Key. This prevents it from being visible in code or easily deployable in clear text.</li>
-                    </ul>
-                </li>
-                <li><strong>Create the Named Credential:</strong>
-                    <ul>
-                        <li>In Salesforce Setup, search for "Named Credentials".</li>
-                        <li>Click **New Named Credential**.</li>
-                        <li>**Label:** e.g., `My_Gemini_API`</li>
-                        <li>**Name:** (Auto-filled, e.g., `My_Gemini_API`)</li>
+                        <li>Setup &gt; Named Credentials &gt; New.</li>
+                        <li>**Label:** e.g., `My_Secure_Gemini_API`</li>
+                        <li>**Name:** (Auto-filled)</li>
                         <li>**URL:** `https://generativelanguage.googleapis.com`</li>
-                        <li>**Identity Type:** `Named Principal` (common choice) or `Per User`.</li>
-                        <li>**Authentication Protocol:** `Password Authentication` (if you plan to use the password field for something related to auth, though for API keys in headers, this isn't directly used) OR `No Authentication` if you handle all auth via headers from Apex. For API keys, often you just need to add it as a custom header.</li>
-                        <li>**Generate Authorization Header:** Typically Unchecked if you are manually adding an `x-goog-api-key` header.</li>
-                        <li>(Optional) **Custom Headers:** You can define custom headers directly in the Named Credential.
+                        <li>**Identity Type:** `Anonymous` (often suitable if key is in header)</li>
+                        <li>**Authentication Protocol:** `No Authentication`</li>
+                        <li>**Custom Headers:**
                             <ul>
                                 <li>Header Name: `x-goog-api-key`</li>
-                                <li>Header Value: Your Gemini API Key (or `{!'formula_to_your_custom_setting_key'}` if using a formula to reference it from a custom setting). This is a very secure way.</li>
+                                <li>Header Value: `{!'YOUR_API_KEY_HERE'}` (You can directly paste the key for testing, or for production, use a formula like `{!$Setup.API_Keys__c.Gemini_Key__c}` if your key is in a Custom Setting. Note: Direct merge fields for Custom Settings in Named Credential headers can be tricky; often better to set header in Apex after retrieving from Custom Setting.) A common pattern is to leave API Key out of Named Credential custom headers and add it in Apex if it's dynamic or from secure storage.</li>
                             </ul>
                         </li>
                         <li>Save.</li>
                     </ul>
                 </li>
-                <li><strong>Update Apex Code to Use Named Credential:</strong>
+                <li><strong>Update Apex to Use Named Credential:</strong>
                     <pre><code class="language-apex">
 // Example Apex using Named Credential
 HttpRequest req = new HttpRequest();
-// The endpoint uses 'callout:' followed by the Named Credential Name
-req.setEndpoint('callout:My_Gemini_API/v1beta/models/gemini-1.5-flash:generateContent');
+req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-latest:generateContent');
 req.setMethod('POST');
 req.setHeader('Content-Type', 'application/json; charset=utf-8');
-// If x-goog-api-key is NOT set as a Custom Header in Named Credential:
-// String apiKey = getApiKeyFromSecureStorage(); // Your method to get key
+// If x-goog-api-key was NOT set as a Custom Header in Named Credential:
+// String apiKey = getApiKeyFromSecureStorage(); // Your method
 // req.setHeader('x-goog-api-key', apiKey); 
-// ... rest of your request setup and callout ...
+// ... rest of request ...
                     </code></pre>
                 </li>
             </ol>
-            <p>Using Named Credentials with Custom Headers (or retrieving keys from Protected Custom Settings/Metadata within Apex) is highly recommended for better security and maintainability in your Salesforce projects.</p>
         </div>
 
     </div> <div class="navigation-buttons">
@@ -764,27 +703,18 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
         const nextButton = document.getElementById('nextBtn');
 
         function showSlide(index) {
-            if (!slides || slides.length === 0) {
-                console.error("Slides not found. Navigation cannot work.");
-                return;
-            }
-            if (index < 0 || index >= totalSlides) {
-                console.error("Invalid slide index:", index);
-                return;
-            }
+            if (!slides || slides.length === 0) { console.error("Slides not found."); return; }
+            if (index < 0 || index >= totalSlides) { console.error("Invalid slide index:", index); return; }
+            
             slides.forEach((slideEl, i) => {
                 slideEl.classList.remove('active');
-                if (i === index) {
-                    slideEl.classList.add('active');
-                }
+                if (i === index) { slideEl.classList.add('active'); }
             });
             currentSlide = index;
             updateNavButtons();
 
-            // Slide 7 is at index 6 (0-indexed) for workflow animation
-            // Slide 8 is wrap-up at index 7
-            // Slide 9 is appendix at index 8
-            if (index === 6) { 
+            // Original Slide 7 (Simulations & Visuals) is now Slide 5 (index 4)
+            if (index === 4) { 
                 startWorkflowAnimation();
             }
         }
@@ -797,23 +727,16 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
         }
         
         function updateNavButtons() {
-            if (prevButton) {
-                prevButton.disabled = (currentSlide === 0);
-            }
-            if (nextButton) {
-                nextButton.disabled = (currentSlide === totalSlides - 1);
-            }
+            if (prevButton) { prevButton.disabled = (currentSlide === 0); }
+            if (nextButton) { nextButton.disabled = (currentSlide === totalSlides - 1); }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             if (slides.length > 0) {
-                if (prevButton && nextButton) {
-                    showSlide(0);
-                } else {
-                    console.error("Navigation buttons not found. Navigation will be disabled.");
-                }
+                if (prevButton && nextButton) { showSlide(0); } 
+                else { console.error("Navigation buttons not found."); }
             } else {
-                console.error("No slides with class '.slide' found. Navigation will not work.");
+                console.error("No slides found.");
                 if(prevButton) prevButton.disabled = true;
                 if(nextButton) nextButton.disabled = true;
             }
@@ -834,10 +757,7 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             const svgContainer = d3.select("#workflowAnimation");
             svgContainer.selectAll("*").remove(); 
             const bounds = svgContainer.node()?.getBoundingClientRect();
-            if (!bounds || bounds.width <= 0 || bounds.height <= 0) {
-                console.warn("D3 container has no valid dimensions. Skipping animation.");
-                return;
-            }
+            if (!bounds || bounds.width <= 0 || bounds.height <= 0) { console.warn("D3 container has no valid dimensions."); return; }
             const width = bounds.width; const height = bounds.height;
             const svg = svgContainer.append("svg").attr("width", width).attr("height", height).attr("viewBox", `0 0 ${width} ${height}`).style("overflow", "visible");
             const nodeRadius = Math.min(width, height) * 0.05; const fontSize = Math.min(width, height) * 0.025;
