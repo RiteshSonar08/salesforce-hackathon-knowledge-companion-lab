@@ -71,16 +71,22 @@
             font-size: 0.9em;
         }
 
+        .code-block-wrapper {
+            position: relative;
+            margin-bottom: 1em;
+        }
+
         pre { /* For code blocks */
             background-color: #2d2d2d; /* Dark background */
             color: #f8f8f2; /* Light text */
             padding: 15px;
+            padding-top: 40px; /* Extra padding for the copy button */
             border-radius: 5px;
             overflow-x: auto; /* Allow horizontal scrolling for long lines */
-            font-size: 0.85em; /* Slightly smaller for blocks */
+            font-size: 0.85em; 
             line-height: 1.5;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            white-space: pre; /* Preserve whitespace and line breaks */
+            white-space: pre; 
         }
         pre code { /* Reset styles for <code> inside <pre> */
             background-color: transparent;
@@ -89,6 +95,30 @@
             color: inherit; 
             white-space: inherit; 
         }
+        
+        .copy-code-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #0070d2;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            border-radius: 3px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
+        }
+        .copy-code-button:hover {
+            opacity: 1;
+            background-color: #005fb2;
+        }
+        .copy-code-button.copied {
+            background-color: #28a745; /* Green for success */
+            opacity: 1;
+        }
+
 
         .navigation-buttons {
             display: flex;
@@ -102,7 +132,7 @@
             margin: 0 auto 20px auto; 
         }
 
-        .navigation-buttons button {
+        .navigation-buttons button { /* Standard Prev/Next buttons */
             background-color: #0070d2;
             color: white;
             border: none;
@@ -124,6 +154,22 @@
             background-color: #c0c0c0;
             cursor: not-allowed;
         }
+        
+        .replay-button { /* Specific style for Replay Animation button */
+            background-color: #5cb85c; /* A different color, e.g., green */
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px; /* From original code, slds-m-top_small */
+        }
+        .replay-button:hover {
+            background-color: #4cae4c; /* Darker green on hover */
+        }
+
 
         .note {
             background-color: #fff3cd;
@@ -172,13 +218,12 @@
             <h3>The Challenge: Information Overload 😩</h3>
             <p>In today's fast-paced environment, users are often confronted with vast amounts of text. Quickly understanding the essence of long documents like Salesforce <strong>Knowledge Articles</strong>, detailed <strong>Case Descriptions</strong>, or comprehensive <strong>Product Manuals</strong> is crucial but time-consuming.</p>
             <h3>The Solution: Knowledge Companion ✨</h3>
-            <p>This lab guides you in building a "Knowledge Companion" tool. Powered by the <strong>Gemini API</strong> (e.g., Gemini Flash 1.5 or newer compatible Flash models like a future Flash 2.0 if available), this tool integrates directly into Salesforce to provide instant summaries of lengthy text content. This significantly enhances productivity by allowing users to grasp key information at a glance.</p>
+            <p>This lab guides you in building a "Knowledge Companion" tool. Powered by the <strong>Gemini API</strong> (e.g., Gemini Flash 1.5 or newer compatible Flash models), this tool integrates directly into Salesforce to provide instant summaries of lengthy text content. This significantly enhances productivity by allowing users to grasp key information at a glance.</p>
             <h3>Real-Life Use Cases 💡</h3>
             <ul>
-                <li><strong>Support Agents:</strong> Quickly summarize complex case histories or long knowledge articles to resolve issues faster.</li>
+                <li><strong>Support Agents:</strong> Quickly summarize complex case histories or long knowledge articles.</li>
                 <li><strong>Sales Teams:</strong> Get rapid summaries of account details, past communications, or opportunity notes.</li>
                 <li><strong>Product Managers:</strong> Condense user feedback or technical documentation.</li>
-                <li><strong>Any Salesforce User:</strong> Efficiently process information from lengthy text fields across various objects.</li>
             </ul>
         </div>
 
@@ -218,25 +263,18 @@
         <div class="slide" id="slide4">
             <h2>Lab Step 1: Gemini API Configuration (Using Provided Key) 🔑</h2>
             <p>For this lab, we'll use the common API key provided by your instructors directly in the Apex code for simplicity.</p>
-            
             <h3>1. Using the Provided API Key</h3>
             <ul>
                 <li>You will receive a Gemini API Key from the lab instructors.</li>
                 <li>In the Apex class (in a later step), you will insert this key into a specific placeholder variable.</li>
                 <li>The Apex code will then construct the API endpoint URL and include this key for authentication.</li>
             </ul>
-
             <h3>2. Important Note: API Key in Endpoint vs. Named Credentials</h3>
             <div class="note">
-                <p><strong>For Lab Simplicity:</strong> We are putting the API key directly into the Apex code and constructing the endpoint URL with it. This simplifies setup for the lab.</p>
-                <p><strong>⚠️ Security Best Practice (for real projects): DO NOT hardcode API keys or include them directly in endpoint URLs in your code.</strong></p>
-                <ul>
-                    <li>The **recommended Salesforce approach is to use Named Credentials**. They securely store endpoint URLs and handle authentication details (like API keys, often in custom headers) separately from code.</li>
-                    <li>Alternatively, store keys in **Protected Custom Settings/Metadata**.</li>
-                </ul>
+                <p><strong>For Lab Simplicity:</strong> We are putting the API key directly into the Apex code and constructing the endpoint URL with it.</p>
+                <p><strong>⚠️ Security Best Practice (for real projects): DO NOT hardcode API keys or include them directly in endpoint URLs in your code.</strong> Use Named Credentials or retrieve keys from Protected Custom Settings/Metadata.</p>
                 <p>An appendix slide provides details on obtaining your own key and setting up Named Credentials for future reference.</p>
             </div>
-            <p>You will be instructed where to place the provided API key in the Apex code later.</p>
         </div>
 
         <div class="slide" id="slide5">
@@ -245,37 +283,38 @@
             <h3>Workflow Animation</h3>
             <p>This D3.js animation visualizes the data flow when you click "AI Summarise". Click "Replay Animation" to restart it.</p>
             <div id="workflowAnimation"></div>
-            <button onclick="startWorkflowAnimation()" class="slds-button slds-button_neutral slds-m-top_small">Replay Animation</button>
+            <button onclick="startWorkflowAnimation()" class="replay-button">🎨 Replay Animation</button> {/* Updated Button */}
 
             <h3 class="slds-m-top_large">Before/After Summary View (Toggle Example)</h3>
             <div class="summary-toggle-container">
-                <p>This is a static example to simulate how long text can be condensed. Click the button to toggle between the original content and its AI-generated summary.</p>
+                <p>This is a static example to simulate how long text can be condensed. Click the button to toggle.</p>
                 <button id="toggleSummaryBtn" onclick="toggleSummaryView()" class="slds-button slds-button_brand">Show AI Summary Example</button>
                 <div id="originalTextView" class="summary-text-area">
                     <h4>Original Document Text (Example)</h4>
-                    <p>The Q4 Global Sales Initiative, codenamed "Project Everest," aims to expand market penetration in emerging APAC regions by 15% and increase overall recurring revenue by 10% through strategic partnerships and a revamped digital marketing strategy. Key performance indicators (KPIs) will include new customer acquisition rates, average deal size, and customer lifetime value. The initiative will involve cross-functional teams from Sales, Marketing, and Product Development, with a projected timeline of six months, starting January 1st. Bi-weekly progress reports will be submitted to the executive leadership team, outlining achievements, challenges, and mitigation strategies. A dedicated budget of $2.5 million has been allocated for this initiative, covering marketing campaigns, sales incentives, and technology upgrades. Training sessions for the sales team on new product features and market positioning are scheduled for mid-December. The success of Project Everest is critical for achieving the company's annual growth targets and strengthening its competitive position in the global market. All team members are expected to fully commit to their roles and responsibilities to ensure the project's objectives are met within the stipulated timeframe and budget.</p>
+                    <p>The Q4 Global Sales Initiative, codenamed "Project Everest," aims to expand market penetration in emerging APAC regions by 15% and increase overall recurring revenue by 10% through strategic partnerships and a revamped digital marketing strategy. Key performance indicators (KPIs) will include new customer acquisition rates, average deal size, and customer lifetime value...</p> {/* Truncated for brevity in this template */}
                 </div>
                 <div id="summaryAfterView" class="summary-text-area">
                     <h4>AI Generated Summary (Example)</h4>
-                    <p>"Project Everest," a 6-month, $2.5M Q4 initiative, targets a 15% APAC market expansion and 10% recurring revenue growth via partnerships and digital marketing. KPIs include customer acquisition, deal size, and lifetime value. Cross-functional teams will report bi-weekly to executives. Success is vital for annual growth and market position.</p>
+                    <p>"Project Everest," a 6-month, $2.5M Q4 initiative, targets a 15% APAC market expansion and 10% recurring revenue growth via partnerships and digital marketing. KPIs include customer acquisition, deal size, and lifetime value...</p>  {/* Truncated */}
                 </div>
             </div>
         </div>
 
         <div class="slide" id="slide6">
             <h2>Lab Step 3: Apex Code Walkthrough 👨‍💻</h2>
-            <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API using the latest Flash model (e.g., Gemini Flash 1.5 or newer compatible versions like Flash 2.0, if available and supported by the public API) and the provided API key.</p>
+            <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API using the latest Flash model (e.g., Gemini Flash 1.5 or newer compatible versions like a future Flash 2.0, if available) and the provided API key.</p>
             <p><strong>Action:</strong> Create this Apex class in your Salesforce org.</p>
-            <pre><code class="language-apex">
+            <div class="code-block-wrapper">
+                <button class="copy-code-button" aria-label="Copy Apex Code">Copy</button>
+                <pre><code class="language-apex">
 // File: GeminiAPIService.cls
 public with sharing class GeminiAPIService {
 
     private static String getProvidedApiKey() {
         // TODO: LAB PARTICIPANT - REPLACE 'KEY_PROVIDED_BY_INSTRUCTOR' WITH THE ACTUAL API KEY.
         String apiKey = 'KEY_PROVIDED_BY_INSTRUCTOR'; 
-
         if (String.isBlank(apiKey) || apiKey == 'KEY_PROVIDED_BY_INSTRUCTOR') {
-            System.debug(LoggingLevel.ERROR, 'GeminiAPIService: API Key is missing or is the placeholder. Update with the provided key.');
+            System.debug(LoggingLevel.ERROR, 'GeminiAPIService: API Key is missing or placeholder.');
         }
         return apiKey;
     }
@@ -291,8 +330,7 @@ public with sharing class GeminiAPIService {
             return 'Error: The provided Gemini API Key is not configured in Apex.';
         }
 
-        // Using latest available Flash model. Replace 'gemini-1.5-flash-latest' 
-        // with a specific "Flash 2.0" model identifier if provided and available.
+        // Use 'gemini-1.5-flash-latest' or update to a specific "Flash 2.0" model identifier if known & available.
         String modelIdentifier = 'gemini-1.5-flash-latest'; 
         String endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/' + modelIdentifier + ':generateContent?key=' + GEMINI_API_KEY;
 
@@ -308,12 +346,9 @@ public with sharing class GeminiAPIService {
         Map&lt;String, Object&gt; requestBody = new Map&lt;String, Object&gt;{
             'contents' => new List&lt;Object&gt;{
                 new Map&lt;String, Object&gt;{
-                    'parts' => new List&lt;Object&gt;{
-                        new Map&lt;String, Object&gt;{ 'text' => prompt }
-                    }
+                    'parts' => new List&lt;Object&gt;{ new Map&lt;String, Object&gt;{ 'text' => prompt } }
                 }
             }
-            // Optional: 'generationConfig': new Map<String, Object> { 'maxOutputTokens' => 200 }
         };
 
         HttpRequest req = new HttpRequest();
@@ -328,56 +363,46 @@ public with sharing class GeminiAPIService {
 
         try {
             HttpResponse res = http.send(req);
-            System.debug('Gemini API Callout Status: ' + res.getStatusCode() + ', Body Len: ' + (res.getBody() != null ? res.getBody().length() : 0));
-
             if (res.getStatusCode() == 200) {
                 Map&lt;String, Object&gt; jsonResponse = (Map&lt;String, Object&gt;) JSON.deserializeUntyped(res.getBody());
                 List&lt;Object&gt; candidates = (List&lt;Object&gt;) jsonResponse.get('candidates');
                 if (candidates != null && !candidates.isEmpty()) {
-                    Map&lt;String, Object&gt; firstCandidate = (Map&lt;String, Object&gt;) candidates[0];
-                    Map&lt;String, Object&gt; content = (Map&lt;String, Object&gt;) firstCandidate.get('content');
+                    Map&lt;String, Object&gt; content = (Map&lt;String, Object&gt;) ((Map&lt;String, Object&gt;) candidates[0]).get('content');
                     if (content != null) {
                         List&lt;Object&gt; parts = (List&lt;Object&gt;) content.get('parts');
                         if (parts != null && !parts.isEmpty()) {
-                            Map&lt;String, Object&gt; part = (Map&lt;String, Object&gt;) parts[0];
-                            summaryResult = (String) part.get('text');
-                        } else { summaryResult = 'Error: No "parts" in API response.'; }
-                    } else { summaryResult = 'Error: No "content" in API candidate.'; }
+                            summaryResult = (String) ((Map&lt;String, Object&gt;) parts[0]).get('text');
+                        } else { summaryResult = 'Error: No "parts" in response.'; }
+                    } else { summaryResult = 'Error: No "content" in candidate.'; }
                 } else { 
-                    summaryResult = 'Error: No "candidates" in API response.';
+                    summaryResult = 'Error: No "candidates" in response.';
                     if (jsonResponse.containsKey('error')) {
-                        Map&lt;String, Object&gt; errorDetails = (Map&lt;String, Object&gt;)jsonResponse.get('error');
-                        summaryResult += ' API Error: ' + String.valueOf(errorDetails.get('message'));
+                        summaryResult += ' API Error: ' + String.valueOf(((Map&lt;String, Object&gt;)jsonResponse.get('error')).get('message'));
                     }
                 }
-            } else {
-                summaryResult = 'Error from Gemini API: Status ' + res.getStatusCode() + '. Details: ' + res.getBody();
-            }
-        } catch (Exception ex) { // Catch generic Exception for broader error capture
-            summaryResult = 'Error during API callout: ' + ex.getMessage();
+            } else { summaryResult = 'Error from API: ' + res.getStatusCode() + '. ' + res.getBody(); }
+        } catch (Exception ex) {
+            summaryResult = 'Error during callout: ' + ex.getMessage();
             System.debug(LoggingLevel.ERROR, 'GeminiAPIService Exception: ' + ex.getMessage() + '\\n' + ex.getStackTraceString());
         }
         return summaryResult;
     }
 }
-</code></pre>
+                </code></pre>
+            </div>
             <div class="note">
-                <strong>Action:</strong>
-                <ol>
-                    <li>Create/Update the Apex Class <code>GeminiAPIService</code>.</li>
-                    <li>Paste the code and **replace <code>'KEY_PROVIDED_BY_INSTRUCTOR'</code>** with the API Key given in the lab.</li>
-                    <li>Save.</li>
-                    <li><strong>Production Note:</strong> This method of including the API key in the endpoint URL is for lab simplicity. In production, use Named Credentials for the endpoint and manage the API key securely (e.g., in a custom header defined in the Named Credential, populated from a Protected Custom Setting).</li>
-                </ol>
+                <strong>Action:</strong> Copy the Apex code. In Salesforce Developer Console, create <code>GeminiAPIService.cls</code>. Paste and **replace <code>'KEY_PROVIDED_BY_INSTRUCTOR'</code>**. Save.
             </div>
         </div>
 
         <div class="slide" id="slide7">
             <h2>Lab Step 4: Lightning Web Component (LWC) ⚡</h2>
-            <p>Create an LWC named <code>knowledgeCompanion</code>. This LWC will be placed on a Knowledge Article record page to summarize a specific field from that article.</p>
+            <p>Create an LWC named <code>knowledgeCompanion</code> for the Knowledge Article record page.</p>
 
             <h3>1. <code>knowledgeCompanion.html</code></h3>
-            <pre><code class="language-html">
+            <div class="code-block-wrapper">
+                <button class="copy-code-button" aria-label="Copy LWC HTML">Copy</button>
+                <pre><code class="language-html">
 &lt;!-- File: knowledgeCompanion.html --&gt;
 &lt;template&gt;
     &lt;lightning-card title="Knowledge Article Summarizer" icon-name="utility:summarydetail"&gt;
@@ -389,156 +414,104 @@ public with sharing class GeminiAPIService {
                 disabled={isLoading}
                 icon-name="utility:magicwand"&gt;
             &lt;/lightning-button&gt;
-
             &lt;template if:true={isLoading}&gt;
                 &lt;div class="slds-m-top_medium slds-is-relative" style="height: 50px;"&gt;
                     &lt;lightning-spinner alternative-text="Loading summary..." size="medium"&gt;&lt;/lightning-spinner&gt;
                 &lt;/div&gt;
             &lt;/template&gt;
-
             &lt;template if:true={error}&gt;
-                &lt;div class="slds-m-top_medium slds-text-color_error"&gt;
-                    &lt;p&gt;&lt;strong&gt;Error:&lt;/strong&gt; {error}&lt;/p&gt;
-                &lt;/div&gt;
+                &lt;div class="slds-m-top_medium slds-text-color_error"&gt;&lt;p&gt;&lt;strong&gt;Error:&lt;/strong&gt; {error}&lt;/p&gt;&lt;/div&gt;
             &lt;/template&gt;
         &lt;/div&gt;
     &lt;/lightning-card&gt;
-
     &lt;template if:true={isModalOpen}&gt;
         &lt;section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open"&gt;
             &lt;div class="slds-modal__container"&gt;
                 &lt;header class="slds-modal__header"&gt;
                     &lt;button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}&gt;
                         &lt;lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"&gt;&lt;/lightning-icon&gt;
-                        &lt;span class="slds-assistive-text"&gt;Close&lt;/span&gt;
                     &lt;/button&gt;
                     &lt;h2 class="slds-modal__title slds-hyphenate"&gt;Article Summary&lt;/h2&gt;
                 &lt;/header&gt;
                 &lt;div class="slds-modal__content slds-p-around_medium"&gt;
-                    &lt;!-- Summary is expected to be HTML from the Apex prompt --&gt;
                     &lt;lightning-formatted-rich-text value={summaryText}&gt;&lt;/lightning-formatted-rich-text&gt;
                 &lt;/div&gt;
-                &lt;footer class="slds-modal__footer"&gt;
-                    &lt;lightning-button label="Close" title="Close" onclick={closeModal}&gt;&lt;/lightning-button&gt;
-                &lt;/footer&gt;
+                &lt;footer class="slds-modal__footer"&gt;&lt;lightning-button label="Close" title="Close" onclick={closeModal}&gt;&lt;/lightning-button&gt;&lt;/footer&gt;
             &lt;/div&gt;
         &lt;/section&gt;
         &lt;div class="slds-backdrop slds-backdrop_open" role="presentation"&gt;&lt;/div&gt;
     &lt;/template&gt;
 &lt;/template&gt;
-            </code></pre>
+                </code></pre>
+            </div>
 
             <h3 style="margin-top: 2em;">2. <code>knowledgeCompanion.js</code></h3>
-            <pre><code class="language-javascript">
+            <div class="code-block-wrapper">
+                <button class="copy-code-button" aria-label="Copy LWC JavaScript">Copy</button>
+                <pre><code class="language-javascript">
 // File: knowledgeCompanion.js
 import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import getPageSummaryFromGemini from '@salesforce/apex/GeminiAPIService.getPageSummaryFromGemini';
 
-// --- IMPORTANT: Field API Name to Summarize ---
-// TODO: LAB PARTICIPANT - Update this import to point to the API name of the 
-// rich text field on YOUR Knowledge__kav object that you want to summarize.
+// TODO: LAB PARTICIPANT - Update this import for YOUR Knowledge Article field.
 // Example: import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Your_Custom_Field_API_Name__c';
 import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Content_for_Summarization__c'; 
-// Defaulting to 'Content_for_Summarization__c', change if your field is different.
 
 export default class KnowledgeCompanion extends LightningElement {
-    @api recordId; // Automatically gets the ID of the record page
-
-    @track summaryText = '';
-    @track isLoading = false;
-    @track error;
-    @track isModalOpen = false;
+    @api recordId;
+    @track summaryText = ''; @track isLoading = false; @track error; @track isModalOpen = false;
     _wiredArticleData;
 
-    // Wire service to fetch the content of the specified field
     @wire(getRecord, { recordId: '$recordId', fields: [KNOWLEDGE_CONTENT_FIELD] })
     wiredArticle({ error, data }) {
-        if (data) {
-            this._wiredArticleData = data;
-            this.error = undefined;
-        } else if (error) {
-            this.error = 'Failed to load article content. Check LWC field API name & record access.';
-            console.error('LWC @wire(getRecord) error:', JSON.stringify(error));
-            this._wiredArticleData = undefined;
-        }
+        if (data) { this._wiredArticleData = data; this.error = undefined; }
+        else if (error) { this.error = 'Failed to load article content. Check LWC field API name & permissions.'; console.error('LWC wire error:', JSON.stringify(error));}
     }
 
-    // Getter to extract the actual field value from the wired data
     get articleContent() {
-        if (this._wiredArticleData) {
-            return getFieldValue(this._wiredArticleData, KNOWLEDGE_CONTENT_FIELD);
-        }
-        return undefined;
+        return this._wiredArticleData ? getFieldValue(this._wiredArticleData, KNOWLEDGE_CONTENT_FIELD) : undefined;
     }
 
-    // Handles the click event of the "Summarise Article Content" button
     async handleSummarizeArticleField() {
-        this.isLoading = true;
-        this.error = undefined;
-        this.summaryText = '';
-
+        this.isLoading = true; this.error = undefined; this.summaryText = '';
         const contentValue = this.articleContent;
 
         if (!contentValue || String(contentValue).trim() === '') {
-            this.error = \`The field '\${KNOWLEDGE_CONTENT_FIELD.fieldApiName}' configured in the LWC is empty or contains no text to summarize on this record.\`;
-            this.isLoading = false;
-            return;
+            this.error = \`Field '\${KNOWLEDGE_CONTENT_FIELD.fieldApiName}' is empty.\`;
+            this.isLoading = false; return;
         }
         
-        // Remove HTML tags from rich text content before sending to API
         let plainTextContent = this.stripHtml(String(contentValue));
-
         if (!plainTextContent || plainTextContent.trim() === '') {
-            this.error = 'The content of the field became empty after attempting to strip HTML tags. Original content might have only contained HTML structures or was whitespace.';
-            this.isLoading = false;
-            return;
+            this.error = 'Content empty after HTML stripping.'; this.isLoading = false; return;
         }
 
         try {
-            // Call the Apex method, passing the plain text content
-            const result = await getPageSummaryFromGemini({ articleFieldContent: plainTextContent }); // Match Apex param name
-            
+            const result = await getPageSummaryFromGemini({ articleFieldContent: plainTextContent });
             if (result) {
-                if (result.toLowerCase().startsWith('error:')) {
-                    this.error = result; // Display error from Apex
-                } else {
-                    this.summaryText = result; // Store successful summary (expected to be HTML)
-                    this.isModalOpen = true;   // Open the modal
-                }
-            } else {
-                this.error = 'Received an empty or null response from the summarization service.';
-            }
-        } catch (e) {
-            this.error = 'An error occurred while trying to get the summary: ' + (e.body?.message || e.message);
-            console.error('LWC Error calling Apex getPageSummaryFromGemini:', JSON.stringify(e));
-        } finally {
-            this.isLoading = false; // Hide spinner
-        }
+                if (result.toLowerCase().startsWith('error:')) { this.error = result; } 
+                else { this.summaryText = result; this.isModalOpen = true; }
+            } else { this.error = 'Empty response from service.'; }
+        } catch (e) { this.error = 'Error calling Apex: ' + (e.body?.message || e.message); console.error('LWC Apex call error:', JSON.stringify(e));}
+        finally { this.isLoading = false; }
     }
     
-    // Utility function to strip HTML tags from a string
     stripHtml(html) {
         if (!html) return "";
-        try {
-            let doc = new DOMParser().parseFromString(html, 'text/html');
-            return doc.body.textContent || "";
-        } catch (e) {
-            // Basic fallback, less reliable for complex HTML
-            return html.replace(/<[^>]*>?/gm, '');
-        }
+        try { let doc = new DOMParser().parseFromString(html, 'text/html'); return doc.body.textContent || ""; }
+        catch (e) { return html.replace(/<[^>]*>?/gm, ''); }
     }
 
-    // Handles closing the summary modal
-    closeModal() {
-        this.isModalOpen = false;
-        this.summaryText = ''; // Clear summary when modal is closed
-    }
+    closeModal() { this.isModalOpen = false; this.summaryText = ''; }
 }
-            </code></pre>
+                </code></pre>
+            </div>
 
             <h3 style="margin-top: 2em;">3. <code>knowledgeCompanion.js-meta.xml</code></h3>
-            <pre><code class="language-xml">
+            <div class="code-block-wrapper">
+                <button class="copy-code-button" aria-label="Copy LWC XML">Copy</button>
+                <pre><code class="language-xml">
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata"&gt;
     &lt;apiVersion&gt;59.0&lt;/apiVersion&gt; 
@@ -554,88 +527,106 @@ export default class KnowledgeCompanion extends LightningElement {
         &lt;/targetConfig&gt;
     &lt;/targetConfigs&gt;
 &lt;/LightningComponentBundle&gt;
-            </code></pre>
+                </code></pre>
+            </div>
             <div class="note">
-                <strong>Action:</strong> Create these three LWC files. **Remember to update the <code>KNOWLEDGE_CONTENT_FIELD</code> import in <code>knowledgeCompanion.js</code>** to match the API name of the field you want to summarize on your Knowledge Article object. Deploy and add to your Knowledge Article page layout.
+                <strong>Action:</strong> Create these three LWC files. **Update <code>KNOWLEDGE_CONTENT_FIELD</code> in <code>knowledgeCompanion.js</code>**. Deploy and add to your Knowledge Article page.
             </div>
         </div>
         
         <div class="slide" id="slide8">
-            <h2>Alternative Approach: Leveraging Salesforce Native AI ☁️</h2>
-            <p>While this lab focuses on direct integration with an external LLM like Gemini for learning purposes, it's important to be aware of Salesforce's evolving native AI capabilities.</p>
+            <h2>Alternative Approach: Salesforce Prompt Builder & Einstein ☁️</h2>
+            <p>While this lab uses an external API for learning, Salesforce offers powerful native Generative AI tools like **Prompt Builder** within the Einstein 1 Platform. This allows you to create and manage AI prompts that leverage LLMs directly within Salesforce, often with tighter data integration and governance.</p>
             
-            <h3>Using Einstein and Platform AI Features</h3>
-            <p>Salesforce is increasingly embedding Generative AI into its platform (e.g., through Einstein GPT, Service Cloud AI, Sales Cloud AI, and features similar to "Agent Assist" or "Copilot" experiences). For tasks like summarization, especially within standard objects like Knowledge or Case, Salesforce may offer out-of-the-box or configurable solutions.</p>
+            <h3>Using Prompt Builder for Summarization (Conceptual)</h3>
+            <p>Prompt Builder enables you to craft reusable and context-aware prompts for various tasks, including summarization.</p>
 
-            <h4>Conceptual Steps for a Native Salesforce AI Summarization:</h4>
+            <h4>Conceptual Steps with Prompt Builder for Knowledge Article Summarization:</h4>
             <ol>
                 <li>
-                    <strong>Identify Use Case & Object:</strong> Determine which object (e.g., Knowledge Article - <code>Knowledge__kav</code>) and which specific field (e.g., a rich text field like <code>Article_Body__c</code>) requires summarization.
+                    <strong>Access Prompt Builder:</strong> Navigate to Prompt Builder in Salesforce Setup.
                 </li>
                 <li>
-                    <strong>Explore Salesforce AI Services:</strong>
+                    <strong>Create a New Prompt Template:</strong>
                     <ul>
-                        <li>Check for existing Einstein features for that object (e.g., Einstein for Service might have Case Summarization, Einstein Article Recommendations for Knowledge).</li>
-                        <li>Look into features like Prompt Builder or specific "Copilot" actions that allow you to invoke LLMs managed by Salesforce.</li>
+                        <li>Choose a template type (e.g., "Summarization" if available, or a general "Template with Grounding").</li>
+                        <li>Give it a descriptive name, like "Knowledge Article Field Summary".</li>
                     </ul>
                 </li>
                 <li>
-                    <strong>Configure Prompt Templates (if applicable):</strong>
+                    <strong>Select an LLM:</strong> Choose from available Large Language Models that Salesforce provides access to via the Einstein 1 Platform.
+                </li>
+                <li>
+                    <strong>Design the Prompt:</strong>
                     <ul>
-                        <li>If using a feature like Prompt Builder, you would create a prompt template tailored for summarizing Knowledge Article content. This template guides the Salesforce-managed LLM.</li>
-                        <li>Example Prompt Focus: "Summarize this Knowledge Article field content into 3 key bullet points suitable for an support agent."</li>
+                        <li>Write clear instructions for the LLM.
+                        <li>Use merge fields or variables to dynamically insert the content of your Knowledge Article field (e.g., `{!$Input.KnowledgeArticle.Your_Field_API_Name__c}`).</li>
+                        <li>Specify the desired output format (e.g., "Provide a concise summary in 3-5 bullet points using HTML `&lt;ul&gt;&lt;li&gt;` tags.").</li>
+                        <li>Example prompt:
+                            <div class="code-block-wrapper">
+                                <button class="copy-code-button" aria-label="Copy Prompt Example">Copy</button>
+                                <pre><code class="language-text">
+Summarize the following Salesforce Knowledge Article content into a few key bullet points. 
+Focus on the main purpose and key information. Output the summary in HTML format using an unordered list.
+
+Article Content:
+{!$Input.KnowledgeArticle.Content_for_Summarization__c} 
+                                </code></pre>
+                            </div>
+                        </li>
                     </ul>
                 </li>
                 <li>
-                    <strong>Trigger Summarization:</strong>
-                    <ul>
-                        <li>This might be an out-of-the-box button provided by the Salesforce feature.</li>
-                        <li>It could be invoked via a Flow that calls a Prompt Template or an Invocable Apex action that interacts with the Salesforce AI services.</li>
-                        <li>A custom LWC could also trigger such a Flow or Apex action.</li>
-                    </ul>
+                    <strong>Grounding (Optional but Recommended):</strong> Ground the prompt with relevant Salesforce data (e.g., other fields from the Knowledge Article, related records) to give the LLM more context for a better summary.
                 </li>
                 <li>
-                    <strong>Display Summary:</strong>
+                    <strong>Test and Refine:</strong> Use the testing interface in Prompt Builder to try out your prompt with example Knowledge Article content and iterate until you get the desired summary quality and format.
+                </li>
+                <li>
+                    <strong>Save and Activate:</strong> Once satisfied, save and activate your prompt template.
+                </li>
+                <li>
+                    <strong>Integrate and Invoke:</strong>
                     <ul>
-                        <li>The native feature might have its own UI for displaying summaries.</li>
-                        <li>Summaries could be displayed in standard components, custom LWCs, or even written back to a field (though real-time display is often preferred).</li>
+                        <li>**Flow:** The easiest way is often to call the activated Prompt Template from a Screen Flow that can be launched from the Knowledge Article page. The Flow passes the article content to the prompt and displays the result.</li>
+                        <li>**Apex:** Call the Prompt Template via Invocable Apex if more complex logic or a different trigger is needed.</li>
+                        <li>**LWC:** An LWC can trigger the Flow or Apex method that invokes the prompt.</li>
                     </ul>
                 </li>
             </ol>
 
-            <h4>Benefits of Using Native Salesforce AI:</h4>
+            <h4>Benefits of Using Prompt Builder:</h4>
             <ul>
-                <li><strong>Data Residency & Trust:</strong> Data typically stays within the Salesforce Trust Boundary.</li>
-                <li><strong>Contextual Awareness:</strong> Salesforce-managed LLMs can be more easily grounded with your specific org data and context.</li>
-                <li><strong>Simplified Integration:</strong> Often less custom code is needed compared to integrating with an external API. Configuration might be more prominent.</li>
-                <li><strong>Managed Service:</strong> Salesforce handles the underlying LLM infrastructure.</li>
+                <li>**Declarative AI:** Build and manage prompts without extensive code for the AI interaction itself.</li>
+                <li>**Salesforce Data Integration:** Easily use merge fields to ground prompts with CRM data.</li>
+                <li>**Reusability & Governance:** Centrally manage and version prompt templates.</li>
+                <li>**Leverages Einstein Trust Layer:** Benefits from Salesforce's built-in data security and privacy measures for Generative AI.</li>
             </ul>
-            <p>As you continue your Salesforce development journey, keep an eye on new releases and features related to Generative AI on the Salesforce platform, as they can offer powerful and integrated solutions for use cases like document summarization.</p>
+            <p>Using Prompt Builder is a powerful way to embed generative AI capabilities like summarization directly into your Salesforce workflows and user experiences.</p>
         </div>
 
         <div class="slide" id="slide9">
             <h2>Congratulations & Next Steps 🎉</h2>
             <h3>What You've Accomplished in this Lab 🏆</h3>
             <ul>
-                <li>Set up pre-requisites including Salesforce org configuration and understanding API key usage for the lab.</li>
-                <li>Configured the lab environment to use a provided Gemini API Key directly in Apex.</li>
-                <li>Developed an Apex class to make callouts to the Gemini API for text summarization, with an updated prompt for Knowledge Articles.</li>
-                <li>Built a Lightning Web Component (LWC) to provide a user interface on a Knowledge Article record page.</li>
-                <li>Implemented LWC-to-Apex communication to trigger the AI summarization of a specific article field.</li>
-                <li>Explored how prompts can be crafted to guide the AI's output and considered alternative native Salesforce AI approaches.</li>
+                <li>Set up pre-requisites including Salesforce org configuration and using a provided API key.</li>
+                <li>Developed an Apex class to make callouts to the Gemini API.</li>
+                <li>Updated the Apex prompt for Knowledge Article summarization.</li>
+                <li>Built an LWC to provide a UI on a Knowledge Article record page.</li>
+                <li>Implemented LWC-to-Apex communication for AI summarization.</li>
+                <li>Considered alternative native Salesforce AI approaches using Prompt Builder.</li>
             </ul>
             <h3>Potential Project Implementations & Enhancements 🚀</h3>
             <ul>
-                <li>Adapt to summarize other objects and fields (Cases, Emails, etc.).</li>
-                <li>Experiment with different prompts for various summary styles or information extraction from Knowledge Articles.</li>
-                <li>Explore secure API key storage (Named Credentials, Protected Custom Settings) for your own projects (see Appendix).</li>
+                <li>Adapt to summarize other objects (Cases, Emails).</li>
+                <li>Experiment with different prompts for various summary styles.</li>
+                <li>Explore secure API key storage for your own projects (see Appendix).</li>
             </ul>
             <h3>Further Reading & Resources 📚</h3>
             <ul>
                 <li><a href="https://ai.google.dev/docs/gemini_api_overview" target="_blank">Google Gemini API Documentation</a></li>
                 <li><a href="https://developer.salesforce.com/docs/" target="_blank">Salesforce Developer Guide</a></li>
-                <li><a href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc" target="_blank">Lightning Web Components Dev Guide</a></li>
-                <li>Trailhead: Search for "Apex Integration Services", "Lightning Web Components Basics", "Einstein Generative AI".</li>
+                <li><a href="https://trailhead.salesforce.com/content/learn/modules/prompt-builder-basics" target="_blank">Trailhead: Prompt Builder Basics</a></li>
             </ul>
             <p>Keep exploring, keep building, and happy coding!</p>
         </div>
@@ -647,44 +638,45 @@ export default class KnowledgeCompanion extends LightningElement {
             <ol>
                 <li>Go to <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>.</li>
                 <li>Sign in with your Google account.</li>
-                <li>You might need to enable the "Generative Language API" in a Google Cloud Project. Google AI Studio often guides you through this. Ensure billing is enabled for that project if required by Google Cloud for API usage beyond free tiers.</li>
+                <li>You might need to enable the "Generative Language API" in a Google Cloud Project. Google AI Studio often guides you. Ensure billing is enabled for that project if required by Google Cloud for API usage beyond free tiers.</li>
                 <li>In Google AI Studio, click "Get API key" then "Create API key".</li>
                 <li>Copy the generated API key and store it securely.</li>
             </ol>
 
-            <h3>B. Using Named Credentials in Salesforce (Best Practice for API Integration)</h3>
-            <p>Named Credentials securely manage authentication and endpoint details for callouts.</p>
+            <h3>B. Using Named Credentials in Salesforce (Best Practice)</h3>
+            <p>Named Credentials securely manage authentication and endpoint details.</p>
             <ol>
-                <li><strong>Store API Key Securely (Example):</strong> Use a Protected Custom Setting (e.g., `API_Keys__c` with a field `Gemini_Key__c`).</li>
+                <li><strong>Store API Key Securely:</strong> Use a Protected Custom Setting (e.g., `API_Keys__c` with a field `Gemini_Key__c`).</li>
                 <li><strong>Create Named Credential:</strong>
                     <ul>
                         <li>Setup &gt; Named Credentials &gt; New.</li>
                         <li>**Label:** e.g., `My_Secure_Gemini_API`</li>
                         <li>**Name:** (Auto-filled)</li>
                         <li>**URL:** `https://generativelanguage.googleapis.com`</li>
-                        <li>**Identity Type:** `Anonymous` (often suitable if key is in header)</li>
+                        <li>**Identity Type:** `Anonymous`</li>
                         <li>**Authentication Protocol:** `No Authentication`</li>
-                        <li>**Custom Headers:**
+                        <li>**Custom Headers (Recommended for API Key):**
                             <ul>
                                 <li>Header Name: `x-goog-api-key`</li>
-                                <li>Header Value: `{!'YOUR_API_KEY_HERE'}` (You can directly paste the key for testing, or for production, use a formula like `{!$Setup.API_Keys__c.Gemini_Key__c}` if your key is in a Custom Setting. Note: Direct merge fields for Custom Settings in Named Credential headers can be tricky; often better to set header in Apex after retrieving from Custom Setting.) A common pattern is to leave API Key out of Named Credential custom headers and add it in Apex if it's dynamic or from secure storage.</li>
+                                <li>Header Value: Your actual API Key. (For production, you'd typically retrieve this from a custom setting in Apex and set the header there, or if the Named Credential supports merge fields from protected settings, use that. Direct paste here is simpler than formula for lab reference).</li>
                             </ul>
                         </li>
                         <li>Save.</li>
                     </ul>
                 </li>
                 <li><strong>Update Apex to Use Named Credential:</strong>
-                    <pre><code class="language-apex">
-// Example Apex using Named Credential
+                    <div class="code-block-wrapper">
+                        <button class="copy-code-button" aria-label="Copy Apex Named Credential Example">Copy</button>
+                        <pre><code class="language-apex">
+// Example Apex using Named Credential (if key is in Named Credential Custom Header)
 HttpRequest req = new HttpRequest();
 req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-latest:generateContent');
 req.setMethod('POST');
 req.setHeader('Content-Type', 'application/json; charset=utf-8');
-// If x-goog-api-key was NOT set as a Custom Header in Named Credential:
-// String apiKey = getApiKeyFromSecureStorage(); // Your method
-// req.setHeader('x-goog-api-key', apiKey); 
-// ... rest of request ...
-                    </code></pre>
+// API key is handled by the Named Credential's custom header setting.
+// ... rest of request body setup and callout ...
+                        </code></pre>
+                    </div>
                 </li>
             </ol>
         </div>
@@ -713,7 +705,7 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             currentSlide = index;
             updateNavButtons();
 
-            // Original Slide 7 (Simulations & Visuals) is now Slide 5 (index 4)
+            // Simulation & Visuals is now Slide 5 (index 4)
             if (index === 4) { 
                 startWorkflowAnimation();
             }
@@ -730,6 +722,39 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             if (prevButton) { prevButton.disabled = (currentSlide === 0); }
             if (nextButton) { nextButton.disabled = (currentSlide === totalSlides - 1); }
         }
+        
+        // --- Copy Code Functionality ---
+        function copyCode(buttonElement) {
+            const preElement = buttonElement.nextElementSibling; // Assumes <pre> is the immediate next sibling
+            if (preElement && preElement.tagName === 'PRE') {
+                const codeElement = preElement.querySelector('code');
+                if (codeElement) {
+                    const codeToCopy = codeElement.textContent || "";
+                    navigator.clipboard.writeText(codeToCopy).then(() => {
+                        buttonElement.textContent = 'Copied!';
+                        buttonElement.classList.add('copied');
+                        setTimeout(() => {
+                            buttonElement.textContent = 'Copy';
+                            buttonElement.classList.remove('copied');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy code: ', err);
+                        buttonElement.textContent = 'Error';
+                        setTimeout(() => {
+                            buttonElement.textContent = 'Copy';
+                        }, 2000);
+                    });
+                } else { console.error("Copy Code: <code> element not found inside <pre>.");}
+            } else { console.error("Copy Code: <pre> element not found next to button.");}
+        }
+        
+        // Attach event listeners to copy buttons after DOM is loaded
+        function initializeCopyButtons() {
+            document.querySelectorAll('.copy-code-button').forEach(button => {
+                button.onclick = function() { copyCode(this); };
+            });
+        }
+
 
         document.addEventListener('DOMContentLoaded', () => {
             if (slides.length > 0) {
@@ -750,7 +775,7 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
                     toggleBtn.textContent = 'Show Original Text';
                 }
             }
-            // Syntax highlighting function removed for plain code display
+            initializeCopyButtons(); // Set up copy buttons
         });
 
         function startWorkflowAnimation() {
