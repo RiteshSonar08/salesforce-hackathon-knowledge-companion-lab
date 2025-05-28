@@ -155,8 +155,8 @@
             cursor: not-allowed;
         }
         
-        .replay-button { /* Specific style for Replay Animation button */
-            background-color: #5cb85c; /* A different color, e.g., green */
+        .replay-button { 
+            background-color: #5cb85c; 
             color: white;
             border: none;
             padding: 8px 15px;
@@ -164,10 +164,32 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-top: 10px; /* From original code, slds-m-top_small */
+            margin-top: 10px; 
         }
         .replay-button:hover {
-            background-color: #4cae4c; /* Darker green on hover */
+            background-color: #4cae4c; 
+        }
+
+        .summary-toggle-button { /* New style for "Show AI Summary Example" button */
+            background-color: #ff7f50; /* Coral color */
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 0.95em;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-right: 10px; /* Add some spacing if other buttons are nearby */
+        }
+        .summary-toggle-button:hover {
+            background-color: #ff6347; /* Tomato - darker coral */
+            transform: translateY(-1px); /* Slight lift effect */
+        }
+        .summary-toggle-button:active {
+            transform: translateY(0px); /* Button press effect */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
 
@@ -201,9 +223,10 @@
         .summary-toggle-container {
             margin-top: 20px; padding: 15px; background-color: #e9ecef; border-radius: 5px;
         }
-        .summary-toggle-container button { margin-bottom: 10px;}
+        /* .summary-toggle-container button { margin-bottom: 10px;}  Replaced by .summary-toggle-button styling */
         .summary-text-area {
             border: 1px dashed #ccc; padding: 10px; min-height: 100px; background-color: #fff;
+            margin-top: 15px; /* Added margin-top for spacing after button */
         }
         #summaryAfterView { display: none; }
     </style>
@@ -283,26 +306,28 @@
             <h3>Workflow Animation</h3>
             <p>This D3.js animation visualizes the data flow when you click "AI Summarise". Click "Replay Animation" to restart it.</p>
             <div id="workflowAnimation"></div>
-            <button onclick="startWorkflowAnimation()" class="replay-button">🎨 Replay Animation</button> {/* Updated Button */}
+            <button onclick="startWorkflowAnimation()" class="replay-button">🎨 Replay Animation</button>
 
-            <h3 class="slds-m-top_large">Before/After Summary View (Toggle Example)</h3>
+            <h3 class="slds-m-top_large">Before/After Summary View (Summarise Example)</h3> {/* Title Updated */}
             <div class="summary-toggle-container">
-                <p>This is a static example to simulate how long text can be condensed. Click the button to toggle.</p>
-                <button id="toggleSummaryBtn" onclick="toggleSummaryView()" class="slds-button slds-button_brand">Show AI Summary Example</button>
+                <p>This is a static example to simulate how long text can be condensed. Click the button to toggle between the original content and its AI-generated summary.</p>
+                {/* Button Updated with new class */}
+                <button id="toggleSummaryBtn" onclick="toggleSummaryView()" class="summary-toggle-button">✨ Show AI Summary Example</button> 
                 <div id="originalTextView" class="summary-text-area">
                     <h4>Original Document Text (Example)</h4>
-                    <p>The Q4 Global Sales Initiative, codenamed "Project Everest," aims to expand market penetration in emerging APAC regions by 15% and increase overall recurring revenue by 10% through strategic partnerships and a revamped digital marketing strategy. Key performance indicators (KPIs) will include new customer acquisition rates, average deal size, and customer lifetime value...</p> {/* Truncated for brevity in this template */}
+                    {/* Full Text Restored */}
+                    <p>The Q4 Global Sales Initiative, codenamed "Project Everest," aims to expand market penetration in emerging APAC regions by 15% and increase overall recurring revenue by 10% through strategic partnerships and a revamped digital marketing strategy. Key performance indicators (KPIs) will include new customer acquisition rates, average deal size, and customer lifetime value. The initiative will involve cross-functional teams from Sales, Marketing, and Product Development, with a projected timeline of six months, starting January 1st. Bi-weekly progress reports will be submitted to the executive leadership team, outlining achievements, challenges, and mitigation strategies. A dedicated budget of $2.5 million has been allocated for this initiative, covering marketing campaigns, sales incentives, and technology upgrades. Training sessions for the sales team on new product features and market positioning are scheduled for mid-December. The success of Project Everest is critical for achieving the company's annual growth targets and strengthening its competitive position in the global market. All team members are expected to fully commit to their roles and responsibilities to ensure the project's objectives are met within the stipulated timeframe and budget.</p>
                 </div>
                 <div id="summaryAfterView" class="summary-text-area">
                     <h4>AI Generated Summary (Example)</h4>
-                    <p>"Project Everest," a 6-month, $2.5M Q4 initiative, targets a 15% APAC market expansion and 10% recurring revenue growth via partnerships and digital marketing. KPIs include customer acquisition, deal size, and lifetime value...</p>  {/* Truncated */}
+                    <p>"Project Everest," a 6-month, $2.5M Q4 initiative, targets a 15% APAC market expansion and 10% recurring revenue growth via partnerships and digital marketing. KPIs include customer acquisition, deal size, and lifetime value. Cross-functional teams will report bi-weekly to executives. Success is vital for annual growth and market position.</p>
                 </div>
             </div>
         </div>
 
         <div class="slide" id="slide6">
             <h2>Lab Step 3: Apex Code Walkthrough 👨‍💻</h2>
-            <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API using the latest Flash model (e.g., Gemini Flash 1.5 or newer compatible versions like a future Flash 2.0, if available) and the provided API key.</p>
+            <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API using the latest Flash model (e.g., Gemini Flash 1.5 or newer) and the provided API key.</p>
             <p><strong>Action:</strong> Create this Apex class in your Salesforce org.</p>
             <div class="code-block-wrapper">
                 <button class="copy-code-button" aria-label="Copy Apex Code">Copy</button>
@@ -330,11 +355,9 @@ public with sharing class GeminiAPIService {
             return 'Error: The provided Gemini API Key is not configured in Apex.';
         }
 
-        // Use 'gemini-1.5-flash-latest' or update to a specific "Flash 2.0" model identifier if known & available.
         String modelIdentifier = 'gemini-1.5-flash-latest'; 
         String endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/' + modelIdentifier + ':generateContent?key=' + GEMINI_API_KEY;
 
-        // Updated prompt for summarizing a Knowledge Article field
         String prompt = 'You are an expert AI assistant. Your task is to summarize the content of a Salesforce Knowledge Article field. ' +
             'The content might be technical, procedural, or informational. ' +
             'Provide a concise, well-structured summary in HTML format. ' +
@@ -488,6 +511,7 @@ export default class KnowledgeCompanion extends LightningElement {
         }
 
         try {
+            // Using 'articleFieldContent' as the parameter name to match the updated Apex method
             const result = await getPageSummaryFromGemini({ articleFieldContent: plainTextContent });
             if (result) {
                 if (result.toLowerCase().startsWith('error:')) { this.error = result; } 
@@ -536,51 +560,54 @@ export default class KnowledgeCompanion extends LightningElement {
         
         <div class="slide" id="slide8">
             <h2>Alternative Approach: Salesforce Prompt Builder & Einstein ☁️</h2>
-            <p>While this lab uses an external API for learning, Salesforce offers powerful native Generative AI tools like **Prompt Builder** within the Einstein 1 Platform. This allows you to create and manage AI prompts that leverage LLMs directly within Salesforce, often with tighter data integration and governance.</p>
+            <p>While this lab focuses on direct integration with an external LLM like Gemini for learning purposes, Salesforce offers powerful native Generative AI tools like **Prompt Builder** within the Einstein 1 Platform. This allows you to create and manage AI prompts that leverage LLMs directly within Salesforce, often with tighter data integration and governance.</p>
             
-            <h3>Using Prompt Builder for Summarization (Conceptual)</h3>
-            <p>Prompt Builder enables you to craft reusable and context-aware prompts for various tasks, including summarization.</p>
+            <h3>Using Prompt Builder for Knowledge Article Summarization</h3>
+            <p>Prompt Builder enables you to craft reusable and context-aware prompts for various tasks, including summarization of specific record fields.</p>
 
-            <h4>Conceptual Steps with Prompt Builder for Knowledge Article Summarization:</h4>
+            <h4>Conceptual Steps with Prompt Builder:</h4>
             <ol>
                 <li>
-                    <strong>Access Prompt Builder:</strong> Navigate to Prompt Builder in Salesforce Setup.
+                    <strong>Access Prompt Builder:</strong> Navigate to "Prompt Builder" in Salesforce Setup.
                 </li>
                 <li>
                     <strong>Create a New Prompt Template:</strong>
                     <ul>
-                        <li>Choose a template type (e.g., "Summarization" if available, or a general "Template with Grounding").</li>
-                        <li>Give it a descriptive name, like "Knowledge Article Field Summary".</li>
+                        <li>Click "New Prompt Template".</li>
+                        <li>Select a type, often "Record Summary" or a general "Template with Grounding" if summarizing specific field data. For a Knowledge Article, you might start with a general template.</li>
+                        <li>Give it a descriptive name (e.g., `Knowledge_Article_Field_Summarizer`).</li>
+                        <li>Select the object you are working with (e.g., `KnowledgeArticleVersion`).</li>
                     </ul>
                 </li>
                 <li>
-                    <strong>Select an LLM:</strong> Choose from available Large Language Models that Salesforce provides access to via the Einstein 1 Platform.
-                </li>
-                <li>
-                    <strong>Design the Prompt:</strong>
+                    <strong>Design the Prompt Text:</strong>
                     <ul>
-                        <li>Write clear instructions for the LLM.
-                        <li>Use merge fields or variables to dynamically insert the content of your Knowledge Article field (e.g., `{!$Input.KnowledgeArticle.Your_Field_API_Name__c}`).</li>
+                        <li>Write clear instructions for the LLM.</li>
+                        <li>Use **merge fields** to dynamically insert the content of your Knowledge Article field. For example, if your field is `Content_for_Summarization__c`, you might use something like `{!$Record.Content_for_Summarization__c}` (syntax may vary slightly based on context - check Prompt Builder's UI for exact merge field syntax for the selected object).</li>
                         <li>Specify the desired output format (e.g., "Provide a concise summary in 3-5 bullet points using HTML `&lt;ul&gt;&lt;li&gt;` tags.").</li>
-                        <li>Example prompt:
+                        <li>Example prompt structure:
                             <div class="code-block-wrapper">
-                                <button class="copy-code-button" aria-label="Copy Prompt Example">Copy</button>
+                                <button class="copy-code-button" aria-label="Copy Prompt Builder Example">Copy</button>
                                 <pre><code class="language-text">
-Summarize the following Salesforce Knowledge Article content into a few key bullet points. 
-Focus on the main purpose and key information. Output the summary in HTML format using an unordered list.
+Task: Summarize the key information from the following Salesforce Knowledge Article content.
+Focus on the main purpose, key instructions, or critical takeaways.
+Output the summary in a short paragraph followed by 3-5 bullet points in HTML format.
 
-Article Content:
-{!$Input.KnowledgeArticle.Content_for_Summarization__c} 
+Knowledge Article Content:
+{!$Record.Content_for_Summarization__c}
                                 </code></pre>
                             </div>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    <strong>Grounding (Optional but Recommended):</strong> Ground the prompt with relevant Salesforce data (e.g., other fields from the Knowledge Article, related records) to give the LLM more context for a better summary.
+                    <strong>Grounding (Optional but Powerful):</strong>
+                    <ul>
+                        <li>You can ground the prompt with related Salesforce data to provide more context to the LLM, potentially leading to more relevant summaries. For a Knowledge Article, this might include its title, category, or related Case information if applicable.</li>
+                    </ul>
                 </li>
                 <li>
-                    <strong>Test and Refine:</strong> Use the testing interface in Prompt Builder to try out your prompt with example Knowledge Article content and iterate until you get the desired summary quality and format.
+                    <strong>Test and Refine:</strong> Use the testing interface within Prompt Builder. Select a sample Knowledge Article record to see how the merge fields populate and how the LLM responds. Iterate on your prompt text until the summaries are accurate and helpful.
                 </li>
                 <li>
                     <strong>Save and Activate:</strong> Once satisfied, save and activate your prompt template.
@@ -588,21 +615,19 @@ Article Content:
                 <li>
                     <strong>Integrate and Invoke:</strong>
                     <ul>
-                        <li>**Flow:** The easiest way is often to call the activated Prompt Template from a Screen Flow that can be launched from the Knowledge Article page. The Flow passes the article content to the prompt and displays the result.</li>
-                        <li>**Apex:** Call the Prompt Template via Invocable Apex if more complex logic or a different trigger is needed.</li>
-                        <li>**LWC:** An LWC can trigger the Flow or Apex method that invokes the prompt.</li>
+                        <li>**Flow:** Call the activated Prompt Template from a Screen Flow (e.g., a flow launched by a button on the Knowledge Article page). The Flow passes the record context to the prompt and can display the result.</li>
+                        <li>**Apex:** Use Invocable Apex to call the prompt template if more complex server-side logic is needed. The `PromptTemplateService.execute` method can be used.</li>
+                        <li>**LWC:** An LWC can trigger the Flow or Apex method that invokes the prompt, similar to how this lab's LWC calls Apex.</li>
                     </ul>
                 </li>
             </ol>
-
             <h4>Benefits of Using Prompt Builder:</h4>
             <ul>
-                <li>**Declarative AI:** Build and manage prompts without extensive code for the AI interaction itself.</li>
-                <li>**Salesforce Data Integration:** Easily use merge fields to ground prompts with CRM data.</li>
-                <li>**Reusability & Governance:** Centrally manage and version prompt templates.</li>
-                <li>**Leverages Einstein Trust Layer:** Benefits from Salesforce's built-in data security and privacy measures for Generative AI.</li>
+                <li>**Declarative AI:** Build and manage prompts with low-code tools.</li>
+                <li>**Salesforce Data Integration:** Natively uses merge fields and grounding with CRM data.</li>
+                <li>**Reusability & Governance:** Centrally manage, version, and control access to prompt templates.</li>
+                <li>**Leverages Einstein Trust Layer:** Benefits from Salesforce's built-in data security, privacy, and responsible AI measures.</li>
             </ul>
-            <p>Using Prompt Builder is a powerful way to embed generative AI capabilities like summarization directly into your Salesforce workflows and user experiences.</p>
         </div>
 
         <div class="slide" id="slide9">
@@ -610,7 +635,7 @@ Article Content:
             <h3>What You've Accomplished in this Lab 🏆</h3>
             <ul>
                 <li>Set up pre-requisites including Salesforce org configuration and using a provided API key.</li>
-                <li>Developed an Apex class to make callouts to the Gemini API.</li>
+                <li>Developed an Apex class to make callouts to the Gemini API for text summarization.</li>
                 <li>Updated the Apex prompt for Knowledge Article summarization.</li>
                 <li>Built an LWC to provide a UI on a Knowledge Article record page.</li>
                 <li>Implemented LWC-to-Apex communication for AI summarization.</li>
@@ -646,7 +671,7 @@ Article Content:
             <h3>B. Using Named Credentials in Salesforce (Best Practice)</h3>
             <p>Named Credentials securely manage authentication and endpoint details.</p>
             <ol>
-                <li><strong>Store API Key Securely:</strong> Use a Protected Custom Setting (e.g., `API_Keys__c` with a field `Gemini_Key__c`).</li>
+                <li><strong>Store API Key Securely (Example):</strong> Use a Protected Custom Setting (e.g., `API_Keys__c` with a field `Gemini_Key__c`).</li>
                 <li><strong>Create Named Credential:</strong>
                     <ul>
                         <li>Setup &gt; Named Credentials &gt; New.</li>
@@ -658,7 +683,7 @@ Article Content:
                         <li>**Custom Headers (Recommended for API Key):**
                             <ul>
                                 <li>Header Name: `x-goog-api-key`</li>
-                                <li>Header Value: Your actual API Key. (For production, you'd typically retrieve this from a custom setting in Apex and set the header there, or if the Named Credential supports merge fields from protected settings, use that. Direct paste here is simpler than formula for lab reference).</li>
+                                <li>Header Value: Your actual API Key. (For production, retrieve this from a custom setting in Apex and set the header there, or if the Named Credential supports merge fields from protected settings, use that.)</li>
                             </ul>
                         </li>
                         <li>Save.</li>
@@ -673,8 +698,11 @@ HttpRequest req = new HttpRequest();
 req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-latest:generateContent');
 req.setMethod('POST');
 req.setHeader('Content-Type', 'application/json; charset=utf-8');
-// API key is handled by the Named Credential's custom header setting.
-// ... rest of request body setup and callout ...
+// API key is handled by the Named Credential's custom header setting if configured there.
+// If not in NC header, retrieve from secure storage and set here:
+// String apiKey = getApiKeyFromSecureStorage(); 
+// req.setHeader('x-goog-api-key', apiKey); 
+// ... rest of request ...
                         </code></pre>
                     </div>
                 </li>
@@ -725,8 +753,11 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
         
         // --- Copy Code Functionality ---
         function copyCode(buttonElement) {
-            const preElement = buttonElement.nextElementSibling; // Assumes <pre> is the immediate next sibling
-            if (preElement && preElement.tagName === 'PRE') {
+            // Find the <pre> element. Assumes <pre> is the next sibling of the button's parent div.
+            const wrapper = buttonElement.parentElement;
+            const preElement = wrapper.querySelector('pre');
+            
+            if (preElement) {
                 const codeElement = preElement.querySelector('code');
                 if (codeElement) {
                     const codeToCopy = codeElement.textContent || "";
@@ -740,18 +771,17 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
                     }).catch(err => {
                         console.error('Failed to copy code: ', err);
                         buttonElement.textContent = 'Error';
-                        setTimeout(() => {
-                            buttonElement.textContent = 'Copy';
-                        }, 2000);
+                        setTimeout(() => { buttonElement.textContent = 'Copy'; }, 2000);
                     });
                 } else { console.error("Copy Code: <code> element not found inside <pre>.");}
-            } else { console.error("Copy Code: <pre> element not found next to button.");}
+            } else { console.error("Copy Code: <pre> element not found relative to button.");}
         }
         
-        // Attach event listeners to copy buttons after DOM is loaded
         function initializeCopyButtons() {
             document.querySelectorAll('.copy-code-button').forEach(button => {
-                button.onclick = function() { copyCode(this); };
+                // Remove any old listeners to be safe if this function is ever called multiple times
+                button.onclick = null; 
+                button.addEventListener('click', function() { copyCode(this); });
             });
         }
 
@@ -770,12 +800,12 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
             const summaryView = document.getElementById('summaryAfterView');
             if (toggleBtn && summaryView) {
                  if (summaryView.style.display === 'none' || summaryView.style.display === '') {
-                    toggleBtn.textContent = 'Show AI Summary Example';
+                    toggleBtn.textContent = '✨ Show AI Summary Example'; // Keep icon if desired
                 } else {
                     toggleBtn.textContent = 'Show Original Text';
                 }
             }
-            initializeCopyButtons(); // Set up copy buttons
+            initializeCopyButtons(); 
         });
 
         function startWorkflowAnimation() {
@@ -821,7 +851,7 @@ req.setHeader('Content-Type', 'application/json; charset=utf-8');
                 if (summaryView.style.display === 'none' || summaryView.style.display === '') {
                     originalView.style.display = 'none'; summaryView.style.display = 'block'; button.textContent = 'Show Original Text';
                 } else {
-                    originalView.style.display = 'block'; summaryView.style.display = 'none'; button.textContent = 'Show AI Summary Example';
+                    originalView.style.display = 'block'; summaryView.style.display = 'none'; button.textContent = '✨ Show AI Summary Example';
                 }
             }
         }
