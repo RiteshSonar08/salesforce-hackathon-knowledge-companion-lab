@@ -7,7 +7,7 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* Updated font stack */
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             line-height: 1.7; 
             margin: 0;
             padding: 0;
@@ -16,7 +16,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 1.05rem; /* Slightly increased base font size */
+            font-size: 1.05rem; 
         }
 
         .progress-bar-container {
@@ -38,7 +38,7 @@
 
         .slide-container {
             width: 90%;
-            max-width: 1140px; /* Increased max-width */
+            max-width: 1140px; 
             margin: 40px auto 20px auto; 
             background-color: #fff;
             border: 1px solid #ddd;
@@ -73,13 +73,24 @@
         h4 { font-size: 1.1em; font-style: italic; color: #555;}
 
         p {
-            margin-bottom: 1.1em; /* Slightly increased paragraph spacing */
+            margin-bottom: 1.1em; 
         }
         ul, ol {
             margin-bottom: 1em;
             padding-left: 25px; 
         }
         li { margin-bottom: 0.6em; } 
+
+        /* Ensure consistent font-weight for text within slides */
+        .slide p, 
+        .slide ul, 
+        .slide ol, 
+        .slide li {
+            font-weight: 400; /* Normal font weight */
+        }
+        .slide strong, .slide b { 
+            font-weight: bold; /* Ensure strong/b tags are bold */
+        }
 
         a {
             color: #0070d2;
@@ -96,7 +107,7 @@
             background-color: #eef1f3;
             padding: 0.2em 0.4em;
             border-radius: 4px; 
-            font-size: 0.9em; /* Relative to parent, good for inline */
+            font-size: 0.9em; 
         }
 
         .code-block-wrapper {
@@ -111,7 +122,7 @@
             padding-top: 45px; 
             border-radius: 6px; 
             overflow-x: auto; 
-            font-size: 0.9em; /* Relative to body, makes code ~15px if body is ~17px */
+            font-size: 0.9em; 
             line-height: 1.6; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             white-space: pre; 
@@ -119,7 +130,7 @@
         pre code { 
             background-color: transparent;
             padding: 0;
-            font-size: 1em; /* Code font size will be same as pre font size */
+            font-size: 1em; 
             color: inherit; 
             white-space: inherit; 
         }
@@ -132,7 +143,7 @@
             color: white;
             border: 1px solid #005fb2; 
             padding: 6px 12px; 
-            font-size: 0.8em; /* Relative to body */
+            font-size: 0.8em; 
             font-weight: bold;
             border-radius: 4px;
             cursor: pointer;
@@ -158,12 +169,11 @@
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
             margin: 30px auto;      
             border: 1px solid #d1d9e0;
-            max-width: 1140px; /* Increased max-width */
         }
 
         .navigation-buttons button,
         .slide-counter {
-            font-size: 0.9rem; /* Adjusted font size relative to body */
+            font-size: 0.9rem; 
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -267,7 +277,7 @@
             border-left-width: 6px; 
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
         }
-        .note strong { font-weight: 600; } 
+        /* .note strong is handled by the .slide strong rule now */
         .note::before {
             font-weight: bold;
             margin-right: 8px;
@@ -275,7 +285,7 @@
         .note-general { background-color: #eef1f3; border-left-color: #0070d2; color: #003972; }
         .note-general::before { content: "ℹ️"; }
         .note-important { background-color: #fff3cd; border-left-color: #ffeeba; color: #856404;}
-        /*.note-important::before { content: "⚠️"; }*/
+        /* .note-important::before { content: "⚠️"; } */
         .note-action { background-color: #d4edda; border-left-color: #c3e6cb; color: #155724;}
         .note-action::before { content: "➡️"; }
         .note-tip { background-color: #d1ecf1; border-left-color: #bee5eb; color: #0c5460;}
@@ -328,7 +338,7 @@
             <p>By the end of this lab, you will have built a solution that can:</p>
             <ul>
                 <li>Summarize content from a rich text area field on a Salesforce Knowledge Article using the Gemini API.</li>
-                <li>Trigger this summarization process via a <code>Quick Action button</code> on the Knowledge Article page, which launches a Lightning Web Component (LWC).</li>
+                <li>Trigger this summarization process via a <strong>Quick Action button</strong> on the Knowledge Article page, which launches a Lightning Web Component (LWC).</li>
                 <li>The LWC will display the AI-generated summary clearly within a modal dialog.</li>
                 <li><strong>Explore your creativity</strong> in crafting effective prompts to the Gemini API to summarize different types of content from a Knowledge Article field in innovative ways.</li>
             </ul>
@@ -347,7 +357,7 @@
             </ul>
             <h3>2. Google Gemini API Key (Provided for this Lab)</h3>
             <ul>
-                <li>A **common Google Gemini API Key will be provided by the instructors.**</li>
+                <li>A <strong>common Google Gemini API Key will be provided by the instructors.</strong></li>
                 <li>You will use this key directly in the Apex code as instructed.</li>
             </ul>
             <h3>3. Salesforce Remote Site Setting (for Direct API Callouts)</h3>
@@ -367,7 +377,7 @@
                 <li>Click <strong>Save</strong>.</li>
             </ul>
             <div class="note note-general">
-                <strong>Note on Callouts:</strong> This Remote Site Setting is required because the primary Apex example in this lab constructs the full API endpoint directly. If you were using **Named Credentials** (covered in the Appendix as a best practice), the Named Credential itself would handle access to this URL, and you typically wouldn't need a separate Remote Site Setting for that specific endpoint defined in the Named Credential.
+                <strong>Note on Callouts:</strong> This Remote Site Setting is required because the primary Apex example in this lab constructs the full API endpoint directly. If you were using <strong>Named Credentials</strong> (covered in the Appendix as a best practice), the Named Credential itself would handle access to this URL, and you typically wouldn't need a separate Remote Site Setting for that specific endpoint defined in the Named Credential.
             </div>
             <h3>4. Basic Familiarity (Helpful)</h3>
             <ul>
@@ -711,25 +721,25 @@ export default class KnowledgeCompanion extends LightningElement {
         
         <div class="slide" id="slide9">
             <h2>Alternative Approach: Salesforce Prompt Builder & Einstein ☁️</h2>
-            <p>While this lab uses an external API, Salesforce offers powerful native Generative AI tools like **Prompt Builder** (part of the Einstein 1 Platform). This tool allows you to create, test, and manage AI prompts that leverage LLMs directly within Salesforce, often providing tighter data integration, better governance, and adherence to the Einstein Trust Layer.</p>
+            <p>While this lab uses an external API, Salesforce offers powerful native Generative AI tools like <strong>Prompt Builder</strong> (part of the Einstein 1 Platform). This tool allows you to create, test, and manage AI prompts that leverage LLMs directly within Salesforce, often providing tighter data integration, better governance, and adherence to the Einstein Trust Layer.</p>
             <h3>Using Prompt Builder for Knowledge Article Summarization</h3>
             <p>Prompt Builder enables you to craft reusable and context-aware prompts for various tasks, including summarization of specific record fields from objects like Knowledge Articles.</p>
             <h4>Conceptual Steps with Prompt Builder:</h4>
             <ol>
                 <li><strong>Access Prompt Builder:</strong> Navigate to "Prompt Builder" in Salesforce Setup.</li>
                 <li><strong>Create a New Prompt Template:</strong> Choose a type (e.g., "Record Summary" or "Template with Grounding"). Name it and select the `KnowledgeArticleVersion` object.</li>
-                <li><strong>Design the Prompt Text:</strong> Write clear instructions for the LLM. Use **merge fields** like `{!$Record.Your_Field_API_Name__c}` to insert Knowledge Article content. Specify the desired output format (e.g., "Summarize... into 3-5 bullet points using HTML `&lt;ul&gt;&lt;li&gt;` tags.").</li>
+                <li><strong>Design the Prompt Text:</strong> Write clear instructions for the LLM. Use <strong>merge fields</strong> like `{!$Record.Your_Field_API_Name__c}` to insert Knowledge Article content. Specify the desired output format (e.g., "Summarize... into 3-5 bullet points using HTML `&lt;ul&gt;&lt;li&gt;` tags.").</li>
                 <li><strong>Grounding (Optional):</strong> Ground your prompt with related Salesforce data (e.g., `{!$Record.Title}`) for more context.</li>
                 <li><strong>Select an LLM & Test:</strong> Choose from Salesforce-provided LLMs. Test with sample Knowledge Article record IDs to refine your prompt.</li>
                 <li><strong>Save and Activate:</strong> Save and activate your prompt template.</li>
-                <li><strong>Integrate and Invoke:</strong> Call the activated Prompt Template from a **Flow** (launched by a button), **Apex** (using `PromptTemplateService.execute`), or an **LWC** that triggers the Flow/Apex.</li>
+                <li><strong>Integrate and Invoke:</strong> Call the activated Prompt Template from a <strong>Flow</strong> (launched by a button), <strong>Apex</strong> (using `PromptTemplateService.execute`), or an <strong>LWC</strong> that triggers the Flow/Apex.</li>
             </ol>
             <h4>Benefits of Using Prompt Builder:</h4>
             <ul>
-                <li>**Declarative AI:** Build and manage prompts with low-code tools.</li>
-                <li>**Salesforce Data Integration:** Natively uses merge fields and grounding with CRM data.</li>
-                <li>**Reusability & Governance:** Centrally manage, version, and control access to prompt templates.</li>
-                <li>**Leverages Einstein Trust Layer:** Adheres to Salesforce's data security, privacy, and responsible AI principles.</li>
+                <li><strong>Declarative AI:</strong> Build and manage prompts with low-code tools.</li>
+                <li><strong>Salesforce Data Integration:</strong> Natively uses merge fields and grounding with CRM data.</li>
+                <li><strong>Reusability & Governance:</strong> Centrally manage, version, and control access to prompt templates.</li>
+                <li><strong>Leverages Einstein Trust Layer:</strong> Adheres to Salesforce's data security, privacy, and responsible AI principles.</li>
             </ul>
         </div>
 
