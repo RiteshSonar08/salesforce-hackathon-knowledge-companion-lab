@@ -430,9 +430,9 @@
 
         <div class="slide" id="slide6">
             <h2>Lab Step 3: Apex Code Walkthrough 👨‍💻</h2>
-            <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API using the latest Flash model (e.g., Gemini Flash 1.5 or newer) and the provided API key.</p>
+            <p>This Apex class (<code>GeminiAPIService.cls</code>) makes the callout to the Gemini API.</p>
             <div class="note note-action">
-                <strong>Action:</strong> Create this Apex class in your Salesforce org. Remember to replace the placeholder API key.
+                <strong>Action:</strong> Create this Apex class. Replace <code>'GEMINI_API_KEY'</code> (or <code>'KEY_PROVIDED_BY_INSTRUCTOR'</code> if that's your placeholder) in the `getProvidedApiKey` method with the actual API Key provided for the lab.
             </div>
             <div class="code-block-wrapper">
                 <button class="copy-code-button" aria-label="Copy Apex Code">📋 Copy</button>
@@ -441,22 +441,31 @@
 public with sharing class GeminiAPIService {
 
     private static String getProvidedApiKey() {
-        // TODO: LAB PARTICIPANT - REPLACE 'KEY_PROVIDED_BY_INSTRUCTOR' WITH THE ACTUAL API KEY.
-        String apiKey = 'KEY_PROVIDED_BY_INSTRUCTOR'; 
-        if (String.isBlank(apiKey) || apiKey == 'KEY_PROVIDED_BY_INSTRUCTOR') {
+        // TODO: LAB PARTICIPANT - REPLACE 'GEMINI_API_KEY' WITH THE ACTUAL API KEY.
+        String apiKey = 'GEMINI_API_KEY'; 
+        if (String.isBlank(apiKey) || apiKey == 'KEY_PROVIDED_BY_INSTRUCTOR' || apiKey == 'GEMINI_API_KEY') {
             System.debug(LoggingLevel.ERROR, 'GeminiAPIService: API Key is missing or placeholder.');
         }
         return apiKey;
     }
 
-    @AuraEnabled(cacheable=false) 
-    public static String getPageSummaryFromGemini(String articleFieldContent) {
-        if (String.isBlank(articleFieldContent)) {
-            return 'Error: Knowledge Article field content is blank.';
+    @AuraEnabled 
+    public static String getPageSummaryFromGemini(Id recordId) {
+
+        Knowledge__kav kav = [
+            SELECT Content_for_Summarization__c
+            FROM Knowledge__kav
+            WHERE Id = :recordId
+            LIMIT 1
+        ];
+
+        if (String.isBlank(kav.Content_for_Summarization__c)) {
+            throw new AuraHandledException('No content available for summarization.');
         }
         
         String GEMINI_API_KEY = getProvidedApiKey();
-        if (String.isBlank(GEMINI_API_KEY) || GEMINI_API_KEY == 'KEY_PROVIDED_BY_INSTRUCTOR') {
+        // Additional check in case the placeholder in getProvidedApiKey was missed.
+        if (String.isBlank(GEMINI_API_KEY) || GEMINI_API_KEY == 'KEY_PROVIDED_BY_INSTRUCTOR' || GEMINI_API_KEY == 'GEMINI_API_KEY') {
             return 'Error: The provided Gemini API Key is not configured in Apex.';
         }
 
@@ -469,7 +478,7 @@ public with sharing class GeminiAPIService {
             'Use bullet points (&lt;ul&gt;&lt;li&gt;...&lt;/li&gt;&lt;/ul&gt;) for lists or key takeaways where appropriate. ' +
             'Focus on extracting the core information and main points from the provided text. ' +
             'The summary should be easily readable and directly usable by someone looking for the essence of the article content. ' +
-            'Input text from Knowledge Article field:\n\n' + articleFieldContent;
+            'Input text from Knowledge Article field:\n\n' + kav.Content_for_Summarization__c;
 
         Map&lt;String, Object&gt; requestBody = new Map&lt;String, Object&gt;{
             'contents' => new List&lt;Object&gt;{
@@ -512,6 +521,9 @@ public with sharing class GeminiAPIService {
         } catch (Exception ex) {
             summaryResult = 'Error during callout: ' + ex.getMessage();
             System.debug(LoggingLevel.ERROR, 'GeminiAPIService Exception: ' + ex.getMessage() + '\\n' + ex.getStackTraceString());
+            // Re-throw as AuraHandledException if you want LWC to specifically handle it as such
+            // For this lab, returning the error string is also an option.
+            // throw new AuraHandledException('Callout Error: ' + ex.getMessage()); 
         }
         return summaryResult;
     }
@@ -520,65 +532,55 @@ public with sharing class GeminiAPIService {
             </div>
         </div>
 
-        <div class="slide" id="slide7">
+<div class="slide" id="slide7">
             <h2>Lab Step 4: Lightning Web Component (LWC) for Modal Display ⚡</h2>
-            <p>This LWC (<code>knowledgeCompanion</code>) will now primarily serve as the UI for the modal popup that displays the summary. It will be launched by a Quick Action.</p>
+            <p>This LWC (<code>knowledgeCompanion</code>) will display the summary in a modal. It's launched by the Quick Action.</p>
             <div class="note note-action">
-                <strong>Action:</strong> Create/Update these LWC files. Remember to update the <code>KNOWLEDGE_CONTENT_FIELD</code> import in the JS file.
+                <strong>Action:</strong> Create these LWC files in your Salesforce org.
             </div>
 
-            <h3>1. <code>knowledgeCompanion.html</code> (LWC Template as Modal)</h3>
+            <h3>1. <code>knowledgeCompanion.html</code></h3>
             <div class="code-block-wrapper">
                 <button class="copy-code-button" aria-label="Copy LWC HTML">📋 Copy</button>
                 <pre><code class="language-html">
 &lt;!-- File: knowledgeCompanion.html --&gt;
 &lt;template&gt;
-    &lt;div class="lwc-modal-container"&gt; 
-        &lt;template if:true={isModalActuallyOpen}&gt;
-            &lt;section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open"&gt;
-                &lt;div class="slds-modal__container"&gt;
-                    &lt;header class="slds-modal__header"&gt;
-                        &lt;button if:false={hideLwcCloseButton} class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleCloseModalProgrammatically}&gt;
-                            &lt;lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse" size="small"&gt;&lt;/lightning-icon&gt;
-                            &lt;span class="slds-assistive-text"&gt;Close&lt;/span&gt;
-                        &lt;/button&gt;
-                        &lt;h2 class="slds-modal__title slds-hyphenate"&gt;AI Knowledge Article Summary&lt;/h2&gt;
-                    &lt;/header&gt;
-                    &lt;div class="slds-modal__content slds-p-around_medium lwc-modal-content"&gt;
-                        &lt;template if:true={isLoading}&gt;
-                            &lt;div class="slds-is-relative slds-m-vertical_large" style="height: 80px;"&gt;
-                                &lt;lightning-spinner alternative-text="Generating summary..." size="medium"&gt;&lt;/lightning-spinner&gt;
-                                &lt;p class="slds-align_absolute-center" style="top: 60px;"&gt;Thinking...&lt;/p&gt;
-                            &lt;/div&gt;
-                        &lt;/template&gt;
-                        &lt;template if:false={isLoading}&gt;
-                            &lt;template if:true={error}&gt;
-                                &lt;div class="slds-text-color_error"&gt;
-                                    &lt;p&gt;&lt;strong&gt;Error:&lt;/strong&gt; {error}&lt;/p&gt;
-                                &lt;/div&gt;
-                            &lt;/template&gt;
-                            &lt;template if:false={error}&gt;
-                                &lt;lightning-formatted-rich-text value={summaryText}&gt;&lt;/lightning-formatted-rich-text&gt;
-                                &lt;p if:false={summaryText}&gt;No summary available or generated.&lt;/p&gt;
-                            &lt;/template&gt;
-                        &lt;/template&gt;
-                    &lt;/div&gt;
-                    &lt;footer class="slds-modal__footer"&gt;
-                        &lt;lightning-button if:false={hideLwcCloseButton} label="Done" title="Done" variant="brand" onclick={handleCloseModalProgrammatically}&gt;&lt;/lightning-button&gt;
-                    &lt;/footer&gt;
-                &lt;/div&gt;
-            &lt;/section&gt;
-            &lt;div class="slds-backdrop slds-backdrop_open"&gt;&lt;/div&gt;
-        &lt;/template&gt;
+    &lt;template if:true={isModalOpen}&gt;
+        &lt;section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium"&gt;
+            &lt;div class="slds-modal__container"&gt;
+                &lt;header class="slds-modal__header"&gt;
+                    &lt;h2 class="slds-modal__title slds-hyphenate"&gt;AI Summary&lt;/h2&gt;
+                &lt;/header&gt;
 
-        &lt;template if:false={isModalActuallyOpen}&gt; 
-            &lt;lightning-card title="Knowledge Summarizer"&gt;
-                &lt;p class="slds-p-horizontal_small"&gt;This component is processing the summary.&lt;/p&gt;
-                &lt;p if:true={isLoading} class="slds-p-horizontal_small"&gt;Loading summary...&lt;/p&gt;
-                &lt;p if:true={error} class="slds-p-horizontal_small slds-text-color_error"&gt;Error: {error}&lt;/p&gt;
-            &lt;/lightning-card&gt;
-        &lt;/template&gt;
-    &lt;/div&gt;
+                &lt;div class="slds-modal__content slds-p-around_medium slds-scrollable_y" style="max-height: 20rem;"&gt;
+                    &lt;template if:true={isLoading}&gt;
+                        &lt;div class="slds-align_absolute-center"&gt;
+                            &lt;lightning-spinner size="medium" alternative-text="Summarizing..."&gt;&lt;/lightning-spinner&gt;
+                        &lt;/div&gt;
+                    &lt;/template&gt;
+
+                    &lt;template if:true={summary}&gt;
+                        &lt;div class="slds-box slds-theme_default slds-m-top_small"&gt;
+                            &lt;lightning-formatted-rich-text value={summary}&gt;&lt;/lightning-formatted-rich-text&gt;
+                        &lt;/div&gt;
+                    &lt;/template&gt;
+
+                    &lt;template if:true={error}&gt;
+                        &lt;div class="slds-text-color_error slds-m-top_medium slds-text-align_center"&gt;
+                            {error}
+                        &lt;/div&gt;
+                    &lt;/template&gt;
+                &lt;/div&gt;
+
+                &lt;footer class="slds-modal__footer slds-grid slds-grid_align-spread"&gt;
+                    &lt;lightning-button label="Close" onclick={handleClose}&gt;&lt;/lightning-button&gt;
+                    &lt;lightning-button variant="brand" label="Refresh Summary" onclick={handleSummarize} disabled={isLoading}&gt;&lt;/lightning-button&gt;
+                &lt;/footer&gt;
+            &lt;/div&gt;
+        &lt;/section&gt;
+
+        &lt;div class="slds-backdrop slds-backdrop_open"&gt;&lt;/div&gt;
+    &lt;/template&gt;
 &lt;/template&gt;
                 </code></pre>
             </div>
@@ -588,73 +590,109 @@ public with sharing class GeminiAPIService {
                 <button class="copy-code-button" aria-label="Copy LWC JavaScript">📋 Copy</button>
                 <pre><code class="language-javascript">
 // File: knowledgeCompanion.js
-import { LightningElement, api, wire, track } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { LightningElement, api, track } from 'lwc'; // Added @api and @track
 import getPageSummaryFromGemini from '@salesforce/apex/GeminiAPIService.getPageSummaryFromGemini';
-import { CloseActionScreenEvent } from 'lightning/actions';
-
-// TODO: LAB PARTICIPANT - Update this import for YOUR Knowledge Article field.
-import KNOWLEDGE_CONTENT_FIELD from '@salesforce/schema/Knowledge__kav.Content_for_Summarization__c'; 
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { CloseActionScreenEvent } from 'lightning/actions'; // Import for closing action
 
 export default class KnowledgeCompanion extends LightningElement {
-    @api recordId; 
-    @track summaryText = '';
-    @track isLoading = true; 
+    @api recordId; // Decorated with @api to receive recordId
+    // contentToSummarize is not needed as Apex fetches it via recordId
+
+    @track summary;
     @track error;
-    @track isModalActuallyOpen = true; 
-    @track hideLwcCloseButton = false; 
+    @track isLoading = false; // Initialize to false, set true during fetch
+    @track isModalOpen = true; // LWC is the modal, so it's open by default
 
-    _articleContentLoaded = false;
+    connectedCallback() {
+        // console.log('knowledgeCompanion LWC connected. Record ID:', this.recordId);
+        // The user's JS has extractRecordIdFromUrl, but for Quick Action, @api recordId is preferred.
+        // If extractRecordIdFromUrl is a fallback or primary, ensure it's robust.
+        // For now, assuming @api recordId is correctly populated by the Quick Action.
+        if (!this.recordId) { 
+            this.extractRecordIdFromUrl(); // Call user's method if recordId isn't set
+        }
 
-    @wire(getRecord, { recordId: '$recordId', fields: [KNOWLEDGE_CONTENT_FIELD] })
-    wiredArticle({ error, data }) {
-        if (this._articleContentLoaded) return; 
-
-        if (data) {
-            const contentValue = getFieldValue(data, KNOWLEDGE_CONTENT_FIELD);
-            this._articleContentLoaded = true;
-            if (!contentValue || String(contentValue).trim() === '') {
-                this.error = \`Field '\${KNOWLEDGE_CONTENT_FIELD.fieldApiName}' is empty.\`;
-                this.isLoading = false;
-            } else {
-                let plainTextContent = this.stripHtml(String(contentValue));
-                if (!plainTextContent || plainTextContent.trim() === '') {
-                    this.error = 'Content empty after HTML stripping.';
-                    this.isLoading = false;
-                } else {
-                    this.fetchSummary(plainTextContent);
-                }
-            }
-        } else if (error) {
-            this.error = 'Failed to load article content. Check LWC field API name & permissions.';
-            console.error('LWC @wire(getRecord) error:', JSON.stringify(error));
-            this.isLoading = false;
-            this._articleContentLoaded = true; 
+        if (this.recordId) {
+            this.fetchSummary(); 
+        } else {
+            this.error = 'Unable to determine Record ID. This component may need to be on a record page or launched from an action that provides the Record ID.';
+            this.isLoading = false; 
+            console.error(this.error);
+            // Optionally show a toast if not loading initially due to missing recordId
+            // this.showToast('Configuration Error', this.error, 'error');
         }
     }
 
-    async fetchSummary(textContent) {
-        this.error = undefined;
-        try {
-            const result = await getPageSummaryFromGemini({ articleFieldContent: textContent });
-            if (result) {
-                if (result.toLowerCase().startsWith('error:')) { this.error = result; } 
-                else { this.summaryText = result; }
-            } else { this.error = 'Empty response from summarization service.'; }
-        } catch (e) { 
-            this.error = 'Error calling Apex: ' + (e.body?.message || e.message); 
-            console.error('LWC Apex call error:', JSON.stringify(e));
-        } finally { this.isLoading = false; }
-    }
-    
-    stripHtml(html) {
-        if (!html) return "";
-        try { let doc = new DOMParser().parseFromString(html, 'text/html'); return doc.body.textContent || ""; }
-        catch (e) { return html.replace(/<[^>]*>?/gm, ''); }
+    extractRecordIdFromUrl() {
+        const url = window.location.href;
+        // This regex is specific and might need adjustment based on actual URL structures.
+        const regex = /\/r\/Knowledge__kav\/([a-zA-Z0-9]{18})/; 
+        const match = url.match(regex);
+        if (match && match[1]) {
+            this.recordId = match[1];
+            // console.log('Record ID extracted from URL:', this.recordId);
+        } else {
+            console.warn('Could not extract Record ID from URL with current regex.');
+        }
     }
 
-    handleCloseModalProgrammatically() {
+    fetchSummary() {
+        this.isLoading = true;
+        this.summary = null; 
+        this.error = null;   
+
+        getPageSummaryFromGemini({ recordId: this.recordId })
+            .then((result) => {
+                if (result) {
+                    if (result.toLowerCase().startsWith('error:')) {
+                        this.error = result;
+                        this.showToast('Summarization Error', this.error, 'error');
+                    } else {
+                        const cleaned = result
+                            .replace(/```html/gi, '') 
+                            .replace(/```/g, '')
+                            .trim();
+                        this.summary = cleaned;
+                    }
+                } else {
+                    this.error = "Received no summary from the service.";
+                }
+                this.isLoading = false;
+            })
+            .catch((error) => {
+                console.error('Apex error in LWC:', error);
+                this.error = 'Failed to fetch summary. ' + (error.body?.message || error.message || 'Unknown server error.');
+                this.isLoading = false;
+                this.showToast('Error', this.error, 'error');
+            });
+    }
+
+    handleClose() {
+        this.isModalOpen = false; 
         this.dispatchEvent(new CloseActionScreenEvent());
+        // If you had a parent listening for a custom 'close' event:
+        // this.dispatchEvent(new CustomEvent('close')); 
+    }
+
+    handleSummarize() { // This is for the "Refresh Summary" button
+        if (this.recordId) {
+            this.fetchSummary();
+        } else {
+            this.error = 'Cannot refresh: Record ID is not available.';
+            this.showToast('Error', this.error, 'warning');
+        }
+    }
+
+    showToast(title, message, variant) {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: message,
+                variant: variant,
+                mode: 'dismissable' 
+            })
+        );
     }
 }
                 </code></pre>
@@ -666,14 +704,30 @@ export default class KnowledgeCompanion extends LightningElement {
                 <pre><code class="language-xml">
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata"&gt;
-    &lt;apiVersion&gt;59.0&lt;/apiVersion&gt; 
+    &lt;apiVersion&gt;60.0&lt;/apiVersion&gt; {/* User had 62.0, using 60.0 as a recent, stable version */}
     &lt;isExposed&gt;true&lt;/isExposed&gt;
     &lt;targets&gt;
-        &lt;target&gt;lightning__RecordPage&lt;/target&gt; 
+        &lt;target&gt;lightning__AppPage&lt;/target&gt;
+        &lt;target&gt;lightning__HomePage&lt;/target&gt;
+        &lt;target&gt;lightning__RecordPage&lt;/target&gt;
+        &lt;target&gt;lightning__RecordAction&lt;/target&gt; 
         &lt;target&gt;lightning__ActionScreen&lt;/target&gt; 
+        &lt;target&gt;lightningCommunity__Page&lt;/target&gt;
+        &lt;target&gt;lightningCommunity__Default&lt;/target&gt;
+        {/* These might not be necessary for this specific LWC unless you have wider use cases */}
+        {/* &lt;target&gt;lightningCommunity__Page_Layout&lt;/target&gt; */}
+		{/* &lt;target&gt;lightningCommunity__Theme_Layout&lt;/target&gt; */}
     &lt;/targets&gt;
+    &lt;!-- Adding targetConfigs to specify object for RecordAction/ActionScreen --&gt;
     &lt;targetConfigs&gt;
-        &lt;targetConfig targets="lightning__RecordPage,lightning__ActionScreen"&gt;
+        &lt;targetConfig targets="lightning__ActionScreen,lightning__RecordAction"&gt;
+            &lt;objects&gt;
+                &lt;object&gt;Knowledge__kav&lt;/object&gt;
+            &lt;/objects&gt;
+            &lt;!-- This makes the LWC usable as a screen action on Knowledge__kav records --&gt;
+        &lt;/targetConfig&gt;
+         &lt;!-- If you also want to place it directly on a record page (not just as an action) --&gt;
+        &lt;targetConfig targets="lightning__RecordPage"&gt;
             &lt;objects&gt;
                 &lt;object&gt;Knowledge__kav&lt;/object&gt;
             &lt;/objects&gt;
@@ -682,7 +736,27 @@ export default class KnowledgeCompanion extends LightningElement {
 &lt;/LightningComponentBundle&gt;
                 </code></pre>
             </div>
-        </div>
+            <div class="note note-general">
+                <strong>CSS (<code>knowledgeCompanion.css</code>):</strong> If you have a <code>knowledgeCompanion.css</code> file (as per your input), ensure its styles are appropriate for the modal content. The example CSS you provided for <code>.summary-box</code> is good:
+                <div class="code-block-wrapper">
+                    <button class="copy-code-button" aria-label="Copy CSS Example">📋 Copy</button>
+                    <pre><code class="language-css">
+/* File: knowledgeCompanion.css */
+.summary-box {
+    font-size: 1rem;
+    line-height: 1.6;
+    background-color: #f3f2f2; /* Light grey background for the summary text box */
+    border-left: 4px solid #1589ee; /* Blue left border */
+    padding: 1rem;
+    border-radius: 0.25rem; /* Standard SLDS radius */
+    white-space: pre-wrap; /* Preserve line breaks and spaces */
+    word-wrap: break-word; /* Ensure long words break */
+}
+                    </code></pre>
+                </div>
+                 You would apply this class to a div wrapping the `lightning-formatted-rich-text` if desired, or integrate its styling. The current LWC HTML uses `slds-box` which has its own styling.
+            </div>
+        </div>        
 
         <div class="slide" id="slide8">
             <h2>Lab Step 5: Add "AI Summarise" Button to Knowledge Page 🖱️</h2>
