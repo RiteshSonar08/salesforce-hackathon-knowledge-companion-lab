@@ -754,12 +754,48 @@ export default class KnowledgeCompanion extends LightningElement {
                 <li>Configured a Quick Action button on the Knowledge Article page.</li>
                 <li>Explored alternative native Salesforce AI approaches.</li>
             </ul>
+
             <h3>Potential Project Implementations & Enhancements 🚀</h3>
+            <p>This summarization capability can be extended to various Salesforce objects and enhanced with more features:</p>
             <ul>
-                <li>Adapt to summarize other objects.</li>
-                <li>Experiment with different prompts.</li>
-                <li>Explore secure API key storage (see Appendix).</li>
+                <li>
+                    <strong>Account Summarization:</strong>
+                    <ul>
+                        <li><strong>Use Case:</strong> Provide sales reps with a quick "at-a-glance" brief before client calls or meetings. Useful for account handovers or executive briefings.</li>
+                        <li><strong>Data to Summarize:</strong> Account Description, recent Activities (last 3-5 key interactions), open high-value Opportunities (names, stages), number of critical open Cases, key information from custom "Account Strategy" or "Notes" fields.</li>
+                        <li><strong>Prompt Idea:</strong> "Summarize this account, highlighting recent key activities, major open deals, and any critical support issues. Provide a brief overview followed by 2-3 bullet points."</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Case Summarization:</strong>
+                    <ul>
+                        <li><strong>Use Case:</strong> Help support agents rapidly understand complex case histories, especially upon escalation or reassignment, leading to faster resolution times. Support managers can quickly review critical cases.</li>
+                        <li><strong>Data to Summarize:</strong> Case Subject, Description, latest Case Comments (e.g., last 3-5 comments, or a summary of all comments), key email threads attached to the case.</li>
+                        <li><strong>Prompt Idea:</strong> "Provide a concise summary of this support case, focusing on the main problem reported, steps taken so far, and the current status. Extract key entities or customer pain points."</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Opportunity Summarization:</strong>
+                    <ul>
+                        <li><strong>Use Case:</strong> Enable sales managers and reps to quickly grasp the status, recent progress, and next steps for opportunities during pipeline reviews or deal strategy sessions.</li>
+                        <li><strong>Data to Summarize:</strong> Opportunity Name, Amount, Stage, Close Date, Description/Next Steps field, key recent Activity Summaries related to the Opportunity, notes from custom "Deal Strategy" fields.</li>
+                        <li><strong>Prompt Idea:</strong> "Summarize this sales opportunity, including its current stage, potential value, key recent activities, and critical next steps. Highlight any identified risks or blockers."</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>General Enhancements:</strong>
+                    <ul>
+                        <li><strong>Customizable Prompts per Object/Use Case:</strong> Allow users to select different summarization styles (e.g., "brief for mobile view," "detailed for internal review," "extract action items only").</li>
+                        <li><strong>Batch Summarization:</strong> Create a utility to summarize multiple selected records (e.g., summarize all open cases for a specific account).</li>
+                        <li><strong>"Save Summary" Feature:</strong> Add functionality to save the generated summary to a dedicated custom field on the record itself.</li>
+                        <li><strong>User Feedback on Summary Quality:</strong> Implement a simple thumbs up/down to gather feedback and potentially refine prompts over time.</li>
+                        <li><strong>Integration with Salesforce Flows:</strong> Trigger summaries automatically based on record changes or specific events using Flow and Invocable Apex.</li>
+                        <li><strong>Explore Advanced Prompt Engineering:</strong> Experiment with few-shot prompting, chain-of-thought, or providing more structured data within the prompt for more nuanced summaries.</li>
+                    </ul>
+                </li>
+                <li>Explore secure API key storage (see Appendix) for your own projects.</li>
             </ul>
+
             <h3>Further Reading & Resources 📚</h3>
             <ul>
                 <li><a href="https://ai.google.dev/docs/gemini_api_overview" target="_blank">Google Gemini API Documentation</a></li>
