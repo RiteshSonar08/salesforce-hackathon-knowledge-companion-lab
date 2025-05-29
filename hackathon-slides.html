@@ -275,7 +275,7 @@
         .note-general { background-color: #eef1f3; border-left-color: #0070d2; color: #003972; }
         .note-general::before { content: "ℹ️"; }
         .note-important { background-color: #fff3cd; border-left-color: #ffeeba; color: #856404;}
-        .note-important::before { content: "⚠️"; }
+        /*.note-important::before { content: "⚠️"; }*/
         .note-action { background-color: #d4edda; border-left-color: #c3e6cb; color: #155724;}
         .note-action::before { content: "➡️"; }
         .note-tip { background-color: #d1ecf1; border-left-color: #bee5eb; color: #0c5460;}
@@ -328,7 +328,7 @@
             <p>By the end of this lab, you will have built a solution that can:</p>
             <ul>
                 <li>Summarize content from a rich text area field on a Salesforce Knowledge Article using the Gemini API.</li>
-                <li>Trigger this summarization process via a **Quick Action button** on the Knowledge Article page, which launches a Lightning Web Component (LWC).</li>
+                <li>Trigger this summarization process via a <code>Quick Action button</code> on the Knowledge Article page, which launches a Lightning Web Component (LWC).</li>
                 <li>The LWC will display the AI-generated summary clearly within a modal dialog.</li>
                 <li><strong>Explore your creativity</strong> in crafting effective prompts to the Gemini API to summarize different types of content from a Knowledge Article field in innovative ways.</li>
             </ul>
@@ -389,8 +389,8 @@
             </ul>
             <h3>2. Important Note: API Key in Endpoint vs. Named Credentials</h3>
             <div class="note note-important">
-                <p><strong>For Lab Simplicity:</strong> We are putting the API key directly into the Apex code and constructing the endpoint URL with it.</p>
-                <p><strong>⚠️ Security Best Practice (for real projects): DO NOT hardcode API keys or include them directly in endpoint URLs in your code.</strong> Use Named Credentials or retrieve keys from Protected Custom Settings/Metadata.</p>
+                <p><strong>⚠️ For Lab Simplicity:</strong> We are putting the API key directly into the Apex code and constructing the endpoint URL with it.</p>
+                <p><strong>⚠️ Security Best Practice (for real projects):</strong> DO NOT hardcode API keys or include them directly in endpoint URLs in your code. Use Named Credentials or retrieve keys from Protected Custom Settings/Metadata.</p>
                 <p>An appendix slide provides details on obtaining your own key and setting up Named Credentials for future reference.</p>
             </div>
         </div>
@@ -399,7 +399,7 @@
             <h2>Lab Step 2: Simulation & Visuals 📊</h2>
             <p>Before diving into code, let's visualize the data flow and an example of the summarization we aim to achieve.</p>
             <h3>Workflow Animation</h3>
-            <p>This D3.js animation visualizes the data flow when a user clicks the "AI Summarise" Quick Action.</p>
+            <p>This animation visualizes the data flow when a user clicks the "AI Summarise" Quick Action.</p>
             <div id="workflowAnimation"></div>
             <button onclick="startWorkflowAnimation()" class="replay-button">🎨 Replay Animation</button> 
 
