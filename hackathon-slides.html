@@ -682,31 +682,15 @@ export default class KnowledgeCompanion extends LightningElement {
                 <pre><code class="language-xml">
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata"&gt;
-    &lt;apiVersion&gt;60.0&lt;/apiVersion&gt; {/* Using 60.0 as a recent version, adjust if needed based on your org */}
+    &lt;apiVersion&gt;60.0&lt;/apiVersion&gt; 
     &lt;isExposed&gt;true&lt;/isExposed&gt;
     &lt;targets&gt;
         &lt;target&gt;lightning__AppPage&lt;/target&gt;
         &lt;target&gt;lightning__HomePage&lt;/target&gt;
         &lt;target&gt;lightning__RecordPage&lt;/target&gt;
         &lt;target&gt;lightning__RecordAction&lt;/target&gt; 
-        &lt;target&gt;lightning__ActionScreen&lt;/target&gt; 
-        &lt;target&gt;lightningCommunity__Page&lt;/target&gt;
-        &lt;target&gt;lightningCommunity__Default&lt;/target&gt;        
-    &lt;!-- Define targetConfig for when used as a screen action on Knowledge__kav --&gt;
-    &lt;targetConfigs&gt;
-        &lt;targetConfig targets="lightning__ActionScreen"&gt;
-            &lt;objects&gt;
-                &lt;object&gt;Knowledge__kav&lt;/object&gt;
-            &lt;/objects&gt;
-            &lt;!-- No specific properties are configured for this LWC when launched as an action screen --&gt;
-        &lt;/targetConfig&gt;
-        &lt;!-- If you also want to place it directly on a record page (not just via action), configure here too --&gt;
-        &lt;targetConfig targets="lightning__RecordPage"&gt;
-             &lt;objects&gt;
-                &lt;object&gt;Knowledge__kav&lt;/object&gt;
-            &lt;/objects&gt;
-        &lt;/targetConfig&gt;
-    &lt;/targetConfigs&gt;
+        &lt;target&gt;lightning__ActionScreen&lt;/target&gt;
+    &lt;/targets&gt;
 &lt;/LightningComponentBundle&gt;
                 </code></pre>
             </div>
