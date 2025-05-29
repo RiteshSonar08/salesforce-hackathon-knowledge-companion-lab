@@ -7,7 +7,7 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* Updated font stack */
             line-height: 1.7; 
             margin: 0;
             padding: 0;
@@ -16,7 +16,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 17px; 
+            font-size: 1.05rem; /* Slightly increased base font size */
         }
 
         .progress-bar-container {
@@ -38,7 +38,7 @@
 
         .slide-container {
             width: 90%;
-            max-width: 1000px;
+            max-width: 1140px; /* Increased max-width */
             margin: 40px auto 20px auto; 
             background-color: #fff;
             border: 1px solid #ddd;
@@ -72,11 +72,11 @@
         h3 { font-size: 1.4em; margin-top: 1.2em; }
         h4 { font-size: 1.1em; font-style: italic; color: #555;}
 
-        p, ul, ol {
-            margin-bottom: 1em;
+        p {
+            margin-bottom: 1.1em; /* Slightly increased paragraph spacing */
         }
-
         ul, ol {
+            margin-bottom: 1em;
             padding-left: 25px; 
         }
         li { margin-bottom: 0.6em; } 
@@ -96,7 +96,7 @@
             background-color: #eef1f3;
             padding: 0.2em 0.4em;
             border-radius: 4px; 
-            font-size: 0.88em; 
+            font-size: 0.9em; /* Relative to parent, good for inline */
         }
 
         .code-block-wrapper {
@@ -111,7 +111,7 @@
             padding-top: 45px; 
             border-radius: 6px; 
             overflow-x: auto; 
-            font-size: 0.88em; 
+            font-size: 0.9em; /* Relative to body, makes code ~15px if body is ~17px */
             line-height: 1.6; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             white-space: pre; 
@@ -119,7 +119,7 @@
         pre code { 
             background-color: transparent;
             padding: 0;
-            font-size: 1em; 
+            font-size: 1em; /* Code font size will be same as pre font size */
             color: inherit; 
             white-space: inherit; 
         }
@@ -132,7 +132,7 @@
             color: white;
             border: 1px solid #005fb2; 
             padding: 6px 12px; 
-            font-size: 0.8em;
+            font-size: 0.8em; /* Relative to body */
             font-weight: bold;
             border-radius: 4px;
             cursor: pointer;
@@ -149,77 +149,71 @@
             opacity: 1;
         }
 
-        /* Updated Navigation Buttons Container */
         .navigation-buttons {
-            display: inline-flex; /* Shrink to content */
+            display: inline-flex; 
             align-items: center;
-            background-color: #e9ecef; /* Light grey pill background */
-            border-radius: 30px;      /* Pill shape */
-            padding: 6px 8px;         /* Padding around buttons and counter */
+            background-color: #e9ecef; 
+            border-radius: 30px;      
+            padding: 6px 8px;         
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-            margin: 30px auto;      /* Centering and spacing */
+            margin: 30px auto;      
             border: 1px solid #d1d9e0;
+            max-width: 1140px; /* Increased max-width */
         }
 
-        /* Updated Individual Navigation Buttons and Counter */
         .navigation-buttons button,
         .slide-counter {
-            font-size: 15px; /* Slightly smaller for a sleeker look */
+            font-size: 0.9rem; /* Adjusted font size relative to body */
             font-weight: 500;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 25px; /* Fully rounded ends */
+            border-radius: 25px; 
             transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
-            margin: 0 3px; /* Small gap between elements */
+            margin: 0 3px; 
         }
 
         .navigation-buttons button {
-            background-color: #d8dfe3; /* Default background for prev button (like disabled) */
-            color: #5a6670;       /* Default text color */
+            background-color: #d8dfe3; 
+            color: #5a6670;       
             border: none;
             cursor: pointer;
-            padding: 9px 18px;  /* Adjusted padding */
+            padding: 9px 18px;  
             min-width: 90px;
         }
         
-        /* Style for Next button when it's not disabled (active look) */
         .navigation-buttons button#nextBtn:not(:disabled) {
-            background-color: #007bff; /* Blue */
+            background-color: #007bff; 
             color: white;
         }
-        /* Style for Previous button when it's not disabled */
         .navigation-buttons button#prevBtn:not(:disabled) {
-            background-color: #007bff; /* Blue */
+            background-color: #007bff; 
             color: white;
         }
         
-        /* Hover for enabled buttons */
         .navigation-buttons button:not(:disabled):hover {
-            background-color: #0056b3; /* Darker blue on hover */
-            color: white; /* Ensure text remains white */
+            background-color: #0056b3; 
+            color: white; 
             transform: translateY(-1px);
         }
 
-        /* Disabled state (primarily for Previous on first slide, Next on last) */
         .navigation-buttons button:disabled {
-            background-color: #d8dfe3; /* Light grey, matching initial prev button */
-            color: #9ba5ae;       /* Lighter text for disabled */
+            background-color: #d8dfe3; 
+            color: #9ba5ae;       
             cursor: not-allowed;
             transform: none;
         }
-         /* Ensure disabled hover doesn't change style */
         .navigation-buttons button:disabled:hover {
             background-color: #d8dfe3; 
             color: #9ba5ae;  
         }
 
         .slide-counter {
-            color: #343a40; /* Darker text for counter */
+            color: #343a40; 
             padding: 9px 15px;
-            background-color: transparent; /* No background for counter text area */
+            background-color: transparent; 
             white-space: nowrap;
-            min-width: 50px; /* Ensure space for X / YY */
+            min-width: 50px; 
             text-align: center;
         }
         
@@ -676,7 +670,7 @@ export default class KnowledgeCompanion extends LightningElement {
                     <ul>
                         <li><strong>Action Type:</strong> Select <code>Lightning Web Component</code>.</li>
                         <li><strong>Lightning Web Component:</strong> Select <code>c:knowledgeCompanion</code> (or your LWC's name).</li>
-                        <li><strong>Height:</strong> You can leave this as default or set a specific height like <code>600px</code>. The LWC's content will determine the actual height needed.</li>
+                        <li><strong>Height:</strong> Default is fine, or set to <code>Flexible Page Height</code> or a specific value like <code>400px</code>.</li>
                         <li><strong>Label:</strong> Enter <code>AI Summarise</code> (This appears on the button).</li>
                         <li><strong>Name:</strong> (Auto-populates, e.g., <code>AI_Summarise</code>).</li>
                     </ul>
@@ -811,7 +805,7 @@ req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-lat
             });
             currentSlide = index;
             updateNavButtons();
-            updateProgressBarAndCounter(); // Combined update
+            updateProgressBarAndCounter(); 
 
             // Simulation & Visuals is Slide 5 (index 4)
             if (index === 4) { 
@@ -864,7 +858,7 @@ req.setEndpoint('callout:My_Secure_Gemini_API/v1beta/models/gemini-1.5-flash-lat
 
         document.addEventListener('DOMContentLoaded', () => {
             if (slides.length > 0) {
-                if (prevButton && nextButton && slideCounterElement) { // Check for slideCounterElement too
+                if (prevButton && nextButton && slideCounterElement) { 
                     showSlide(0); 
                 } else { console.error("Navigation elements (buttons or counter) not found."); }
             } else {
