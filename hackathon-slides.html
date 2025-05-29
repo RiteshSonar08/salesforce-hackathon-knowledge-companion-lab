@@ -343,14 +343,33 @@
                 <li>A Salesforce Developer Edition org with admin privileges.</li>
                 <li>Salesforce Knowledge enabled: (Setup &gt; Knowledge &gt; Knowledge Settings).</li>
                 <li>A custom field (e.g., Text Area (Rich) like <code>Content_for_Summarization__c</code>) on the Knowledge Article object (<code>Knowledge__kav</code>) for the text to be summarized. Note its API name.</li>
-                <li>Your user profile needs "API Enabled" system permission and CRUD permissions for Knowledge articles and your chosen field.</li>
+                <li>Your user profile needs "API Enabled" system permission and CRUD permissions for Knowledge articles and your chosen custom field.</li>
             </ul>
             <h3>2. Google Gemini API Key (Provided for this Lab)</h3>
             <ul>
                 <li>A **common Google Gemini API Key will be provided by the instructors.**</li>
                 <li>You will use this key directly in the Apex code as instructed.</li>
             </ul>
-            <h3>3. Basic Familiarity (Helpful)</h3>
+            <h3>3. Salesforce Remote Site Setting (for Direct API Callouts)</h3>
+            <ul>
+                <li>Since our lab's Apex code will make a direct callout to the Gemini API endpoint, you need to authorize this endpoint in Salesforce.</li>
+                <li>Navigate to <strong>Setup</strong> (Gear icon ⚙️).</li>
+                <li>In the "Quick Find" box, type <code>Remote Site Settings</code> and select it.</li>
+                <li>Click <strong>New Remote Site</strong>.</li>
+                <li>Enter the following details:
+                    <ul>
+                        <li><strong>Remote Site Name:</strong> <code>Google_Gemini_API</code> (or a similar descriptive name)</li>
+                        <li><strong>Remote Site URL:</strong> <code>https://generativelanguage.googleapis.com</code></li>
+                        <li><strong>Disable Protocol Security:</strong> Leave this unchecked.</li>
+                        <li><strong>Active:</strong> Ensure this checkbox is checked.</li>
+                    </ul>
+                </li>
+                <li>Click <strong>Save</strong>.</li>
+            </ul>
+            <div class="note note-general">
+                <strong>Note on Callouts:</strong> This Remote Site Setting is required because the primary Apex example in this lab constructs the full API endpoint directly. If you were using **Named Credentials** (covered in the Appendix as a best practice), the Named Credential itself would handle access to this URL, and you typically wouldn't need a separate Remote Site Setting for that specific endpoint defined in the Named Credential.
+            </div>
+            <h3>4. Basic Familiarity (Helpful)</h3>
             <ul>
                 <li>Basic understanding of Salesforce Apex and Lightning Web Components.</li>
             </ul>
