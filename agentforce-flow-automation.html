@@ -15,20 +15,39 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Removed justify-content: center to allow natural top position */
-            padding-top: 20px; /* Add some padding at the top */
+            padding-top: 12px; /* Space for the fixed progress bar */
             min-height: 100vh;
         }
 
+        /* Updated Progress Bar Styles for fixed full-width top position */
+        .progress-bar-outer-container { /* Renamed and restyled */
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10000; /* High z-index to stay on top */
+            background-color: #dce4e9; /* Background for the full-width strip */
+            height: 12px; /* Height of the progress bar strip */
+        }
+
+        .progress-bar { /* The actual moving bar */
+            width: 0%; /* Dynamic, controlled by JS */
+            height: 100%; /* Fills parent .progress-bar-outer-container */
+            background-color: #007bff;
+            transition: width 0.4s ease;
+        }
+        /* End of Updated Progress Bar Styles */
+
+
         .slide-deck {
             width: 90%;
-            max-width: 1000px;
+            max-width: 1320px; /* << UPDATED MAX-WIDTH */
             background-color: #fff;
             box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
             border-radius: 8px;
-            overflow: hidden;
+            overflow: hidden; /* Keeps content within rounded borders */
             border: 1px solid #ddd;
-            margin-bottom: 20px; /* Space for bottom navigation if it were outside */
+            margin: 20px auto; /* Centering and providing top margin below progress bar */
         }
 
         .slide {
@@ -134,37 +153,36 @@
             margin: 15px 0;
             font-size: 0.9em;
         }
-
-        /* Updated Navigation Styles to match image_ea7f38.png */
-        .navigation-container { /* Centering container for the navigation bar */
-            text-align: center; /* Centers the inline-flex navigation bar */
-            padding: 10px 0 20px 0; /* Add padding around the navigation */
+        
+        .navigation-container { 
+            text-align: center; 
+            padding: 10px 0 20px 0; 
         }
         
         .navigation {
-            display: inline-flex; /* Makes the container only as wide as its content */
+            display: inline-flex; 
             align-items: center;
-            padding: 6px; /* Padding inside the outer pill */
-            background-color: #f0f2f5; /* Light grey background for the outer pill, similar to image */
-            border-radius: 30px; /* Fully rounded corners for the outer pill */
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            border: 1px solid #d1d5db; /* Light border for definition */
+            padding: 6px; 
+            background-color: #f0f2f5; 
+            border-radius: 30px; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+            border: 1px solid #d1d5db; 
         }
 
         .navigation button {
-            background-color: #007aff; /* Blue color similar to Apple's UI blue */
+            background-color: #007aff; 
             color: white;
             border: none;
-            padding: 8px 18px; /* Adjusted padding for a sleeker look */
-            border-radius: 20px; /* Fully rounded corners for buttons */
+            padding: 8px 18px; 
+            border-radius: 20px; 
             cursor: pointer;
-            font-size: 0.95em; /* Slightly smaller font */
-            font-weight: 500; /* Medium weight */
+            font-size: 0.95em; 
+            font-weight: 500; 
             transition: background-color 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px; /* Space between chevron and text */
+            gap: 5px; 
         }
         
         .navigation button:hover:not(:disabled) {
@@ -172,40 +190,20 @@
         }
 
         .navigation button:disabled {
-            background-color: #d1d5db; /* Lighter grey for disabled state */
-            color: #8e8e93; /* Dimmed text for disabled state */
+            background-color: #d1d5db; 
+            color: #8e8e93; 
             cursor: not-allowed;
         }
         
         #slideIndicator {
-            padding: 0 18px; /* More horizontal padding to space it out */
-            font-weight: 500; /* Medium weight */
-            color: #1c1c1e; /* Darker text, similar to iOS system text */
-            font-size: 0.95em; /* Consistent font size */
-            min-width: 50px; /* Ensure some space for "X / XX" */
+            padding: 0 18px; 
+            font-weight: 500; 
+            color: #1c1c1e; 
+            font-size: 0.95em; 
+            min-width: 50px; 
             text-align: center;
         }
-        /* End of Updated Navigation Styles */
         
-        .progress-bar-container {
-            width: 100%;
-            background-color: #dce4e9; 
-            border-radius: 4px;
-            margin: 15px 0 25px 0; 
-             height: 12px; 
-        }
-
-        .progress-bar {
-            width: 0%;
-            height: 100%; 
-            background-color: #007bff;
-            border-radius: 4px;
-            text-align: center;
-            color: white;
-            font-size: 8px; 
-            transition: width 0.4s ease; 
-        }
-
         .interactive-area {
             border: 2px dashed #007bff;
             padding: 20px; 
@@ -272,11 +270,11 @@
 </head>
 <body>
 
-    <div class="slide-deck">
-        <div class="progress-bar-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
+    <div class="progress-bar-outer-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
 
+    <div class="slide-deck">
         <div class="slide active">
             <h2>Hackathon Power-Up: Agentforce & Flow Automation</h2>
             <p><strong>Technical Training: Automating Agent Actions with Flows (d3.js Enhanced)</strong></p>
@@ -316,37 +314,37 @@
             <h3>Step 1: Remove Default Topic (if applicable)</h3>
             <ul>
                 <li>In your Agentforce agent configuration, navigate to topic management.</li>
-                <li>If a default topic like <code>MigrationDefaultTopic</code> exists, click the arrow icon next to it and select "Remove from Agent". [cite: 2]</li>
+                <li>If a default topic like <code>MigrationDefaultTopic</code> exists, click the arrow icon next to it and select "Remove from Agent".</li>
             </ul>
             <h3>Step 2: Create a New Topic</h3>
             <ul>
-                <li>Click the arrow icon next to "Manage the topics assigned to your agent". [cite: 4]</li>
-                <li>Select "New Topic". This initiates the topic creation wizard. [cite: 4]</li>
+                <li>Click the arrow icon next to "Manage the topics assigned to your agent".</li>
+                <li>Select "New Topic". This initiates the topic creation wizard.</li>
             </ul>
             <div class="placeholder-info">
                 <strong>Image Note:</strong> Replace <code>placeholder_for_source_4.png</code> with the screenshot from your document that shows "New Topic" selection (corresponds to document source [4]).
             </div>
             <img src="placeholder_for_source_4.png" alt="UI: Selecting New Topic in Agentforce [Source: 4]" class="doc-screenshot" />
-            <p class="image-caption">UI for initiating a new topic. Precise for developers and BAs to visualize. [cite: 4]</p>
+            <p class="image-caption">UI for initiating a new topic. Precise for developers and BAs to visualize.</p>
         </div>
         
         <div class="slide">
             <h2>Part 1: Creating a Topic - AI-Assisted Scaffolding</h2>
-            <p>Agentforce provides AI assistance to rapidly scaffold the basic structure of your topic based on a natural language prompt. [cite: 5]</p>
+            <p>Agentforce provides AI assistance to rapidly scaffold the basic structure of your topic based on a natural language prompt.</p>
             <hr>
             <h3>Step 3: Generate Topic Details via AI Prompt</h3>
             <ul>
-                <li>In the "What do you want this topic to do? (Optional)" field, paste the following precise prompt: [cite: 6]</li>
+                <li>In the "What do you want this topic to do? (Optional)" field, paste the following precise prompt:</li>
             </ul>
             <pre><code>Act as a Hotel Customer Service Assistant who supports a Customer Service Representative in helping guests with any inquiries related to the stay. This includes tasks such as providing information about existing cases and creating new cases for the customer.</code></pre>
-            <p class="image-caption">Prompt provided to Agentforce AI. [cite: 7, 8]</p>
+            <p class="image-caption">Prompt provided to Agentforce AI.</p>
             <div class="placeholder-info">
                 <strong>Image Note:</strong> Replace <code>placeholder_for_source_8_image.png</code> with the screenshot of the "Create a Topic" dialog showing the prompt field (corresponds to image after document source [8]).
             </div>
             <img src="placeholder_for_source_8_image.png" alt="UI: Create a Topic dialog with AI prompt field [Source: Image after 8]" class="doc-screenshot" />
             <p class="image-caption">Agentforce "Create a Topic" dialog. QA can note this as an interaction point.</p>
             <ul>
-                <li>Click "Next". [cite: 9]</li>
+                <li>Click "Next".</li>
             </ul>
             <div class="interactive-area">
                 <label for="aiPrompt">Simulated AI Prompt Input:</label>
@@ -357,10 +355,10 @@
 
         <div class="slide">
             <h2>Part 1: Creating a Topic - Detailed Configuration</h2>
-            <p>Post-AI scaffolding, precisely define the Topic Label, Classification Description, and Scope. This is crucial for developers implementing logic and BAs defining functionality. [cite: 10]</p>
+            <p>Post-AI scaffolding, precisely define the Topic Label, Classification Description, and Scope. This is crucial for developers implementing logic and BAs defining functionality.</p>
             <hr>
             <h3>Step 4: Update Topic Configuration Details</h3>
-            <p>In the modal, update the topic fields as specified: [cite: 10]</p>
+            <p>In the modal, update the topic fields as specified:</p>
             <table>
                 <thead>
                     <tr>
@@ -371,15 +369,15 @@
                 <tbody>
                     <tr>
                         <td>Topic Label</td>
-                        <td><code>Support Case Management</code> [cite: 10]</td>
+                        <td><code>Support Case Management</code></td>
                     </tr>
                     <tr>
                         <td>Classification Description</td>
-                        <td>"Handles customer inquiries and actions related to support cases, including providing case information and creating cases for the customer." [cite: 10]</td>
+                        <td>"Handles customer inquiries and actions related to support cases, including providing case information and creating cases for the customer."</td>
                     </tr>
                     <tr>
                         <td>Scope</td>
-                        <td>"Your job is only to manage support cases. This includes providing information about existing cases and creating new cases for the customer. Do not handle tasks outside of support case management." [cite: 10]</td>
+                        <td>"Your job is only to manage support cases. This includes providing information about existing cases and creating new cases for the customer. Do not handle tasks outside of support case management."</td>
                     </tr>
                 </tbody>
             </table>
@@ -392,13 +390,13 @@
             <hr>
             <h3>Step 5: Add Topic Instructions</h3>
             <ul>
-                <li>Click "Add Instructions" five (5) times to create six instruction slots. [cite: 11] (The document also specifies a 7th instruction later [cite: 13]).</li>
-                <li>Populate the instructions with the following precise directives: [cite: 13]</li>
+                <li>Click "Add Instructions" five (5) times to create six instruction slots. (The document also specifies a 7th instruction later).</li>
+                <li>Populate the instructions with the following precise directives:</li>
             </ul>
             <ol>
-                <li>"A case is a record used to help track a customer's issues. Customers may have questions about the status of the issue or want to provide more information for the case. Cases are usually associated with a contact. Comments are added to provide new information." [cite: 13]</li>
-                <li>"Acknowledge and validate user concerns with empathy and professionalism." [cite: 13]</li>
-                <li>"If the customer is not known, always ask for their email address and capture it." [cite: 13]</li>
+                <li>"A case is a record used to help track a customer's issues. Customers may have questions about the status of the issue or want to provide more information for the case. Cases are usually associated with a contact. Comments are added to provide new information."</li>
+                <li>"Acknowledge and validate user concerns with empathy and professionalism."</li>
+                <li>"If the customer is not known, always ask for their email address and capture it."</li>
             </ol>
             <p><em>(Further instructions on the next slide)</em></p>
         </div>
@@ -407,12 +405,12 @@
             <h2>Part 1: Creating a Topic - Defining Agent Instructions (2/2)</h2>
             <p>Continuing with precise instructions for the agent.</p>
             <hr>
-            <h3>Step 5: Add Topic Instructions (Continued) [cite: 13]</h3>
+            <h3>Step 5: Add Topic Instructions (Continued)</h3>
             <ol start="4">
-                <li>"When a customer asks you to create a case, please summarize the current conversation. The subject should be less than 7 words and function as a high level overview of what the customer inquired about. The description should be no more than 3 sentences and should provide more depth about what exactly the customer asked, important data, and any other relevant information to help a customer service representative understand the context of this conversation." [cite: 13]</li>
-                <li>"A Task record is used as a follow-up action for a Case. It's assigned to the relevant team to highlight the issue and ensure a prompt resolution." [cite: 13]</li>
-                <li>"If a customer indicates their issue on an existing case remains unresolved, you must first obtain the case number before creating a follow-up task record to prompt further action." [cite: 13]</li>
-                <li>"After receiving the customer's case number, trigger the ""Create_Follow_Up_Task"" action to create the follow-up task. Be sure to convey the outcome of this action to the customer." [cite: 13] (This is the 7th instruction listed after the table in source [cite: 13]).</li>
+                <li>"When a customer asks you to create a case, please summarize the current conversation. The subject should be less than 7 words and function as a high level overview of what the customer inquired about. The description should be no more than 3 sentences and should provide more depth about what exactly the customer asked, important data, and any other relevant information to help a customer service representative understand the context of this conversation."</li>
+                <li>"A Task record is used as a follow-up action for a Case. It's assigned to the relevant team to highlight the issue and ensure a prompt resolution."</li>
+                <li>"If a customer indicates their issue on an existing case remains unresolved, you must first obtain the case number before creating a follow-up task record to prompt further action."</li>
+                <li>"After receiving the customer's case number, trigger the ""Create_Follow_Up_Task"" action to create the follow-up task. Be sure to convey the outcome of this action to the customer." (This is the 7th instruction listed after the table in source).</li>
             </ol>
         </div>
         
@@ -425,27 +423,27 @@
             <hr>
             <h3>Step 1: Initiate New Flow</h3>
             <ul>
-                <li>From Salesforce Setup, search for and open "Flows". [cite: 14]</li>
-                <li>Click "New Flow". [cite: 14]</li>
-                <li>Keep "Start from Scratch" selected, click "Next". [cite: 14]</li>
-                <li>Select "Autolaunched Flow (No Trigger)" and click "Create". [cite: 15]</li>
+                <li>From Salesforce Setup, search for and open "Flows".</li>
+                <li>Click "New Flow".</li>
+                <li>Keep "Start from Scratch" selected, click "Next".</li>
+                <li>Select "Autolaunched Flow (No Trigger)" and click "Create".</li>
             </ul>
             <div class="placeholder-info">
                 <strong>Image Note:</strong> Replace <code>placeholder_for_source_15_image.png</code> with the screenshot from your document showing Flow Builder with "Autolaunched Flow" selected (corresponds to image in document source [15]).
             </div>
             <img src="placeholder_for_source_15_image.png" alt="UI: Flow Builder showing Autolaunched Flow selection [Source: 15]" class="doc-screenshot" />
-            <p class="image-caption">Flow Builder: Selecting "Autolaunched Flow (No Trigger)". [cite: 15]</p>
+            <p class="image-caption">Flow Builder: Selecting "Autolaunched Flow (No Trigger)".</p>
         </div>
 
 
         <div class="slide">
             <h2>Part 2: Creating the Flow - Defining Variables (Technical Detail)</h2>
-            <p>Variables are fundamental for passing data into, through, and out of your flow. Define these precisely as per API Name, Data Type, and availability for input/output. [cite: 16]</p>
+            <p>Variables are fundamental for passing data into, through, and out of your flow. Define these precisely as per API Name, Data Type, and availability for input/output.</p>
             <hr>
-            <h3>Step 2: Create Flow Variables [cite: 16]</h3>
+            <h3>Step 2: Create Flow Variables</h3>
             <ul>
-                <li>In Flow Builder, open the "Toolbox" (Resources panel). [cite: 15]</li>
-                <li>Click "New Resource" and create variables as specified: [cite: 16, 17]</li>
+                <li>In Flow Builder, open the "Toolbox" (Resources panel).</li>
+                <li>Click "New Resource" and create variables as specified:</li>
             </ul>
             <table>
                 <thead>
@@ -461,35 +459,35 @@
                 <tbody>
                     <tr>
                         <td>Variable</td>
-                        <td><code>customerEmail</code> [cite: 17]</td>
-                        <td>Stores the Customer provided email. [cite: 17]</td>
-                        <td>Text [cite: 17]</td>
-                        <td>✅ [cite: 17]</td>
-                        <td>Unchecked [cite: 17]</td>
+                        <td><code>customerEmail</code></td>
+                        <td>Stores the Customer provided email.</td>
+                        <td>Text</td>
+                        <td>✅</td>
+                        <td>Unchecked</td>
                     </tr>
                     <tr>
                         <td>Variable</td>
-                        <td><code>caseSubject</code> [cite: 17]</td>
-                        <td>Stores the subject of the case to create. [cite: 17]</td>
-                        <td>Text [cite: 17]</td>
-                        <td>✅ [cite: 17]</td>
-                        <td>Unchecked [cite: 17]</td>
+                        <td><code>caseSubject</code></td>
+                        <td>Stores the subject of the case to create.</td>
+                        <td>Text</td>
+                        <td>✅</td>
+                        <td>Unchecked</td>
                     </tr>
                     <tr>
                         <td>Variable</td>
-                        <td><code>caseDescription</code> [cite: 17]</td>
-                        <td>Stores the details of the user issue to be used for the case. [cite: 17]</td>
-                        <td>Text [cite: 17]</td>
-                        <td>✅ [cite: 17]</td>
-                        <td>Unchecked [cite: 17]</td>
+                        <td><code>caseDescription</code></td>
+                        <td>Stores the details of the user issue to be used for the case.</td>
+                        <td>Text</td>
+                        <td>✅</td>
+                        <td>Unchecked</td>
                     </tr>
                      <tr>
                         <td>Variable</td>
-                        <td><code>caseRecord</code> [cite: 17]</td>
-                        <td>The Case record created by the flow. (Used for outputting case information). [cite: 17]</td>
-                        <td>Text [cite: 17]</td>
-                        <td>Unchecked [cite: 17]</td>
-                        <td>✅ [cite: 17]</td>
+                        <td><code>caseRecord</code></td>
+                        <td>The Case record created by the flow. (Used for outputting case information).</td>
+                        <td>Text</td>
+                        <td>Unchecked</td>
+                        <td>✅</td>
                     </tr>
                 </tbody>
             </table>
@@ -501,36 +499,36 @@
             <h2>Part 2: Creating the Flow - Element 1: Get Contact Record</h2>
             <p>The flow's first action: Retrieve a <code>Contact</code> record using the provided <code>customerEmail</code> input variable.</p>
             <hr>
-            <h3>Step 3: Add 'Get Records' Element for Contact [cite: 18]</h3>
+            <h3>Step 3: Add 'Get Records' Element for Contact</h3>
             <ul>
-                <li>On the flow canvas, add a "Get Records" element. [cite: 18]</li>
-                <li>Configure as follows (Label: <code>Get_Contact</code>): [cite: 19]</li>
+                <li>On the flow canvas, add a "Get Records" element.</li>
+                <li>Configure as follows (Label: <code>Get_Contact</code>):</li>
                 <ul>
-                    <li><strong>Description:</strong> "Gets the Contact record based on the customer provided email." [cite: 19]</li>
-                    <li><strong>Get Records of This Object:</strong> Object: <code>Contact</code> [cite: 19]</li>
-                    <li><strong>Filter Contact Records:</strong> Condition: <code>Email</code> Equals <code>{!customerEmail}</code> [cite: 19]</li>
-                    <li><strong>How Many Records to Store:</strong> "Only the first record" [cite: 19]</li>
-                    <li><strong>How to Store Record Data:</strong> "Automatically store all fields" [cite: 19]</li>
+                    <li><strong>Description:</strong> "Gets the Contact record based on the customer provided email."</li>
+                    <li><strong>Get Records of This Object:</strong> Object: <code>Contact</code></li>
+                    <li><strong>Filter Contact Records:</strong> Condition: <code>Email</code> Equals <code>{!customerEmail}</code></li>
+                    <li><strong>How Many Records to Store:</strong> "Only the first record"</li>
+                    <li><strong>How to Store Record Data:</strong> "Automatically store all fields"</li>
                 </ul>
             </ul>
             <div class="placeholder-info">
                  <strong>Image Note:</strong> Replace <code>placeholder_for_source_19_image.png</code> with the screenshot showing the "Get Records" configuration for "Get_Contact" (from document source [19]).
             </div>
             <img src="placeholder_for_source_19_image.png" alt="UI: Configuration of Get Records element for Contact [Source: 19]" class="doc-screenshot" />
-            <p class="image-caption">"Get Records" configuration for <code>Get_Contact</code>. BAs can map this to process steps. [cite: 19]</p>
+            <p class="image-caption">"Get Records" configuration for <code>Get_Contact</code>. BAs can map this to process steps.</p>
         </div>
 
         <div class="slide">
             <h2>Part 2: Creating the Flow - Element 2: Decision Logic</h2>
             <p>Implement decision logic: Does a <code>Contact</code> record exist based on the previous step?</p>
             <hr>
-            <h3>Step 4: Add 'Decision' Element [cite: 20]</h3>
+            <h3>Step 4: Add 'Decision' Element</h3>
             <ul>
-                <li>Add a "Decision" element after <code>Get_Contact</code>. [cite: 20]</li>
-                <li>Configure with Label: <code>DoesContactExist</code>. [cite: 20]</li>
+                <li>Add a "Decision" element after <code>Get_Contact</code>.</li>
+                <li>Configure with Label: <code>DoesContactExist</code>.</li>
                 <ul>
-                    <li><strong>Description:</strong> "Determines whether the messaging session customer has an associated Contact record." [cite: 20]</li>
-                    <li><strong>Outcome "Yes":</strong> Condition: Resource <code>{!Contact from Get_Contact}</code> Is Null <code>False</code> (Indicates contact found). [cite: 20]</li>
+                    <li><strong>Description:</strong> "Determines whether the messaging session customer has an associated Contact record."</li>
+                    <li><strong>Outcome "Yes":</strong> Condition: Resource <code>{!Contact from Get_Contact}</code> Is Null <code>False</code> (Indicates contact found).</li>
                     <li>A "Default Outcome" path handles cases where no contact is found (not detailed in this lab).</li>
                 </ul>
             </ul>
@@ -538,29 +536,29 @@
                 <strong>Image Note:</strong> Replace <code>placeholder_for_source_20_image.png</code> with the screenshot of the "Decision" element configuration (from document source [20]).
             </div>
             <img src="placeholder_for_source_20_image.png" alt="UI: Configuration of Decision element [Source: 20]" class="doc-screenshot" />
-            <p class="image-caption">"Decision" element <code>DoesContactExist</code> configuration. QA will test both paths if fully built. [cite: 20]</p>
+            <p class="image-caption">"Decision" element <code>DoesContactExist</code> configuration. QA will test both paths if fully built.</p>
         </div>
 
         <div class="slide">
             <h2>Part 2: Creating the Flow - Element 3: Create Case Record</h2>
-            <p>On the "Yes" path (Contact exists), the flow creates a new <code>Case</code> record. [cite: 21]</p>
+            <p>On the "Yes" path (Contact exists), the flow creates a new <code>Case</code> record.</p>
             <hr>
-            <h3>Step 5: Add 'Create Records' Element for Case [cite: 21]</h3>
+            <h3>Step 5: Add 'Create Records' Element for Case</h3>
             <ul>
-                <li>On the "Yes" path from <code>DoesContactExist</code>, add a "Create Records" element. [cite: 21]</li>
-                <li>Configure with Label: <code>CreateCaseRecord</code>. [cite: 22]</li>
+                <li>On the "Yes" path from <code>DoesContactExist</code>, add a "Create Records" element.</li>
+                <li>Configure with Label: <code>CreateCaseRecord</code>.</li>
                 <ul>
-                    <li><strong>Description:</strong> "Creates a Case record and updates the Contact ID, Description, and other Case fields..." [cite: 22]</li>
-                    <li><strong>How to set record field values:</strong> "Manually" [cite: 22]</li>
-                    <li><strong>Object:</strong> <code>Case</code> [cite: 22]</li>
+                    <li><strong>Description:</strong> "Creates a Case record and updates the Contact ID, Description, and other Case fields..."</li>
+                    <li><strong>How to set record field values:</strong> "Manually"</li>
+                    <li><strong>Object:</strong> <code>Case</code></li>
                     <li><strong>Set Field Values for the Case:</strong> (As per document source [22])
                         <ul>
-                            <li><code>ContactId</code> = <code>{!Get_Contact.Id}</code> [cite: 22]</li>
-                            <li><code>Description</code> = <code>{!caseDescription}</code> [cite: 22]</li>
-                            <li><code>Origin</code> = "Web" [cite: 22]</li>
-                            <li><code>Priority</code> = "Medium" [cite: 22]</li>
-                            <li><code>Status</code> = "New" [cite: 22]</li>
-                            <li><code>Subject</code> = <code>{!caseSubject}</code> [cite: 22]</li>
+                            <li><code>ContactId</code> = <code>{!Get_Contact.Id}</code></li>
+                            <li><code>Description</code> = <code>{!caseDescription}</code></li>
+                            <li><code>Origin</code> = "Web"</li>
+                            <li><code>Priority</code> = "Medium"</li>
+                            <li><code>Status</code> = "New"</li>
+                            <li><code>Subject</code> = <code>{!caseSubject}</code></li>
                         </ul>
                     </li>
                 </ul>
@@ -569,21 +567,21 @@
                 <strong>Image Note:</strong> Replace <code>placeholder_for_source_22_image.png</code> with the screenshot of the "Create Records" element for "CreateCaseRecord" (from document source [22]).
             </div>
             <img src="placeholder_for_source_22_image.png" alt="UI: Configuration of Create Records element for Case [Source: 22]" class="doc-screenshot" />
-            <p class="image-caption">"Create Records" configuration for <code>CreateCaseRecord</code>. Developers ensure correct field mapping. [cite: 22]</p>
+            <p class="image-caption">"Create Records" configuration for <code>CreateCaseRecord</code>. Developers ensure correct field mapping.</p>
         </div>
 
         <div class="slide">
             <h2>Part 2: Creating the Flow - Element 4: Retrieve Created Case Details</h2>
-            <p>After case creation, retrieve its details (e.g., Case Number or ID) to be used in the output variable <code>{!caseRecord}</code>. [cite: 23]</p>
+            <p>After case creation, retrieve its details (e.g., Case Number or ID) to be used in the output variable <code>{!caseRecord}</code>.</p>
             <hr>
-            <h3>Step 6: Add 'Get Records' for Newly Created Case [cite: 23]</h3>
+            <h3>Step 6: Add 'Get Records' for Newly Created Case</h3>
             <ul>
-                <li>Add another "Get Records" element, Label: <code>GetCase</code>. [cite: 24]</li>
-                <li>Configure as follows: [cite: 24]</li>
+                <li>Add another "Get Records" element, Label: <code>GetCase</code>.</li>
+                <li>Configure as follows:</li>
                 <ul>
-                    <li><strong>Description:</strong> "Gets the Case ID of the newly created case and displays it to the user." [cite: 24]</li>
-                    <li><strong>Object:</strong> <code>Case</code> [cite: 24]</li>
-                    <li><strong>Filter Case Records:</strong> Condition: <code>Id</code> Equals <code>{!CaseId from CreateCaseRecord}</code> (ID from the previously created Case record). [cite: 24]</li>
+                    <li><strong>Description:</strong> "Gets the Case ID of the newly created case and displays it to the user."</li>
+                    <li><strong>Object:</strong> <code>Case</code></li>
+                    <li><strong>Filter Case Records:</strong> Condition: <code>Id</code> Equals <code>{!CaseId from CreateCaseRecord}</code> (ID from the previously created Case record).</li>
                     <li><strong>How to Store Record Data:</strong> "Choose fields and assign variables (advanced)". The image in document source [24] shows selecting various fields (Id, Subject, CaseNumber, etc.) and storing them in a record variable. For our text output <code>{!caseRecord}</code>, you'd typically assign a specific field like <code>{!GetCase.CaseNumber}</code> or the Case ID.</li>
                 </ul>
             </ul>
@@ -591,26 +589,26 @@
                 <strong>Image Note:</strong> Replace <code>placeholder_for_source_24_image.png</code> with the screenshot of "Get Records" for "GetCase", including field selection (from document source [24]).
             </div>
             <img src="placeholder_for_source_24_image.png" alt="UI: Get Records for the newly created case [Source: 24]" class="doc-screenshot" />
-            <p class="image-caption">"Get Records" for <code>GetCase</code>. This ensures output variable <code>{!caseRecord}</code> is populated for the agent action. [cite: 24]</p>
+            <p class="image-caption">"Get Records" for <code>GetCase</code>. This ensures output variable <code>{!caseRecord}</code> is populated for the agent action.</p>
         </div>
 
         <div class="slide">
             <h2>Part 2: Saving and Activating the Flow (Crucial Step)</h2>
-            <p>A flow must be saved with a clear Label and then Activated to be usable by other Salesforce processes like Agent Actions. [cite: 25]</p>
+            <p>A flow must be saved with a clear Label and then Activated to be usable by other Salesforce processes like Agent Actions.</p>
             <hr>
-            <h3>Step 7: Save the Flow [cite: 25]</h3>
+            <h3>Step 7: Save the Flow</h3>
             <ul>
-                <li>Click "Save" in Flow Builder. [cite: 25]</li>
-                <li>Configuration: [cite: 26]</li>
+                <li>Click "Save" in Flow Builder.</li>
+                <li>Configuration:</li>
                 <ul>
-                    <li><strong>Label:</strong> <code>Create Case with Customer Details</code> [cite: 26]</li>
-                    <li><strong>API Name:</strong> (Keep default) [cite: 26]</li>
+                    <li><strong>Label:</strong> <code>Create Case with Customer Details</code></li>
+                    <li><strong>API Name:</strong> (Keep default)</li>
                 </ul>
             </ul>
-            <h3>Step 8: Activate the Flow [cite: 27]</h3>
+            <h3>Step 8: Activate the Flow</h3>
             <ul>
-                <li>Click "Activate". This makes the flow live. [cite: 27]</li>
-                <li>Return to Setup. [cite: 27]</li>
+                <li>Click "Activate". This makes the flow live.</li>
+                <li>Return to Setup.</li>
             </ul>
             <div class="interactive-area">
                 <p><strong>Simulation (Developer Checkpoint):</strong></p>
@@ -621,14 +619,14 @@
 
         <div class="slide">
             <h2>Part 3: Create Agent Custom Action (Bridging Flow to Agent)</h2>
-            <p>Agent Custom Actions expose your activated Flows to Agentforce agents, making automation accessible within topics. [cite: 28]</p>
+            <p>Agent Custom Actions expose your activated Flows to Agentforce agents, making automation accessible within topics.</p>
             <hr>
-            <h3>Step 1: Navigate to Agent Actions [cite: 28]</h3>
+            <h3>Step 1: Navigate to Agent Actions</h3>
             <ul>
-                <li>From Setup, open "Agent Assets" and select the "Actions" Tab. [cite: 28]</li>
-                <li>Click "New Agent Action". [cite: 29]</li>
+                <li>From Setup, open "Agent Assets" and select the "Actions" Tab.</li>
+                <li>Click "New Agent Action".</li>
             </ul>
-            <h3>Step 2: Configure Core Action Details [cite: 30]</h3>
+            <h3>Step 2: Configure Core Action Details</h3>
             <p>Link the action to your Flow:</p>
             <table>
                 <thead>
@@ -640,24 +638,24 @@
                 <tbody>
                     <tr>
                         <td>Reference Action Type</td>
-                        <td><code>Flow</code> [cite: 30]</td>
+                        <td><code>Flow</code></td>
                     </tr>
                     <tr>
                         <td>Reference Action</td>
-                        <td><code>Create Case with Customer Details</code> (Your activated Flow) [cite: 30]</td>
+                        <td><code>Create Case with Customer Details</code> (Your activated Flow)</td>
                     </tr>
                     <tr>
                         <td>Agent Action Label</td>
-                        <td><code>Create a New Case</code> [cite: 30]</td>
+                        <td><code>Create a New Case</code></td>
                     </tr>
                     <tr>
                         <td>Agent Action API Name</td>
-                        <td>(Keep default) [cite: 30]</td>
+                        <td>(Keep default)</td>
                     </tr>
                 </tbody>
             </table>
              <p class="image-caption">Table based on document source [30].</p>
-            <ul><li>Click "Next". [cite: 31]</li></ul>
+            <ul><li>Click "Next".</li></ul>
         </div>
         
         <div class="slide">
@@ -666,17 +664,17 @@
             <hr>
             <h3>Step 3: Configure Input and Output Behavior</h3>
             <ul>
-                <li>Leave default instructions. [cite: 31]</li>
-                <li>Check "Show loading text for this action". [cite: 31]</li>
-                <li>Set <strong>Loading Text</strong> to: <code>Creating a case for you...</code>. [cite: 32]</li>
+                <li>Leave default instructions.</li>
+                <li>Check "Show loading text for this action".</li>
+                <li>Set <strong>Loading Text</strong> to: <code>Creating a case for you...</code>.</li>
                 <li>For <strong>Inputs</strong> (from your Flow, e.g., <code>customerEmail</code>, <code>caseSubject</code>, <code>caseDescription</code>):
                     <ul>
-                        <li>Check "Require Input for both inputs ( customerEmail )". [cite: 33] (Implies for all flow inputs).</li>
+                        <li>Check "Require Input for both inputs ( customerEmail )". (Implies for all flow inputs).</li>
                     </ul>
                 </li>
                 <li>For <strong>Outputs</strong> (e.g., your Flow's <code>caseRecord</code> text variable):
                     <ul>
-                        <li>Check "Show in conversation for the <code>caseRecord</code> output". [cite: 33]</li>
+                        <li>Check "Show in conversation for the <code>caseRecord</code> output".</li>
                     </ul>
                 </li>
             </ul>
@@ -684,8 +682,8 @@
                 <strong>Image Note:</strong> Replace <code>placeholder_for_source_33_image.png</code> with the screenshot showing Inputs/Outputs configuration for the Agent Action (from document source [33]).
             </div>
             <img src="placeholder_for_source_33_image.png" alt="UI: Conceptual representation of Inputs and Outputs configuration [Source: 33]" class="doc-screenshot" />
-            <p class="image-caption">Conceptual UI for Agent Action Inputs/Outputs. [cite: 33]</p>
-            <ul><li>Click "Finish". [cite: 34]</li></ul>
+            <p class="image-caption">Conceptual UI for Agent Action Inputs/Outputs.</p>
+            <ul><li>Click "Finish".</li></ul>
         </div>
 
         <div class="slide">
@@ -694,50 +692,50 @@
             <hr>
             <h3>Step 1: Open Agent in Builder</h3>
             <ul>
-                <li>From Setup, go to "Agentforce Agents" (under Agent Studio). [cite: 34]</li>
-                <li>Select your target agent (e.g., "Customer Service Agent"). [cite: 35]</li>
-                <li>Click "Open in Builder". [cite: 35]</li>
+                <li>From Setup, go to "Agentforce Agents" (under Agent Studio).</li>
+                <li>Select your target agent (e.g., "Customer Service Agent").</li>
+                <li>Click "Open in Builder".</li>
             </ul>
             <h3>Step 2: Deactivate Agent for Modification</h3>
             <ul>
-                <li>Click "Deactivate" to enable changes to the agent. [cite: 36]</li>
+                <li>Click "Deactivate" to enable changes to the agent.</li>
             </ul>
             <h3>Step 3: Add Action to Topic</h3>
             <ul>
-                <li>In the Topics sidebar, click the topic you created (e.g., "Support Case Management"). [cite: 37]</li>
-                <li>Click the "This Topic's Actions" tab. [cite: 37]</li>
+                <li>In the Topics sidebar, click the topic you created (e.g., "Support Case Management").</li>
+                <li>Click the "This Topic's Actions" tab.</li>
             </ul>
             <div class="placeholder-info">
                 <strong>Image Note:</strong> Replace <code>placeholder_for_source_37_38_A_image.png</code> with the screenshot showing "This Topic's Actions" tab and the "New" dropdown (from document source [37], leading to document source [38]).
             </div>
             <img src="placeholder_for_source_37_38_A_image.png" alt="UI: This Topic's Actions tab [Source: 37]" class="doc-screenshot" />
-            <p class="image-caption">Navigating to add an action to the topic. [cite: 37]</p>
+            <p class="image-caption">Navigating to add an action to the topic.</p>
         </div>
 
         <div class="slide">
             <h2>Part 4: Add Action from Asset Library</h2>
             <p>Select the custom action you created from the Asset Library.</p>
             <hr>
-            <h3>Step 4: Select and Add Action [cite: 38]</h3>
+            <h3>Step 4: Select and Add Action</h3>
             <ul>
-                <li>Click "New" then "Add from Asset Library". [cite: 38] (The image in document source [38] shows "Create New Action" as one option in dropdown, then modal for adding existing action "Create a New Case").</li>
-                <li>In the "Add Available Actions" modal, find and check the "<code>Create a New Case</code>" action. [cite: 38]</li>
-                <li>Click "Finish". [cite: 38]</li>
+                <li>Click "New" then "Add from Asset Library". (The image in document source [38] shows "Create New Action" as one option in dropdown, then modal for adding existing action "Create a New Case").</li>
+                <li>In the "Add Available Actions" modal, find and check the "<code>Create a New Case</code>" action.</li>
+                <li>Click "Finish".</li>
             </ul>
             <div class="placeholder-info">
                 <strong>Image Note:</strong> Replace <code>placeholder_for_source_38_B_image.png</code> with the screenshot of the "Add Available Actions" modal with "Create a New Case" selected (from document source [38]).
             </div>
             <img src="placeholder_for_source_38_B_image.png" alt="UI: Add Available Actions modal [Source: 38]" class="doc-screenshot" />
-            <p class="image-caption">Selecting "Create a New Case" from the Asset Library. [cite: 38]</p>
+            <p class="image-caption">Selecting "Create a New Case" from the Asset Library.</p>
             <p><strong>Important:</strong> Remember to <strong>Activate</strong> your agent again after making these changes!</p>
         </div>
         
         <div class="slide">
             <h2>Part 5: Try It Out! - Simulation (QA Focus)</h2>
-            <p>Test the end-to-end functionality with a sample conversation. [cite: 39]</p>
+            <p>Test the end-to-end functionality with a sample conversation.</p>
             <hr>
             <h3>Scenario:</h3>
-            <p>In the Conversation Preview panel of Agentforce, a user types: [cite: 39]</p>
+            <p>In the Conversation Preview panel of Agentforce, a user types:</p>
             <pre><code>Hi, I just checked into my room and that the air conditioning in my room isn’t working, and it’s getting really hot.</code></pre>
             <p class="image-caption">User prompt for testing from document source [39].</p>
             
@@ -793,7 +791,7 @@
         const prevButton = document.getElementById('prevButton');
         const nextButton = document.getElementById('nextButton');
         const slideIndicator = document.getElementById('slideIndicator');
-        const progressBar = document.getElementById('progressBar');
+        const progressBar = document.getElementById('progressBar'); // This is the inner bar
 
         // --- d3.js Flow Diagram Logic ---
         function drawFlowDiagram(highlightNodeId = null) {
@@ -828,14 +826,14 @@
             svg.append("defs").append("marker")
                 .attr("id", "arrow")
                 .attr("viewBox", "0 -5 10 10")
-                .attr("refX", 19) // Adjusted for node size and stroke
+                .attr("refX", 19) 
                 .attr("refY", 0)
                 .attr("markerWidth", 6)
                 .attr("markerHeight", 6)
-                .attr("orient", "auto-start-reverse") // Changed orient for better arrow appearance on lines
+                .attr("orient", "auto-start-reverse") 
                 .append("path")
                 .attr("d", "M0,-5L10,0L0,5")
-                .attr("fill", "#555"); // Darker arrow
+                .attr("fill", "#555"); 
 
             const link = svg.append("g")
                 .selectAll("line")
@@ -845,57 +843,56 @@
                 .attr("y1", d => flowData.nodes.find(n => n.id === d.source).y)
                 .attr("x2", d => flowData.nodes.find(n => n.id === d.target).x)
                 .attr("y2", d => flowData.nodes.find(n => n.id === d.target).y)
-                .attr("stroke", "#555") // Darker links
-                .attr("stroke-width", 1.5) // Slightly thinner
+                .attr("stroke", "#555") 
+                .attr("stroke-width", 1.5) 
                 .attr("marker-end", "url(#arrow)");
             
 
              svg.append("g")
-                .selectAll("text.link-label") // Added class for specificity
+                .selectAll("text.link-label") 
                 .data(flowData.links.filter(l => l.label))
                 .join("text")
                 .attr("class", "link-label")
                 .attr("x", d => (flowData.nodes.find(n => n.id === d.source).x + flowData.nodes.find(n => n.id === d.target).x) / 2)
-                .attr("y", d => (flowData.nodes.find(n => n.id === d.source).y + flowData.nodes.find(n => n.id === d.target).y) / 2 - 6) // Adjusted y for better placement
+                .attr("y", d => (flowData.nodes.find(n => n.id === d.source).y + flowData.nodes.find(n => n.id === d.target).y) / 2 - 6) 
                 .text(d => d.label)
-                .attr("font-size", "11px") // Slightly larger
-                .attr("fill", "#333") // Darker text
+                .attr("font-size", "11px") 
+                .attr("fill", "#333") 
                 .attr("font-family", "sans-serif")
                 .attr("text-anchor", "middle")
-                .attr("background-color", "white") // Wont work directly on text, would need a rect behind it
-                .attr("paint-order", "stroke") // For text background effect if using stroke
-                .attr("stroke", "#f9f9f9") // Match diagram background
+                .attr("paint-order", "stroke") 
+                .attr("stroke", "#f9f9f9") 
                 .attr("stroke-width", "0.4em");
 
 
             const node = svg.append("g")
-                .selectAll("g.node-group") // Added class for specificity
+                .selectAll("g.node-group") 
                 .data(flowData.nodes)
                 .join("g")
                 .attr("class", "node-group")
                 .attr("transform", d => `translate(${d.x},${d.y})`);
 
             node.append("rect")
-                .attr("x", d => d.type === 'decision' ? -70 : -60) // Adjusted size
-                .attr("y", -22) // Adjusted size
-                .attr("width", d => d.type === 'decision' ? 140 : 120) // Adjusted size
-                .attr("height", 44) // Adjusted size
-                .attr("rx", d => d.type === 'process' ? 6 : (d.type === 'start' || d.type === 'end' ? 22 : 3)) // Diamond for decision
+                .attr("x", d => d.type === 'decision' ? -70 : -60) 
+                .attr("y", -22) 
+                .attr("width", d => d.type === 'decision' ? 140 : 120) 
+                .attr("height", 44) 
+                .attr("rx", d => d.type === 'process' ? 6 : (d.type === 'start' || d.type === 'end' ? 22 : 3)) 
                 .attr("ry", d => d.type === 'process' ? 6 : (d.type === 'start' || d.type === 'end' ? 22 : 3))
                 .attr("fill", d => {
                     if (d.id === highlightNodeId) return "#007aff"; 
-                    return d.type === 'start' || d.type === 'end' ? "#4caf50" : (d.type === 'decision' ? "#2196f3" : "#fff"); // Updated colors
+                    return d.type === 'start' || d.type === 'end' ? "#4caf50" : (d.type === 'decision' ? "#2196f3" : "#fff"); 
                 })
-                .attr("stroke", d => d.id === highlightNodeId ? "#0056b3" : "#333") // Darker stroke
+                .attr("stroke", d => d.id === highlightNodeId ? "#0056b3" : "#333") 
                 .attr("stroke-width", 1.5); 
             
             node.append("text")
                 .attr("text-anchor", "middle")
                 .attr("dy", "0.35em") 
                 .text(d => d.name)
-                .attr("font-size", "11px") // Slightly larger
+                .attr("font-size", "11px") 
                 .attr("font-family", "sans-serif")
-                .attr("fill", d => (d.id === highlightNodeId || d.type === 'start' || d.type === 'end' || d.type === 'decision') ? "#fff" : "#333"); // White text on colored nodes
+                .attr("fill", d => (d.id === highlightNodeId || d.type === 'start' || d.type === 'end' || d.type === 'decision') ? "#fff" : "#333"); 
         }
 
 
@@ -906,7 +903,12 @@
             prevButton.disabled = currentSlide === 0;
             nextButton.disabled = currentSlide === totalSlides - 1;
             slideIndicator.textContent = `${currentSlide + 1} / ${totalSlides}`;
-            progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+            
+            // Update progress bar - progressBar is the inner div
+            if (progressBar) {
+                 progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+            }
+
 
             const flowOverviewSlideIndex = 7; 
             const getContactSlideIndex = 9; 
