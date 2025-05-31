@@ -287,11 +287,6 @@
                 <li>The 'What': Understanding the inputs, outputs, and expected behavior for effective testing (Critical for QA).</li>
                 <li>Practical application for rapid prototyping and feature implementation.</li>
             </ul>
-             <div class="placeholder-info">
-                <strong>Image Note:</strong> Replace placeholder images (e.g., <code>placeholder_for_conceptual_ai.png</code>) with actual screenshots from your document or relevant conceptual images.
-            </div>
-            <img src="placeholder_for_conceptual_ai.png" alt="Conceptual image of AI and customer service automation" class="doc-screenshot" style="width: 50%;"/>
-            <p class="image-caption">Unlock automation capabilities for innovative solutions.</p>
         </div>
 
         <div class="slide">
@@ -321,11 +316,6 @@
                 <li>Click the arrow icon next to "Manage the topics assigned to your agent".</li>
                 <li>Select "New Topic". This initiates the topic creation wizard.</li>
             </ul>
-            <div class="placeholder-info">
-                <strong>Image Note:</strong> Replace <code>placeholder_for_source_4.png</code> with the screenshot from your document that shows "New Topic" selection (corresponds to document source [4]).
-            </div>
-            <img src="placeholder_for_source_4.png" alt="UI: Selecting New Topic in Agentforce [Source: 4]" class="doc-screenshot" />
-            <p class="image-caption">UI for initiating a new topic. Precise for developers and BAs to visualize.</p>
         </div>
         
         <div class="slide">
@@ -338,19 +328,9 @@
             </ul>
             <pre><code>Act as a Hotel Customer Service Assistant who supports a Customer Service Representative in helping guests with any inquiries related to the stay. This includes tasks such as providing information about existing cases and creating new cases for the customer.</code></pre>
             <p class="image-caption">Prompt provided to Agentforce AI.</p>
-            <div class="placeholder-info">
-                <strong>Image Note:</strong> Replace <code>placeholder_for_source_8_image.png</code> with the screenshot of the "Create a Topic" dialog showing the prompt field (corresponds to image after document source [8]).
-            </div>
-            <img src="placeholder_for_source_8_image.png" alt="UI: Create a Topic dialog with AI prompt field [Source: Image after 8]" class="doc-screenshot" />
-            <p class="image-caption">Agentforce "Create a Topic" dialog. QA can note this as an interaction point.</p>
             <ul>
                 <li>Click "Next".</li>
             </ul>
-            <div class="interactive-area">
-                <label for="aiPrompt">Simulated AI Prompt Input:</label>
-                <textarea id="aiPrompt" rows="4" readonly>Act as a Hotel Customer Service Assistant who supports a Customer Service Representative in helping guests with any inquiries related to the stay. This includes tasks such as providing information about existing cases and creating new cases for the customer.</textarea>
-                <p style="font-size:0.9em; color:#333;"><em>Visual representation. The actual AI will process this to suggest configurations.</em></p>
-            </div>
         </div>
 
         <div class="slide">
@@ -415,11 +395,8 @@
         </div>
         
         <div class="slide">
-            <h2>Part 2: Creating the Flow - Overview & d3.js Visualization</h2>
-            <p>Flows are the heart of automation. We'll build an "Autolaunched Flow (No Trigger)". Below is a dynamic d3.js powered visualization of the flow we are about to build. As we go through the steps, relevant parts can be highlighted here.</p>
-            <div id="flowDiagramContainer">
-                </div>
-            <p style="text-align:center; font-style:italic; font-size:0.9em; margin-top:5px;">Flow: Start → Get Contact → Does Contact Exist? → (Yes) Create Case → Get Case Details → End</p>
+            <h2>Part 2: Creating the Flow</h2>
+            <p>Flows are the heart of automation. We'll build an "Autolaunched Flow (No Trigger)". 
             <hr>
             <h3>Step 1: Initiate New Flow</h3>
             <ul>
@@ -428,11 +405,6 @@
                 <li>Keep "Start from Scratch" selected, click "Next".</li>
                 <li>Select "Autolaunched Flow (No Trigger)" and click "Create".</li>
             </ul>
-            <div class="placeholder-info">
-                <strong>Image Note:</strong> Replace <code>placeholder_for_source_15_image.png</code> with the screenshot from your document showing Flow Builder with "Autolaunched Flow" selected (corresponds to image in document source [15]).
-            </div>
-            <img src="placeholder_for_source_15_image.png" alt="UI: Flow Builder showing Autolaunched Flow selection [Source: 15]" class="doc-screenshot" />
-            <p class="image-caption">Flow Builder: Selecting "Autolaunched Flow (No Trigger)".</p>
         </div>
 
 
@@ -491,7 +463,6 @@
                     </tr>
                 </tbody>
             </table>
-             <p class="image-caption">Table based on document source [17].</p>
             <p>Correct variable definition is crucial for flow logic and data integrity, a key area for developer attention and QA validation.</p>
         </div>
 
@@ -511,11 +482,6 @@
                     <li><strong>How to Store Record Data:</strong> "Automatically store all fields"</li>
                 </ul>
             </ul>
-            <div class="placeholder-info">
-                 <strong>Image Note:</strong> Replace <code>placeholder_for_source_19_image.png</code> with the screenshot showing the "Get Records" configuration for "Get_Contact" (from document source [19]).
-            </div>
-            <img src="placeholder_for_source_19_image.png" alt="UI: Configuration of Get Records element for Contact [Source: 19]" class="doc-screenshot" />
-            <p class="image-caption">"Get Records" configuration for <code>Get_Contact</code>. BAs can map this to process steps.</p>
         </div>
 
         <div class="slide">
@@ -532,11 +498,6 @@
                     <li>A "Default Outcome" path handles cases where no contact is found (not detailed in this lab).</li>
                 </ul>
             </ul>
-            <div class="placeholder-info">
-                <strong>Image Note:</strong> Replace <code>placeholder_for_source_20_image.png</code> with the screenshot of the "Decision" element configuration (from document source [20]).
-            </div>
-            <img src="placeholder_for_source_20_image.png" alt="UI: Configuration of Decision element [Source: 20]" class="doc-screenshot" />
-            <p class="image-caption">"Decision" element <code>DoesContactExist</code> configuration. QA will test both paths if fully built.</p>
         </div>
 
         <div class="slide">
@@ -563,11 +524,6 @@
                     </li>
                 </ul>
             </ul>
-            <div class="placeholder-info">
-                <strong>Image Note:</strong> Replace <code>placeholder_for_source_22_image.png</code> with the screenshot of the "Create Records" element for "CreateCaseRecord" (from document source [22]).
-            </div>
-            <img src="placeholder_for_source_22_image.png" alt="UI: Configuration of Create Records element for Case [Source: 22]" class="doc-screenshot" />
-            <p class="image-caption">"Create Records" configuration for <code>CreateCaseRecord</code>. Developers ensure correct field mapping.</p>
         </div>
 
         <div class="slide">
@@ -585,11 +541,6 @@
                     <li><strong>How to Store Record Data:</strong> "Choose fields and assign variables (advanced)". The image in document source [24] shows selecting various fields (Id, Subject, CaseNumber, etc.) and storing them in a record variable. For our text output <code>{!caseRecord}</code>, you'd typically assign a specific field like <code>{!GetCase.CaseNumber}</code> or the Case ID.</li>
                 </ul>
             </ul>
-            <div class="placeholder-info">
-                <strong>Image Note:</strong> Replace <code>placeholder_for_source_24_image.png</code> with the screenshot of "Get Records" for "GetCase", including field selection (from document source [24]).
-            </div>
-            <img src="placeholder_for_source_24_image.png" alt="UI: Get Records for the newly created case [Source: 24]" class="doc-screenshot" />
-            <p class="image-caption">"Get Records" for <code>GetCase</code>. This ensures output variable <code>{!caseRecord}</code> is populated for the agent action.</p>
         </div>
 
         <div class="slide">
@@ -610,11 +561,6 @@
                 <li>Click "Activate". This makes the flow live.</li>
                 <li>Return to Setup.</li>
             </ul>
-            <div class="interactive-area">
-                <p><strong>Simulation (Developer Checkpoint):</strong></p>
-                <button onclick="alert('Flow Saved & Activated! Ready for agent integration. (Simulated)')">Save & Activate Flow</button>
-                <p style="font-size:0.9em; color:#333;"><em>Simulates successful save and activation. Essential before proceeding.</em></p>
-            </div>
         </div>
 
         <div class="slide">
@@ -654,7 +600,6 @@
                     </tr>
                 </tbody>
             </table>
-             <p class="image-caption">Table based on document source [30].</p>
             <ul><li>Click "Next".</li></ul>
         </div>
         
@@ -678,11 +623,6 @@
                     </ul>
                 </li>
             </ul>
-            <div class="placeholder-info">
-                <strong>Image Note:</strong> Replace <code>placeholder_for_source_33_image.png</code> with the screenshot showing Inputs/Outputs configuration for the Agent Action (from document source [33]).
-            </div>
-            <img src="placeholder_for_source_33_image.png" alt="UI: Conceptual representation of Inputs and Outputs configuration [Source: 33]" class="doc-screenshot" />
-            <p class="image-caption">Conceptual UI for Agent Action Inputs/Outputs.</p>
             <ul><li>Click "Finish".</li></ul>
         </div>
 
@@ -705,11 +645,6 @@
                 <li>In the Topics sidebar, click the topic you created (e.g., "Support Case Management").</li>
                 <li>Click the "This Topic's Actions" tab.</li>
             </ul>
-            <div class="placeholder-info">
-                <strong>Image Note:</strong> Replace <code>placeholder_for_source_37_38_A_image.png</code> with the screenshot showing "This Topic's Actions" tab and the "New" dropdown (from document source [37], leading to document source [38]).
-            </div>
-            <img src="placeholder_for_source_37_38_A_image.png" alt="UI: This Topic's Actions tab [Source: 37]" class="doc-screenshot" />
-            <p class="image-caption">Navigating to add an action to the topic.</p>
         </div>
 
         <div class="slide">
@@ -725,8 +660,6 @@
             <div class="placeholder-info">
                 <strong>Image Note:</strong> Replace <code>placeholder_for_source_38_B_image.png</code> with the screenshot of the "Add Available Actions" modal with "Create a New Case" selected (from document source [38]).
             </div>
-            <img src="placeholder_for_source_38_B_image.png" alt="UI: Add Available Actions modal [Source: 38]" class="doc-screenshot" />
-            <p class="image-caption">Selecting "Create a New Case" from the Asset Library.</p>
             <p><strong>Important:</strong> Remember to <strong>Activate</strong> your agent again after making these changes!</p>
         </div>
         
@@ -737,19 +670,6 @@
             <h3>Scenario:</h3>
             <p>In the Conversation Preview panel of Agentforce, a user types:</p>
             <pre><code>Hi, I just checked into my room and that the air conditioning in my room isn’t working, and it’s getting really hot.</code></pre>
-            <p class="image-caption">User prompt for testing from document source [39].</p>
-            
-            <div class="interactive-area" id="simulationArea">
-                <h4>Live Simulation (Mockup):</h4>
-                <div id="chatHistory" style="max-height: 200px; overflow-y: auto; border: 1px solid #eee; padding:10px; background-color: #fff; border-radius:4px;">
-                    <p><strong>User:</strong> Hi, I just checked into my room and that the air conditioning in my room isn’t working, and it’s getting really hot.</p>
-                </div>
-                <div id="agentResponseSection" style="margin-top:10px;">
-                    </div>
-                <input type="text" id="userInput" placeholder="Your mock response (e.g., email)" style="margin-top:10px; width: calc(70% - 12px);">
-                <button onclick="processUserInput()">Send</button>
-                <p style="font-size:0.9em; color:#333; margin-top:10px;"><em>This is a simplified simulation. The agent's behavior is based on the topic instructions and the flow.</em></p>
-            </div>
         </div>
 
         <div class="slide">
@@ -758,9 +678,6 @@
             <ul>
                 <li>Design and configure Agentforce Topics for specific intents.</li>
                 <li>Develop robust Flows to automate complex backend processes.
-                    <ul>
-                        <li>Leverage d3.js or other tools to visualize and understand flow logic.</li>
-                    </ul>
                 </li>
                 <li>Integrate these Flows seamlessly as Agent Custom Actions.</li>
                 <li>Test and validate your automated agent interactions.</li>
