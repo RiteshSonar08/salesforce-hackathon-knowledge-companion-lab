@@ -267,197 +267,134 @@
                 <li>Step 4: Add the new action to your agent's topic.</li>
                 <li>Step 5: Try out the new functionality.</li>
             </ul>
-            <div class="interactive-area">
-                <h4>Business Context:</h4>
-                <p>Imagine a scenario where a customer has an unresolved issue (e.g., faulty air conditioning). This Apex action will enable an agent to quickly log a high-priority follow-up task for the support team and simultaneously inform the customer that their issue is being addressed. [cite: 13, 14, 17, 18]</p>
-            </div>
         </div>
         <div class="slide">
             <h2>Step 1: Create the Apex Class <span class="subtitle">Initial Setup</span></h2>
             <p>First, we'll create the Apex class that defines the custom logic.</p>
             <h3>1.1 Launch Code Builder & Create Class</h3>
             <ul>
-                <li>From App Launcher, open <span class="code-like">Code Builder</span> and click <span class="code-like">Launch</span>. [cite: 1]</li>
-                <li>Once loaded, open the command palette (<span class="code-like">CMD + SHIFT + P</span> on Mac or <span class="code-like">CTRL + SHIFT + P</span> on PC). [cite: 2]</li>
-                <li>Search for Apex and click <span class="code-like">Create Apex Class</span>. [cite: 3]</li>
-                <li>Enter <code class="code-like">CaseFollowUpAgentAction</code> as the class name and accept the default directory. [cite: 3]</li>
+                <li>From App Launcher, open <span class="code-like">Code Builder</span> and click <span class="code-like">Launch</span>.</li>
+                <li>Once loaded, open the command palette (<span class="code-like">CMD + SHIFT + P</span> on Mac or <span class="code-like">CTRL + SHIFT + P</span> on PC).</li>
+                <li>Search for Apex and click <span class="code-like">Create Apex Class</span>.</li>
+                <li>Enter <code class="code-like">CaseFollowUpAgentAction</code> as the class name and accept the default directory.</li>
             </ul>
-            <div class="interactive-area">
-                <p><strong>Simulation: Code Builder Interaction</strong></p>
-                <label for="classNameInput">Enter Class Name:</label>
-                <input type="text" id="classNameInput" value="CaseFollowUpAgentAction" readonly>
-                <p style="font-size:0.9em;"><em>Visual representation of creating the Apex class.</em></p>
-            </div>
         </div>
         <div class="slide">
             <h2>Step 1: Create the Apex Class <span class="subtitle">1.2 Apex Code - Structure</span></h2>
-            <p>Replace the default Apex class content with the following code. [cite: 4] We'll break down key parts.</p>
-            <h4>Class Definition and Invocable Method:</h4>
-            <pre><code>public with sharing class CaseFollowUpAgentAction {
+            <p>Replace the default Apex class content with the following code.</p>
+            <code class="code-like">
+                public with sharing class CaseFollowUpAgentAction {
 
-    @InvocableMethod(label='Create Follow-Up Task & Email' 
-                     description='Creates a customizable follow-up task and sends a plain text email to the customer.') 
-    public static List&lt;FollowUpResponse&gt; createFollowUpTaskAndEmail(List&lt;FollowUpRequest&gt; requests) { 
-        List&lt;FollowUpResponse&gt; responses = new List&lt;FollowUpResponse&gt;(); [cite: 4]
-        FollowUpResponse response = new FollowUpResponse(); [cite: 5]
-        // ... rest of the method ...
-    }
-    // ... Request and Response inner classes ...
-}</code></pre>
+                @InvocableMethod(label='Create Follow-Up Task & Email' description='Creates a customizable follow-up task and sends a plain text email to the customer.')
+                public static List<FollowUpResponse> createFollowUpTaskAndEmail(List<FollowUpRequest> requests) {
+                    List<FollowUpResponse> responses = new List<FollowUpResponse>();
+                    FollowUpResponse response = new FollowUpResponse(); 
+            
+                    // Validate input request.
+                    if (requests == null || requests.isEmpty() || requests[0].caseNumber == null) {
+                        response.isSuccess = false;
+                        response.outcomeMessage = 'Error: Case Number not provided in the request.';
+                        responses.add(response);
+                        return responses;
+                    }
+            
+                    FollowUpRequest request = requests[0]; 
+                    String caseNumber = request.caseNumber;
+            
+                    try {
+                        Case caseRecord = [
+                            SELECT Id, CaseNumber, ContactId, Contact.Email, Contact.FirstName, Contact.LastName
+                            FROM Case
+                            WHERE CaseNumber = :caseNumber
+                            LIMIT 1
+                        ];
+            
+                        if (caseRecord.Id == null) {
+                            throw new HandledException('Case with CaseNumber ' + caseNumber + ' not found.');
+                        }
+                        if (caseRecord.ContactId == null || String.isBlank(caseRecord.Contact.Email)) {
+                            throw new HandledException('Case contact or contact email is missing for Case : ' + caseNumber);
+                        }
+            
+                        // --- 1. Create the Follow-Up Task ---
+                        Task followUpTask = new Task();
+                        followUpTask.Subject = 'Follow-Up for Case: ' + caseRecord.CaseNumber;
+                        followUpTask.WhatId = caseRecord.Id;
+                        followUpTask.WhoId = caseRecord.ContactId;
+                        followUpTask.OwnerId = UserInfo.getUserId();
+                        followUpTask.Status = 'Open';
+                        followUpTask.Priority = 'High';
+            
+                        insert followUpTask; 
+                        System.debug('Successfully inserted Task: ' + followUpTask.Id);
+            
+                        // --- 2. Create and Send the Confirmation Email using SingleEmailMessage ---
+                        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            
+                        mail.setTargetObjectId(caseRecord.ContactId);
+                        mail.setSaveAsActivity(True);
+                        mail.setSubject('Update Regarding Your Case: ' + caseRecord.CaseNumber);
+            
+                        String emailBody = 'Dear ' + (String.isNotBlank(caseRecord.Contact.FirstName) ? caseRecord.Contact.FirstName : 'Customer') + ',\n\n';
+                        emailBody += 'This is a confirmation that we have processed your request related to Case ' + caseRecord.CaseNumber + '.\n';
+                        emailBody += 'A follow-up will be conducted within the next few hours to ensure everything is resolved to your satisfaction.\n\n';
+                        emailBody += 'Thank you for your patience.\n\n';
+                        emailBody += 'Sincerely,\n';
+                        emailBody += 'Support Team'; // Sender's name
+            
+                        mail.setPlainTextBody(emailBody);
+                        mail.setWhatId(caseRecord.Id);
+            
+                        Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
+                        System.debug('Successfully sent email to Contact: ' + caseRecord.Contact.Email);
+            
+                        Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.Email[] {mail});
+                        if (results != null && results[0].isSuccess()) {
+                            System.debug('Email sent successfully test');
+                        } else {
+                            System.debug('Email failed to send: ' + results[0].getErrors()[0].getMessage());
+                        }
+            
+                        // Set success response.
+                        response.isSuccess = true;
+                        response.outcomeMessage = 'Follow-up task created and email sent successfully for Case: ' + caseRecord.CaseNumber;
+            
+                    } catch (Exception e) {
+                        response.isSuccess = false;
+                        response.outcomeMessage = 'An error occurred: ' + e.getMessage();
+                        System.debug('CaseFollowUpAgentAction ~~ Exception Type: ' + e.getTypeName() + ', Message: ' + e.getMessage() + ', Stack Trace: ' + e.getStackTraceString());
+                    }
+            
+                    responses.add(response);
+                    return responses;
+                }
+            
+                public class FollowUpRequest {
+                    @InvocableVariable(required=true label='Case Number' description='Stores the case number of the existing case for which a follow-up task needs to be created.')
+                    public String caseNumber;
+            
+                    public FollowUpRequest() {
+                    }
+                }
+            
+                public class FollowUpResponse {
+                    @InvocableVariable(label='Outcome Message' description='A message indicating the success or failure of the operation.')
+                    public String outcomeMessage;
+            
+                    @InvocableVariable(label='Is Success' description='True if the operation was successful, false otherwise.')
+                    public Boolean isSuccess = false;
+            
+                }
+            
+            }
+            </code>
             <ul>
-                <li>The class <code class="code-like">CaseFollowUpAgentAction</code> will contain our logic. [cite: 4]</li>
-                <li>The <code class="code-like">@InvocableMethod</code> annotation makes the <code class="code-like">createFollowUpTaskAndEmail</code> method available to Agentforce and other Salesforce automation tools. [cite: 4, 32]</li>
-                <li>The `label` and `description` in `@InvocableMethod` are important as they help Agentforce understand how to use this action. [cite: 4, 34]</li>
-                <li>It takes a list of <code class="code-like">FollowUpRequest</code> objects and returns a list of <code class="code-like">FollowUpResponse</code> objects. [cite: 4, 33]</li>
+                <li>The <code class="code-like">@InvocableMethod</code> annotation makes the <code class="code-like">createFollowUpTaskAndEmail</code> method available to Agentforce and other Salesforce automation tools.</li>
+                <li>The `label` and `description` in `@InvocableMethod` are important as they help Agentforce understand how to use this action.</li>
+                <li>It takes a list of <code class="code-like">FollowUpRequest</code> objects and returns a list of <code class="code-like">FollowUpResponse</code> objects.</li>
             </ul>
         </div>
-        <div class="slide">
-            <h2>Step 1: Create the Apex Class <span class="subtitle">1.3 Apex Code - Input & Query</span></h2>
-            <p>Inside the <code class="code-like">createFollowUpTaskAndEmail</code> method:</p>
-            <h4>Input Validation:</h4>
-            <pre><code>// Validate input request.
-if (requests == null || requests.isEmpty() || requests[0].caseNumber == null) {  [cite: 5]
-    response.isSuccess = false; [cite: 5]
-    response.outcomeMessage = 'Error: Case Number not provided in the request.'; [cite: 6]
-    responses.add(response); [cite: 6]
-    return responses; [cite: 6]
-} 
-
-FollowUpRequest request = requests[0]; [cite: 7]
-String caseNumber = request.caseNumber; [cite: 7]</code></pre>
-            <ul><li>This section ensures a case number is provided in the request. [cite: 5, 6, 7]</li></ul>
-            <h4>Querying the Case:</h4>
-            <pre><code>try { [cite: 8]
-    Case caseRecord = [  [cite: 8]
-        SELECT Id, CaseNumber, ContactId, Contact.Email, Contact.FirstName, Contact.LastName 
-        FROM Case 
-        WHERE CaseNumber = :caseNumber 
-        LIMIT 1 
-    ]; [cite: 9]
-
-    if (caseRecord.Id == null) { [cite: 10]
-        throw new HandledException('Case with CaseNumber ' + caseNumber + ' not found.'); [cite: 10]
-    } 
-    if (caseRecord.ContactId == null || String.isBlank(caseRecord.Contact.Email)) { [cite: 11]
-        throw new HandledException('Case contact or contact email is missing for Case : ' + caseNumber); [cite: 11]
-    } 
-    // ...
-} catch (Exception e) { /* ... */ }</code></pre>
-            <ul>
-                <li>The code attempts to find a <code class="code-like">Case</code> record matching the provided <code class="code-like">caseNumber</code>. [cite: 8, 9]</li>
-                <li>It selects fields like <code class="code-like">ContactId</code>, <code class="code-like">Contact.Email</code>, etc., needed for task creation and email. [cite: 8]</li>
-                <li>It throws errors if the case is not found or if essential contact details are missing. [cite: 10, 11]</li>
-            </ul>
-        </div>
-        <div class="slide">
-            <h2>Step 1: Create the Apex Class <span class="subtitle">1.4 Apex Code - Task Creation</span></h2>
-            <p>Continuing within the <code class="code-like">try</code> block:</p>
-            <h4>Creating the Follow-Up Task:</h4>
-            <pre><code>// --- 1. Create the Follow-Up Task ---
-Task followUpTask = new Task(); [cite: 12]
-followUpTask.Subject = 'Follow-Up for Case: ' + caseRecord.CaseNumber; [cite: 13]
-followUpTask.WhatId = caseRecord.Id; // Relates to the Case [cite: 13]
-followUpTask.WhoId = caseRecord.ContactId; // Relates to the Contact [cite: 13]
-followUpTask.OwnerId = UserInfo.getUserId(); // Assign to current user [cite: 13]
-followUpTask.Status = 'Open'; [cite: 13]
-followUpTask.Priority = 'High'; [cite: 14]
-
-insert followUpTask; [cite: 14]
-System.debug('Successfully inserted Task: ' + followUpTask.Id); [cite: 14]</code></pre>
-            <ul>
-                <li>A new <code class="code-like">Task</code> object is created. [cite: 12]</li>
-                <li>The subject is set to indicate it's a follow-up for the specific case. [cite: 13]</li>
-                <li>It's related to the <code class="code-like">Case</code> (<code class="code-like">WhatId</code>) and the <code class="code-like">Contact</code> (<code class="code-like">WhoId</code>). [cite: 13]</li>
-                <li>The task is assigned to the current user, with 'Open' status and 'High' priority. [cite: 13, 14]</li>
-                <li>The task is then inserted into the database. [cite: 14]</li>
-            </ul>
-        </div>
-        <div class="slide">
-            <h2>Step 1: Create the Apex Class <span class="subtitle">1.5 Apex Code - Email Logic</span></h2>
-            <p>Next, the code creates and sends a confirmation email:</p>
-            <h4>Creating and Sending Email:</h4>
-            <pre><code>// --- 2. Create and Send the Confirmation Email using SingleEmailMessage ---
-Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage(); [cite: 15]
-mail.setTargetObjectId(caseRecord.ContactId); // Sets recipient to the Case's Contact [cite: 16]
-mail.setSaveAsActivity(true); // Logs the email as an activity [cite: 16]
-mail.setSubject('Update Regarding Your Case: ' + caseRecord.CaseNumber); [cite: 16]
-
-String emailBody = 'Dear ' + (String.isNotBlank(caseRecord.Contact.FirstName) ? caseRecord.Contact.FirstName : 'Customer') + ',\n\n'; [cite: 16]
-emailBody += 'This is a confirmation that we have processed your request related to Case ' + caseRecord.CaseNumber + '.\n'; [cite: 17]
-emailBody += 'A follow-up will be conducted within the next few hours to ensure everything is resolved to your satisfaction.\n\n'; [cite: 18]
-emailBody += 'Thank you for your patience.\n\n'; [cite: 19]
-emailBody += 'Sincerely,\nSupport Team'; [cite: 19] // Support Team as sender's name part of the body [cite: 20]
-
-mail.setPlainTextBody(emailBody); [cite: 20]
-mail.setWhatId(caseRecord.Id); // Relates email to the Case [cite: 20]
-
-// Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail}); // Original line, a second sendEmail is below
-// System.debug('Successfully sent email to Contact: ' + caseRecord.Contact.Email); // Original debug [cite:21]
-
-// Optional: Check email send results
-Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.Email[] {mail}); [cite: 21]
-if (results != null && results[0].isSuccess()) { [cite: 22]
-    System.debug('Email sent successfully test'); [cite: 22]
-} else { 
-    System.debug('Email failed to send: ' + results[0].getErrors()[0].getMessage()); [cite: 23]
-}</code></pre>
-            <ul>
-                <li>A <code class="code-like">Messaging.SingleEmailMessage</code> object is used. [cite: 15]</li>
-                <li>The email is targeted to the case's contact and related to the case. [cite: 16, 20]</li>
-                <li>The subject and body are dynamically constructed using case details. [cite: 16, 17, 18, 19]</li>
-                <li><code class="code-like">Messaging.sendEmail()</code> sends the email. The code includes an example of checking send results. [cite: 21, 22, 23]</li>
-            </ul>
-        </div>
-        <div class="slide">
-            <h2>Step 1: Create the Apex Class <span class="subtitle">1.6 Apex Code - Response & Errors</span></h2>
-            <p>Finally, the method sets the response and handles potential errors:</p>
-            <h4>Setting Success Response:</h4>
-            <pre><code>// Set success response.
-response.isSuccess = true; [cite: 24]
-response.outcomeMessage = 'Follow-up task created and email sent successfully for Case: ' + caseRecord.CaseNumber; [cite: 25]
-// ...
-responses.add(response); [cite: 28]
-return responses; [cite: 28]</code></pre>
-            <h4>Exception Handling:</h4>
-            <pre><code>} catch (Exception e) { [cite: 26]
-    response.isSuccess = false; [cite: 26]
-    response.outcomeMessage = 'An error occurred: ' + e.getMessage(); [cite: 27]
-    System.debug('CaseFollowUpAgentAction ~~ Exception Type: ' + e.getTypeName() + 
-                 ', Message: ' + e.getMessage() + 
-                 ', Stack Trace: ' + e.getStackTraceString()); [cite: 27]
-} 
-responses.add(response); [cite: 28]
-return responses; [cite: 28]</code></pre>
-            <ul>
-                <li>If all operations are successful, <code class="code-like">isSuccess</code> is set to true and a success message is provided. [cite: 24, 25]</li>
-                <li>The <code class="code-like">catch</code> block handles any exceptions, sets <code class="code-like">isSuccess</code> to false, and captures the error message. [cite: 26, 27]</li>
-            </ul>
-        </div>
-        <div class="slide">
-            <h2>Step 1: Create the Apex Class <span class="subtitle">1.7 Apex Code - Inner Classes</span></h2>
-            <p>The Apex class includes two inner classes for handling the request and response data structures, using <code class="code-like">@InvocableVariable</code>.</p>
-            <h4><code class="code-like">FollowUpRequest</code> Inner Class:</h4>
-            <pre><code>public class FollowUpRequest { [cite: 29]
-    @InvocableVariable(required=true label='Case Number' 
-                       description='Stores the case number of the existing case for which a follow-up task needs to be created.') 
-    public String caseNumber; [cite: 29]
-    public FollowUpRequest() { [cite: 30]
-    } 
-}</code></pre>
-            <ul><li>This class defines the input structure, requiring a <code class="code-like">caseNumber</code>. [cite: 29] The descriptions for `@InvocableVariable` are important for Agentforce. [cite: 34]</li></ul>
-
-            <h4><code class="code-like">FollowUpResponse</code> Inner Class:</h4>
-            <pre><code>public class FollowUpResponse { [cite: 30]
-    @InvocableVariable(label='Outcome Message' 
-                       description='A message indicating the success or failure of the operation.') 
-    public String outcomeMessage; [cite: 30]
-    @InvocableVariable(label='Is Success' 
-                       description='True if the operation was successful, false otherwise.') 
-    public Boolean isSuccess = false; [cite: 31]
-}</code></pre>
-            <ul><li>This class defines the output structure, including an <code class="code-like">outcomeMessage</code> and an <code class="code-like">isSuccess</code> flag. [cite: 30, 31] The descriptions here are also used by Agentforce. [cite: 33, 34]</li></ul>
-            <p>After pasting all the code, <strong>save the file</strong> in Code Builder. [cite: 35]</p>
-        </div>
+        
         <div class="slide">
             <h2>Step 2: Add Extra Instructions to Existing Topic</h2>
             <p>Enhance your existing Agentforce topic with new instructions to guide the agent on when to use the follow-up action.</p>
@@ -476,14 +413,15 @@ return responses; [cite: 28]</code></pre>
             </ul>
             <p>Add these instructions to the topic you configured previously. This helps the agent understand the context and prerequisites for the new "Create Follow-Up Task" action.</p>
         </div>
+                        
         <div class="slide">
-            <h2>Step 3: Create the Agent Custom Action <span class="subtitle">Exposing Apex to Agent</span></h2>
+            <h2>Step 2: Create the Agent Custom Action <span class="subtitle">Exposing Apex to Agent</span></h2>
             <p>Now, create an Agent Custom Action to make your Apex method usable by the Agentforce agent.</p>
             <h3>Action Configuration:</h3>
             <ul>
-                <li>From Setup, open <span class="code-like">Agent Assets</span> and click on the <span class="code-like">Actions Tab</span>. [cite: 38]</li>
-                <li>Click <span class="code-like">New Agent Action</span>. [cite: 39]</li>
-                <li>Configure the action as follows: [cite: 40]</li>
+                <li>From Setup, open <span class="code-like">Agent Assets</span> and click on the <span class="code-like">Actions Tab</span>.</li>
+                <li>Click <span class="code-like">New Agent Action</span>.</li>
+                <li>Configure the action as follows:</li>
             </ul>
             <table>
                 <thead><tr><th>Field</th><th>Value</th></tr></thead>
@@ -495,45 +433,37 @@ return responses; [cite: 28]</code></pre>
                     <tr><td>Agent Action API Name</td><td>Keep default</td></tr>
                 </tbody>
             </table>
-            <ul><li>Click <span class="code-like">Next</span>. [cite: 41]</li></ul>
-             <p>Notice that the instruction fields are pre-filled based on the descriptions provided in the Apex code's <code class="code-like">@InvocableMethod</code> and <code class="code-like">@InvocableVariable</code> annotations. [cite: 41]</p>
+            <ul><li>Click <span class="code-like">Next</span>.</li></ul>
+             <p>Notice that the instruction fields are pre-filled based on the descriptions provided in the Apex code's <code class="code-like">@InvocableMethod</code> and <code class="code-like">@InvocableVariable</code> annotations.</p>
         </div>
         <div class="slide">
             <h2>Step 3: Create Agent Custom Action <span class="subtitle">Input/Output Settings</span></h2>
             <p>Configure the input and output behavior for the custom action.</p>
             <h3>Settings:</h3>
             <ul>
-                <li>Set the <span class="code-like">Loading Text</span> to: "Creating followup task for you...". [cite: 42]</li>
+                <li>Set the <span class="code-like">Loading Text</span> to: "Creating followup task for you...".</li>
                 <li>For the input parameter (e.g., "Case Number" from <code class="code-like">FollowUpRequest</code>):
-                    <ul><li>Check <span class="code-like">Collect data from user</span>. [cite: 43]</li></ul>
+                    <ul><li>Check <span class="code-like">Collect data from user</span>.</li></ul>
                 </li>
                 <li>For the output parameter (e.g., "Outcome Message" from <code class="code-like">FollowUpResponse</code>):
-                    <ul><li>Check <span class="code-like">Show in conversation</span>. [cite: 44]</li></ul>
+                    <ul><li>Check <span class="code-like">Show in conversation</span>.</li></ul>
                 </li>
-                <li>Click <span class="code-like">Finish</span>. [cite: 44]</li>
+                <li>Click <span class="code-like">Finish</span>.</li>
             </ul>
-            <div class="interactive-area">
-                <p><strong>Simulation: Action Configuration</strong></p>
-                <label for="loadingText">Loading Text:</label>
-                <input type="text" id="loadingText" value="Creating followup task for you..." readonly><br><br>
-                <input type="checkbox" id="collectData" checked disabled> <label for="collectData">Collect data for "Case Number"</label><br>
-                <input type="checkbox" id="showOutput" checked disabled> <label for="showOutput">Show "Outcome Message" in conversation</label>
-                <p style="font-size:0.9em;"><em>Visual representation of action settings.</em></p>
-            </div>
         </div>
         <div class="slide">
-            <h2>Step 4: Add the Action to Your Agent</h2>
+            <h2>Step 3: Add the Action to Your Agent</h2>
             <p>Integrate the newly created custom action into your agent's existing topic.</p>
             <h3>Steps:</h3>
             <ul>
-                <li>From Setup, open <span class="code-like">Agentforce Agents</span>. [cite: 45]</li>
-                <li>Click your agent (e.g., <span class="code-like">Agentforce</span>). [cite: 45]</li>
+                <li>From Setup, open <span class="code-like">Agentforce Agents</span>.</li>
+                <li>Click your agent (e.g., <span class="code-like">Agentforce</span>).</li>
                 <li>Click <span class="code-like">Open in Builder</span>. [cite: 45]</li>
-                <li>In the Topics sidebar, click on the topic you created/updated previously. [cite: 46]</li>
-                <li>Click the <span class="code-like">This Topic's Actions</span> tab. [cite: 46]</li>
-                <li>Click the <span class="code-like">New</span> button, then <span class="code-like">Add from Asset Library</span>. [cite: 47]</li>
-                <li>Check the <span class="code-like">Create Follow-Up Task & Email</span> action (or the label you used). [cite: 48]</li>
-                <li>Click <span class="code-like">Finish</span>. [cite: 48]</li>
+                <li>In the Topics sidebar, click on the topic you created/updated previously.</li>
+                <li>Click the <span class="code-like">This Topic's Actions</span> tab.</li>
+                <li>Click the <span class="code-like">New</span> button, then <span class="code-like">Add from Asset Library</span>.</li>
+                <li>Check the <span class="code-like">Create Follow-Up Task & Email</span> action (or the label you used).</li>
+                <li>Click <span class="code-like">Finish</span>.</li>
             </ul>
             <p>Remember to re-activate your agent if it was deactivated for these changes.</p>
         </div>
@@ -541,42 +471,21 @@ return responses; [cite: 28]</code></pre>
             <h2>Step 5: Try It Out! <span class="subtitle">Testing the Apex Action</span></h2>
             <p>Test the new functionality using the Conversation Preview panel.</p>
             <h3>Scenario Prompt:</h3>
-            <p>Enter the following prompt into the Conversation Preview panel: [cite: 48]</p>
-            <pre><code>I am following up on the issue I raised earlier. [cite: 48]
-My air conditioning is still not working, and it's getting very hot in the room. [cite: 49]
-Can you please look into this on priority and resolve it as soon as possible? [cite: 50]</code></pre>
-            
-            <div class="interactive-area" id="simulationAreaApex">
-                <h4>Live Simulation (Mockup):</h4>
-                <div id="chatHistoryApex" style="max-height: 150px; overflow-y: auto; border: 1px solid #eee; padding:10px; background-color: #fff; border-radius:4px;">
-                    <p><strong>User:</strong> I am following up on the issue I raised earlier. My air conditioning is still not working, and it's getting very hot in the room. Can you please look into this on priority and resolve it as soon as possible?</p>
-                </div>
-                <div id="agentResponseSectionApex" style="margin-top:10px;">
-                    </div>
-                <input type="text" id="userInputApex" placeholder="Your mock response (e.g., case number)" style="margin-top:10px; width: calc(70% - 12px);">
-                <button onclick="processUserInputApex()">Send</button>
-                <p style="font-size:0.9em; color:#333; margin-top:10px;"><em>This simulates the agent interaction.</em></p>
-            </div>
-            <h4>Expected Behavior:</h4>
-            <ol>
-                <li>Based on your topic instructions, the agent should recognize the follow-up context. [cite: 37]</li>
-                <li>The agent should ask for the existing case number (as per "Collect data from user" for the <code class="code-like">caseNumber</code> input). [cite: 43]</li>
-                <li>Once you provide a valid case number, the agent will execute the Apex action.</li>
-                <li>You should see the "Loading Text": "Creating followup task for you...". [cite: 42]</li>
-                <li>Finally, the "Outcome Message" from the Apex action (e.g., "Follow-up task created and email sent successfully...") should be displayed in the conversation. [cite: 25, 44]</li>
-                <li>A task should be created against the case, and an email sent to the case's contact. [cite: 14, 21]</li>
-            </ol>
+            <p>Enter the following prompt into the Conversation Preview panel:</p>
+            <code class="code-like">I am following up on the issue I raised earlier.
+My air conditioning is still not working, and it's getting very hot in the room.
+Can you please look into this on priority and resolve it as soon as possible? [cite: 50]</code>
         </div>
         <div class="slide">
             <h2>Conclusion & Key Learnings</h2>
             <p>You have successfully created and integrated an Apex-based custom action into your Agentforce agent!</p>
             <h3>Key Takeaways:</h3>
             <ul>
-                <li>Apex classes with <code class="code-like">@InvocableMethod</code> can extend Agentforce capabilities significantly. [cite: 32]</li>
-                <li>Input (<code class="code-like">FollowUpRequest</code>) and output (<code class="code-like">FollowUpResponse</code>) structures are defined using inner classes with <code class="code-like">@InvocableVariable</code>. [cite: 29, 30, 31, 33]</li>
-                <li>Descriptions in annotations are crucial for Agentforce to understand and configure the action. [cite: 34]</li>
-                <li>Agent Custom Actions bridge the gap between your Apex logic and the agent. [cite: 38, 40]</li>
-                <li>Topic instructions guide the agent on when and how to use custom actions. [cite: 35, 36, 37]</li>
+                <li>Apex classes with <code class="code-like">@InvocableMethod</code> can extend Agentforce capabilities significantly.</li>
+                <li>Input (<code class="code-like">FollowUpRequest</code>) and output (<code class="code-like">FollowUpResponse</code>) structures are defined using inner classes with <code class="code-like">@InvocableVariable</code>.</li>
+                <li>Descriptions in annotations are crucial for Agentforce to understand and configure the action.</li>
+                <li>Agent Custom Actions bridge the gap between your Apex logic and the agent.</li>
+                <li>Topic instructions guide the agent on when and how to use custom actions.</li>
             </ul>
             <h3>Further Exploration:</h3>
             <ul>
