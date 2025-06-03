@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,12 +11,14 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f7f9fc; /* Slightly lighter page background */
+            background-color: #f7f9fc;
+            /* Slightly lighter page background */
             color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 12px; /* Space for the fixed progress bar */
+            padding-top: 12px;
+            /* Space for the fixed progress bar */
             min-height: 100vh;
         }
 
@@ -24,40 +27,53 @@
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 10000; 
-            background-color: #e9ecef; /* Slightly adjusted progress bar background */
-            height: 12px; 
+            z-index: 10000;
+            background-color: #e9ecef;
+            /* Slightly adjusted progress bar background */
+            height: 12px;
         }
 
         .progress-bar {
-            width: 0%; 
-            height: 100%; 
-            background-color: #007aff; /* Kept consistent blue */
+            width: 0%;
+            height: 100%;
+            background-color: #007aff;
+            /* Kept consistent blue */
             transition: width 0.4s ease;
         }
 
         .slide-deck {
             width: 90%;
-            max-width: 1320px; 
-            background-color: #ffffff; /* Clear white for slides */
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* Softer, more diffuse shadow */
-            border-radius: 10px; /* Slightly more rounded corners */
-            overflow: hidden; 
-            border: 1px solid #e0e0e0; /* Lighter border */
-            margin: 25px auto; /* Increased top/bottom margin */
+            max-width: 1320px;
+            background-color: #ffffff;
+            /* Clear white for slides */
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            /* Softer, more diffuse shadow */
+            border-radius: 10px;
+            /* Slightly more rounded corners */
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            /* Lighter border */
+            margin: 25px auto;
+            /* Increased top/bottom margin */
         }
 
         .slide {
             display: none;
-            padding: 35px 45px 45px 45px; /* Adjusted padding */
-            min-height: 500px; 
+            padding: 35px 45px 45px 45px;
+            /* Adjusted padding */
+            min-height: 500px;
             box-sizing: border-box;
             animation: fadeInAnimation 0.5s ease-in-out;
         }
 
         @keyframes fadeInAnimation {
-            0% { opacity: 0.7; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
         }
 
         .slide.active {
@@ -65,189 +81,247 @@
         }
 
         .slide h2 {
-            color: #004a99; 
-            border-bottom: 2px solid #0056b3; /* Adjusted border */
-            padding-bottom: 15px; /* Increased padding */
+            color: #004a99;
+            border-bottom: 2px solid #0056b3;
+            /* Adjusted border */
+            padding-bottom: 15px;
+            /* Increased padding */
             margin-top: 0;
-            margin-bottom: 25px; /* Space after main title */
-            font-size: 1.9em; /* Slightly larger */
+            margin-bottom: 25px;
+            /* Space after main title */
+            font-size: 1.9em;
+            /* Slightly larger */
         }
-        
+
         .slide h2 .subtitle {
             display: block;
-            font-size: 0.65em; /* Adjusted subtitle size */
+            font-size: 0.65em;
+            /* Adjusted subtitle size */
             color: #555;
-            margin-top: 8px; /* Spacing for subtitle */
+            margin-top: 8px;
+            /* Spacing for subtitle */
             font-weight: normal;
         }
 
         .slide h3 {
-            color: #0056b3; 
-            margin-top: 30px; /* Increased margin */
-            margin-bottom: 15px; /* Space after h3 */
-            font-size: 1.5em; /* Adjusted size */
-            border-bottom: 1px solid #e0e6ed; /* Lighter border */
-            padding-bottom: 10px; /* Adjusted padding */
-        }
-         .slide h4 {
-            color: #0067cc;
-            margin-top: 25px; /* Increased margin */
-            margin-bottom: 10px; /* Space after h4 */
-            font-size: 1.25em; /* Adjusted size */
+            color: #0056b3;
+            margin-top: 30px;
+            /* Increased margin */
+            margin-bottom: 15px;
+            /* Space after h3 */
+            font-size: 1.5em;
+            /* Adjusted size */
+            border-bottom: 1px solid #e0e6ed;
+            /* Lighter border */
+            padding-bottom: 10px;
+            /* Adjusted padding */
         }
 
-        .slide p, .slide li {
-            line-height: 1.75; /* Increased for readability */
-            color: #3e4a59; /* Softer black for text */
+        .slide h4 {
+            color: #0067cc;
+            margin-top: 25px;
+            /* Increased margin */
+            margin-bottom: 10px;
+            /* Space after h4 */
+            font-size: 1.25em;
+            /* Adjusted size */
+        }
+
+        .slide p,
+        .slide li {
+            line-height: 1.75;
+            /* Increased for readability */
+            color: #3e4a59;
+            /* Softer black for text */
             font-size: 1.05em;
-            margin-bottom: 1em; /* Spacing for paragraphs */
+            margin-bottom: 1em;
+            /* Spacing for paragraphs */
         }
 
         .slide ul {
             padding-left: 25px;
-            list-style-type: disc; /* Standard disc */
+            list-style-type: disc;
+            /* Standard disc */
         }
-        
+
         .slide ul li {
-            margin-bottom: 10px; /* Increased spacing for list items */
+            margin-bottom: 10px;
+            /* Increased spacing for list items */
         }
+
         .slide ol li {
             margin-bottom: 10px;
         }
 
 
-        .slide code, .slide .code-like { 
-            background-color: #eef2f7; /* Lighter, softer blue */
-            padding: 4px 8px; /* Adjusted padding */
-            border-radius: 5px; /* Slightly more rounded */
-            font-family: 'SF Mono', 'Consolas', 'Courier New', monospace; /* More modern mono font stack */
-            color: #2c3e50; /* Darker blue-gray for code text */
-            font-size: 0.9em; /* Adjusted size */
+        .slide code,
+        .slide .code-like {
+            background-color: #eef2f7;
+            /* Lighter, softer blue */
+            padding: 4px 8px;
+            /* Adjusted padding */
+            border-radius: 5px;
+            /* Slightly more rounded */
+            font-family: 'SF Mono', 'Consolas', 'Courier New', monospace;
+            /* More modern mono font stack */
+            color: #2c3e50;
+            /* Darker blue-gray for code text */
+            font-size: 0.9em;
+            /* Adjusted size */
         }
-        
-        .slide pre { 
-            background-color: #2b303b; /* Maintained dark theme for pre, good contrast */
-            color: #d8dee9; /* Light text for dark background */
-            padding: 20px; /* Increased padding */
-            border-radius: 8px; /* More rounded */
+
+        /* UPDATED STYLE FOR THE CODE BLOCK */
+        .slide pre {
+            background-color: #f8f9fa; /* Light grey background */
+            color: #212529; /* Dark text for readability */
+            padding: 20px;
+            border-radius: 8px;
             overflow-x: auto;
             font-family: 'SF Mono', 'Consolas', 'Courier New', monospace;
-            font-size: 0.9em; /* Consistent code font size */
-            border: 1px solid #3e4451; /* Subtle border for dark pre */
-            white-space: pre-wrap; 
-            word-wrap: break-word; 
-            line-height: 1.6; /* Better line spacing in code blocks */
+            font-size: 0.9em;
+            border: 1px solid #dee2e6; /* Light border */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.6;
         }
 
 
         .slide table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 25px; /* Increased margin */
-            margin-bottom: 25px; /* Added bottom margin */
-            box-shadow: 0 3px 6px rgba(0,0,0,0.06); /* Refined shadow */
+            margin-top: 25px;
+            /* Increased margin */
+            margin-bottom: 25px;
+            /* Added bottom margin */
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+            /* Refined shadow */
         }
 
-        .slide th, .slide td {
-            border: 1px solid #dde4eb; /* Lighter table borders */
-            padding: 14px; /* Increased padding */
+        .slide th,
+        .slide td {
+            border: 1px solid #dde4eb;
+            /* Lighter table borders */
+            padding: 14px;
+            /* Increased padding */
             text-align: left;
             font-size: 0.95em;
         }
 
         .slide th {
-            background-color: #f8f9fa; /* Very light gray for table headers */
+            background-color: #f8f9fa;
+            /* Very light gray for table headers */
             color: #004a99;
             font-weight: 600;
         }
 
-        .slide img.doc-screenshot { 
-            max-width: 80%; 
+        .slide img.doc-screenshot {
+            max-width: 80%;
             height: auto;
-            border: 1px solid #d1d5db; /* Softer border for images */
-            border-radius: 8px; /* Consistent rounding */
-            margin: 25px auto; /* Increased margin */
+            border: 1px solid #d1d5db;
+            /* Softer border for images */
+            border-radius: 8px;
+            /* Consistent rounding */
+            margin: 25px auto;
+            /* Increased margin */
             display: block;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1); /* Refined shadow */
-        }
-         .placeholder-info {
-            background-color: #feefc3; /* Softer yellow */
-            border: 1px solid #fce08d; /* Softer border */
-            color: #795516; /* Adjusted text color */
-            padding: 12px 15px; /* Adjusted padding */
-            border-radius: 6px; /* Consistent rounding */
-            margin: 20px 0; /* Adjusted margin */
-            font-size: 0.9em;
-        }
-        
-        .navigation-container { 
-            text-align: center; 
-            padding: 10px 0 20px 0; 
-        }
-        
-        .navigation { /* Kept as is, per request */
-            display: inline-flex; 
-            align-items: center;
-            padding: 6px; 
-            background-color: #f0f2f5; 
-            border-radius: 30px; 
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
-            border: 1px solid #d1d5db; 
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            /* Refined shadow */
         }
 
-        .navigation button { /* Kept as is, per request */
-            background-color: #007aff; 
+        .placeholder-info {
+            background-color: #feefc3;
+            /* Softer yellow */
+            border: 1px solid #fce08d;
+            /* Softer border */
+            color: #795516;
+            /* Adjusted text color */
+            padding: 12px 15px;
+            /* Adjusted padding */
+            border-radius: 6px;
+            /* Consistent rounding */
+            margin: 20px 0;
+            /* Adjusted margin */
+            font-size: 0.9em;
+        }
+
+        .navigation-container {
+            text-align: center;
+            padding: 10px 0 20px 0;
+        }
+
+        .navigation {
+            /* Kept as is, per request */
+            display: inline-flex;
+            align-items: center;
+            padding: 6px;
+            background-color: #f0f2f5;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #d1d5db;
+        }
+
+        .navigation button {
+            /* Kept as is, per request */
+            background-color: #007aff;
             color: white;
             border: none;
-            padding: 8px 18px; 
-            border-radius: 20px; 
+            padding: 8px 18px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 0.95em; 
-            font-weight: 500; 
+            font-size: 0.95em;
+            font-weight: 500;
             transition: background-color 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px; 
-        }
-        
-        .navigation button:hover:not(:disabled) { /* Kept as is, per request */
-            background-color: #005ec4; 
+            gap: 5px;
         }
 
-        .navigation button:disabled { /* Kept as is, per request */
-            background-color: #d1d5db; 
-            color: #8e8e93; 
+        .navigation button:hover:not(:disabled) {
+            /* Kept as is, per request */
+            background-color: #005ec4;
+        }
+
+        .navigation button:disabled {
+            /* Kept as is, per request */
+            background-color: #d1d5db;
+            color: #8e8e93;
             cursor: not-allowed;
         }
-        
-        #slideIndicator { /* Kept as is, per request */
-            padding: 0 18px; 
-            font-weight: 500; 
-            color: #1c1c1e; 
-            font-size: 0.95em; 
-            min-width: 50px; 
+
+        #slideIndicator {
+            /* Kept as is, per request */
+            padding: 0 18px;
+            font-weight: 500;
+            color: #1c1c1e;
+            font-size: 0.95em;
+            min-width: 50px;
             text-align: center;
-        }
-        
-        .interactive-area {
-            border: 2px dashed #007bff;
-            padding: 20px; 
-            margin-top: 25px;
-            border-radius: 8px; /* Consistent rounding */
-            background-color: #f5faff; /* Slightly different light blue */
-        }
-        
-        .image-caption {
-            font-size: 0.9em;
-            color: #5f6c7b; /* Softer caption color */
-            text-align: center;
-            margin-top: 10px; /* Adjusted margin */
-            margin-bottom: 20px; /* Adjusted margin */
         }
 
+        .interactive-area {
+            border: 2px dashed #007bff;
+            padding: 20px;
+            margin-top: 25px;
+            border-radius: 8px;
+            /* Consistent rounding */
+            background-color: #f5faff;
+            /* Slightly different light blue */
+        }
+
+        .image-caption {
+            font-size: 0.9em;
+            color: #5f6c7b;
+            /* Softer caption color */
+            text-align: center;
+            margin-top: 10px;
+            /* Adjusted margin */
+            margin-bottom: 20px;
+            /* Adjusted margin */
+        }
     </style>
 </head>
+
 <body>
 
     <div class="progress-bar-outer-container">
@@ -258,7 +332,9 @@
 
         <div class="slide active">
             <h2>Agentforce with Apex Integration</h2>
-            <p>This guide demonstrates how to use Apex to create custom actions for your Agentforce agent. We will create an Apex class that allows an agent to create a follow-up task for a case and send a confirmation email to the customer.</p>
+            <p>This guide demonstrates how to use Apex to create custom actions for your Agentforce agent. We will
+                create an Apex class that allows an agent to create a follow-up task for a case and send a confirmation
+                email to the customer.</p>
             <h3>Overall Process:</h3>
             <ul>
                 <li>Step 1: Create the Apex class.</li>
@@ -273,168 +349,179 @@
             <p>First, we'll create the Apex class that defines the custom logic.</p>
             <h3>1.1 Launch Code Builder & Create Class</h3>
             <ul>
-                <li>From App Launcher, open <span class="code-like">Code Builder</span> and click <span class="code-like">Launch</span>.</li>
-                <li>Once loaded, open the command palette (<span class="code-like">CMD + SHIFT + P</span> on Mac or <span class="code-like">CTRL + SHIFT + P</span> on PC).</li>
+                <li>From App Launcher, open <span class="code-like">Code Builder</span> and click <span
+                        class="code-like">Launch</span>.</li>
+                <li>Once loaded, open the command palette (<span class="code-like">CMD + SHIFT + P</span> on Mac or
+                    <span class="code-like">CTRL + SHIFT + P</span> on PC).</li>
                 <li>Search for Apex and click <span class="code-like">Create Apex Class</span>.</li>
-                <li>Enter <code class="code-like">CaseFollowUpAgentAction</code> as the class name and accept the default directory.</li>
+                <li>Enter <code class="code-like">CaseFollowUpAgentAction</code> as the class name and accept the
+                    default directory.</li>
             </ul>
         </div>
         <div class="slide">
             <h2>Step 1: Create the Apex Class <span class="subtitle">1.2 Apex Code - Structure</span></h2>
             <p>Replace the default Apex class content with the following code.</p>
-            <code class="code-like">
-                public with sharing class CaseFollowUpAgentAction {
+            <pre><code>
+public with sharing class CaseFollowUpAgentAction {
 
-                @InvocableMethod(label='Create Follow-Up Task & Email' description='Creates a customizable follow-up task and sends a plain text email to the customer.')
-                public static List<FollowUpResponse> createFollowUpTaskAndEmail(List<FollowUpRequest> requests) {
-                    List<FollowUpResponse> responses = new List<FollowUpResponse>();
-                    FollowUpResponse response = new FollowUpResponse(); 
-            
-                    // Validate input request.
-                    if (requests == null || requests.isEmpty() || requests[0].caseNumber == null) {
-                        response.isSuccess = false;
-                        response.outcomeMessage = 'Error: Case Number not provided in the request.';
-                        responses.add(response);
-                        return responses;
-                    }
-            
-                    FollowUpRequest request = requests[0]; 
-                    String caseNumber = request.caseNumber;
-            
-                    try {
-                        Case caseRecord = [
-                            SELECT Id, CaseNumber, ContactId, Contact.Email, Contact.FirstName, Contact.LastName
-                            FROM Case
-                            WHERE CaseNumber = :caseNumber
-                            LIMIT 1
-                        ];
-            
-                        if (caseRecord.Id == null) {
-                            throw new HandledException('Case with CaseNumber ' + caseNumber + ' not found.');
-                        }
-                        if (caseRecord.ContactId == null || String.isBlank(caseRecord.Contact.Email)) {
-                            throw new HandledException('Case contact or contact email is missing for Case : ' + caseNumber);
-                        }
-            
-                        // --- 1. Create the Follow-Up Task ---
-                        Task followUpTask = new Task();
-                        followUpTask.Subject = 'Follow-Up for Case: ' + caseRecord.CaseNumber;
-                        followUpTask.WhatId = caseRecord.Id;
-                        followUpTask.WhoId = caseRecord.ContactId;
-                        followUpTask.OwnerId = UserInfo.getUserId();
-                        followUpTask.Status = 'Open';
-                        followUpTask.Priority = 'High';
-            
-                        insert followUpTask; 
-                        System.debug('Successfully inserted Task: ' + followUpTask.Id);
-            
-                        // --- 2. Create and Send the Confirmation Email using SingleEmailMessage ---
-                        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-            
-                        mail.setTargetObjectId(caseRecord.ContactId);
-                        mail.setSaveAsActivity(True);
-                        mail.setSubject('Update Regarding Your Case: ' + caseRecord.CaseNumber);
-            
-                        String emailBody = 'Dear ' + (String.isNotBlank(caseRecord.Contact.FirstName) ? caseRecord.Contact.FirstName : 'Customer') + ',\n\n';
-                        emailBody += 'This is a confirmation that we have processed your request related to Case ' + caseRecord.CaseNumber + '.\n';
-                        emailBody += 'A follow-up will be conducted within the next few hours to ensure everything is resolved to your satisfaction.\n\n';
-                        emailBody += 'Thank you for your patience.\n\n';
-                        emailBody += 'Sincerely,\n';
-                        emailBody += 'Support Team'; // Sender's name
-            
-                        mail.setPlainTextBody(emailBody);
-                        mail.setWhatId(caseRecord.Id);
-            
-                        Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
-                        System.debug('Successfully sent email to Contact: ' + caseRecord.Contact.Email);
-            
-                        Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.Email[] {mail});
-                        if (results != null && results[0].isSuccess()) {
-                            System.debug('Email sent successfully test');
-                        } else {
-                            System.debug('Email failed to send: ' + results[0].getErrors()[0].getMessage());
-                        }
-            
-                        // Set success response.
-                        response.isSuccess = true;
-                        response.outcomeMessage = 'Follow-up task created and email sent successfully for Case: ' + caseRecord.CaseNumber;
-            
-                    } catch (Exception e) {
-                        response.isSuccess = false;
-                        response.outcomeMessage = 'An error occurred: ' + e.getMessage();
-                        System.debug('CaseFollowUpAgentAction ~~ Exception Type: ' + e.getTypeName() + ', Message: ' + e.getMessage() + ', Stack Trace: ' + e.getStackTraceString());
-                    }
-            
-                    responses.add(response);
-                    return responses;
-                }
-            
-                public class FollowUpRequest {
-                    @InvocableVariable(required=true label='Case Number' description='Stores the case number of the existing case for which a follow-up task needs to be created.')
-                    public String caseNumber;
-            
-                    public FollowUpRequest() {
-                    }
-                }
-            
-                public class FollowUpResponse {
-                    @InvocableVariable(label='Outcome Message' description='A message indicating the success or failure of the operation.')
-                    public String outcomeMessage;
-            
-                    @InvocableVariable(label='Is Success' description='True if the operation was successful, false otherwise.')
-                    public Boolean isSuccess = false;
-            
-                }
-            
-            }
-            </code>
-            <ul>
-                <li>The <code class="code-like">@InvocableMethod</code> annotation makes the <code class="code-like">createFollowUpTaskAndEmail</code> method available to Agentforce and other Salesforce automation tools.</li>
-                <li>The `label` and `description` in `@InvocableMethod` are important as they help Agentforce understand how to use this action.</li>
-                <li>It takes a list of <code class="code-like">FollowUpRequest</code> objects and returns a list of <code class="code-like">FollowUpResponse</code> objects.</li>
-            </ul>
-        </div>
+    @InvocableMethod(label='Create Follow-Up Task & Email' description='Creates a customizable follow-up task and sends a plain text email to the customer.')
+    public static List&lt;FollowUpResponse&gt; createFollowUpTaskAndEmail(List&lt;FollowUpRequest&gt; requests) {
         
-        <div class="slide">
-            <h2>Step 2: Add Extra Instructions to Existing Topic</h2>
-            <p>Enhance your existing Agentforce topic with new instructions to guide the agent on when to use the follow-up action.</p>
-            <h3>New Instructions:</h3>
+        List&lt;FollowUpResponse&gt; responses = new List&lt;FollowUpResponse&gt;();
+        FollowUpResponse response = new FollowUpResponse();
+
+        // Validate input request
+        if (requests == null || requests.isEmpty() || requests[0].caseNumber == null) {
+            response.isSuccess = false;
+            response.outcomeMessage = 'Error: Case Number not provided in the request.';
+            responses.add(response);
+            return responses;
+        }
+
+        FollowUpRequest request = requests[0];
+        String caseNumber = request.caseNumber;
+
+        try {
+            Case caseRecord = [
+                SELECT Id, CaseNumber, ContactId, Contact.Email, Contact.FirstName, Contact.LastName
+                FROM Case
+                WHERE CaseNumber = :caseNumber
+                LIMIT 1
+            ];
+
+            if (caseRecord.Id == null) {
+                throw new HandledException('Case with CaseNumber ' + caseNumber + ' not found.');
+            }
+            if (caseRecord.ContactId == null || String.isBlank(caseRecord.Contact.Email)) {
+                throw new HandledException('Case contact or contact email is missing for Case: ' + caseNumber);
+            }
+
+            // --- 1. Create the Follow-Up Task ---
+            Task followUpTask = new Task(
+                Subject = 'Follow-Up for Case: ' + caseRecord.CaseNumber,
+                WhatId = caseRecord.Id,
+                WhoId = caseRecord.ContactId,
+                OwnerId = UserInfo.getUserId(),
+                Status = 'Open',
+                Priority = 'High'
+            );
+            insert followUpTask;
+            System.debug('Successfully inserted Task: ' + followUpTask.Id);
+
+            // --- 2. Create and Send the Confirmation Email ---
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            mail.setTargetObjectId(caseRecord.ContactId);
+            mail.setSaveAsActivity(true);
+            mail.setSubject('Update Regarding Your Case: ' + caseRecord.CaseNumber);
+            mail.setWhatId(caseRecord.Id);
+
+            String contactFirstName = String.isNotBlank(caseRecord.Contact.FirstName) ? caseRecord.Contact.FirstName : 'Customer';
+            String emailBody = 'Dear ' + contactFirstName + ',\n\n' +
+                'This is a confirmation that we have processed your request related to Case ' + caseRecord.CaseNumber + '.\n' +
+                'A follow-up will be conducted within the next few hours to ensure everything is resolved to your satisfaction.\n\n' +
+                'Thank you for your patience.\n\n' +
+                'Sincerely,\n' +
+                'Support Team';
+
+            mail.setPlainTextBody(emailBody);
+
+            Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
+            
+            if (results[0].isSuccess()) {
+                System.debug('Email sent successfully to: ' + caseRecord.Contact.Email);
+            } else {
+                System.debug('Email failed to send: ' + results[0].getErrors()[0].getMessage());
+            }
+
+            // Set success response
+            response.isSuccess = true;
+            response.outcomeMessage = 'Follow-up task created and email sent successfully for Case: ' + caseRecord.CaseNumber;
+
+        } catch (Exception e) {
+            response.isSuccess = false;
+            response.outcomeMessage = 'An error occurred: ' + e.getMessage();
+            System.debug('CaseFollowUpAgentAction ~~ Exception Type: ' + e.getTypeName() + ', Message: ' + e.getMessage() + ', Stack Trace: ' + e.getStackTraceString());
+        }
+
+        responses.add(response);
+        return responses;
+    }
+
+    // --- Inner Classes for Invocable Action ---
+
+    public class FollowUpRequest {
+        @InvocableVariable(required=true label='Case Number' description='Stores the case number of the existing case for which a follow-up task needs to be created.')
+        public String caseNumber;
+    }
+
+    public class FollowUpResponse {
+        @InvocableVariable(label='Outcome Message' description='A message indicating the success or failure of the operation.')
+        public String outcomeMessage;
+
+        @InvocableVariable(label='Is Success' description='True if the operation was successful, false otherwise.')
+        public Boolean isSuccess = false;
+    }
+}
+            </code></pre>
             <ul>
-                <li><strong>Instruction 1 (Task Definition):</strong>
-                    <ul>
-                        <li>"A Task record is used as a follow-up action for a Case. [cite: 35] It's assigned to the relevant team to highlight the issue and ensure a prompt resolution." [cite: 36]</li>
-                    </ul>
-                </li>
-                <li><strong>Instruction 2 (Triggering Condition):</strong>
-                    <ul>
-                        <li>"If a customer indicates their issue on an existing case remains unresolved, you must first obtain the case number before creating a follow-up task record to prompt further action." [cite: 37]</li>
-                    </ul>
-                </li>
+                <li>The <code class="code-like">@InvocableMethod</code> annotation makes the <code
+                        class="code-like">createFollowUpTaskAndEmail</code> method available to Agentforce and other
+                    Salesforce automation tools.</li>
+                <li>The `label` and `description` in `@InvocableMethod` are important as they help Agentforce understand
+                    how to use this action.</li>
+                <li>It takes a list of <code class="code-like">FollowUpRequest</code> objects and returns a list of
+                    <code class="code-like">FollowUpResponse</code> objects.</li>
             </ul>
-            <p>Add these instructions to the topic you configured previously. This helps the agent understand the context and prerequisites for the new "Create Follow-Up Task" action.</p>
         </div>
-                        
+
+
+
         <div class="slide">
             <h2>Step 2: Create the Agent Custom Action <span class="subtitle">Exposing Apex to Agent</span></h2>
             <p>Now, create an Agent Custom Action to make your Apex method usable by the Agentforce agent.</p>
             <h3>Action Configuration:</h3>
             <ul>
-                <li>From Setup, open <span class="code-like">Agent Assets</span> and click on the <span class="code-like">Actions Tab</span>.</li>
+                <li>From Setup, open <span class="code-like">Agent Assets</span> and click on the <span
+                        class="code-like">Actions Tab</span>.</li>
                 <li>Click <span class="code-like">New Agent Action</span>.</li>
                 <li>Configure the action as follows:</li>
             </ul>
             <table>
-                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    <tr><td>Reference Action Type</td><td>Apex</td></tr>
-                    <tr><td>Reference Action Category</td><td>Invocable Methods</td></tr>
-                    <tr><td>Reference Action</td><td>Create Follow-Up Task & Email (label from @InvocableMethod)</td></tr>
-                    <tr><td>Agent Action Label</td><td>Keep default (e.g., Create Follow-Up Task & Email)</td></tr>
-                    <tr><td>Agent Action API Name</td><td>Keep default</td></tr>
+                    <tr>
+                        <td>Reference Action Type</td>
+                        <td>Apex</td>
+                    </tr>
+                    <tr>
+                        <td>Reference Action Category</td>
+                        <td>Invocable Methods</td>
+                    </tr>
+                    <tr>
+                        <td>Reference Action</td>
+                        <td>Create Follow-Up Task & Email (label from @InvocableMethod)</td>
+                    </tr>
+                    <tr>
+                        <td>Agent Action Label</td>
+                        <td>Keep default (e.g., Create Follow-Up Task & Email)</td>
+                    </tr>
+                    <tr>
+                        <td>Agent Action API Name</td>
+                        <td>Keep default</td>
+                    </tr>
                 </tbody>
             </table>
-            <ul><li>Click <span class="code-like">Next</span>.</li></ul>
-             <p>Notice that the instruction fields are pre-filled based on the descriptions provided in the Apex code's <code class="code-like">@InvocableMethod</code> and <code class="code-like">@InvocableVariable</code> annotations.</p>
+            <ul>
+                <li>Click <span class="code-like">Next</span>.</li>
+            </ul>
+            <p>Notice that the instruction fields are pre-filled based on the descriptions provided in the Apex code's
+                <code class="code-like">@InvocableMethod</code> and <code class="code-like">@InvocableVariable</code>
+                annotations.</p>
         </div>
         <div class="slide">
             <h2>Step 3: Create Agent Custom Action <span class="subtitle">Input/Output Settings</span></h2>
@@ -443,16 +530,21 @@
             <ul>
                 <li>Set the <span class="code-like">Loading Text</span> to: "Creating followup task for you...".</li>
                 <li>For the input parameter (e.g., "Case Number" from <code class="code-like">FollowUpRequest</code>):
-                    <ul><li>Check <span class="code-like">Collect data from user</span>.</li></ul>
+                    <ul>
+                        <li>Check <span class="code-like">Collect data from user</span>.</li>
+                    </ul>
                 </li>
-                <li>For the output parameter (e.g., "Outcome Message" from <code class="code-like">FollowUpResponse</code>):
-                    <ul><li>Check <span class="code-like">Show in conversation</span>.</li></ul>
+                <li>For the output parameter (e.g., "Outcome Message" from <code
+                        class="code-like">FollowUpResponse</code>):
+                    <ul>
+                        <li>Check <span class="code-like">Show in conversation</span>.</li>
+                    </ul>
                 </li>
                 <li>Click <span class="code-like">Finish</span>.</li>
             </ul>
         </div>
         <div class="slide">
-            <h2>Step 3: Add the Action to Your Agent</h2>
+            <h2>Step 4: Add the Action to Your Agent</h2>
             <p>Integrate the newly created custom action into your agent's existing topic.</p>
             <h3>Steps:</h3>
             <ul>
@@ -461,8 +553,10 @@
                 <li>Click <span class="code-like">Open in Builder</span>. [cite: 45]</li>
                 <li>In the Topics sidebar, click on the topic you created/updated previously.</li>
                 <li>Click the <span class="code-like">This Topic's Actions</span> tab.</li>
-                <li>Click the <span class="code-like">New</span> button, then <span class="code-like">Add from Asset Library</span>.</li>
-                <li>Check the <span class="code-like">Create Follow-Up Task & Email</span> action (or the label you used).</li>
+                <li>Click the <span class="code-like">New</span> button, then <span class="code-like">Add from Asset
+                        Library</span>.</li>
+                <li>Check the <span class="code-like">Create Follow-Up Task & Email</span> action (or the label you
+                    used).</li>
                 <li>Click <span class="code-like">Finish</span>.</li>
             </ul>
             <p>Remember to re-activate your agent if it was deactivated for these changes.</p>
@@ -481,8 +575,11 @@ Can you please look into this on priority and resolve it as soon as possible? [c
             <p>You have successfully created and integrated an Apex-based custom action into your Agentforce agent!</p>
             <h3>Key Takeaways:</h3>
             <ul>
-                <li>Apex classes with <code class="code-like">@InvocableMethod</code> can extend Agentforce capabilities significantly.</li>
-                <li>Input (<code class="code-like">FollowUpRequest</code>) and output (<code class="code-like">FollowUpResponse</code>) structures are defined using inner classes with <code class="code-like">@InvocableVariable</code>.</li>
+                <li>Apex classes with <code class="code-like">@InvocableMethod</code> can extend Agentforce capabilities
+                    significantly.</li>
+                <li>Input (<code class="code-like">FollowUpRequest</code>) and output (<code
+                        class="code-like">FollowUpResponse</code>) structures are defined using inner classes with <code
+                        class="code-like">@InvocableVariable</code>.</li>
                 <li>Descriptions in annotations are crucial for Agentforce to understand and configure the action.</li>
                 <li>Agent Custom Actions bridge the gap between your Apex logic and the agent.</li>
                 <li>Topic instructions guide the agent on when and how to use custom actions.</li>
@@ -519,13 +616,13 @@ Can you please look into this on priority and resolve it as soon as possible? [c
             prevButton.disabled = currentSlide === 0;
             nextButton.disabled = currentSlide === totalSlides - 1;
             slideIndicator.textContent = `${currentSlide + 1} / ${totalSlides}`;
-            
+
             if (progressBar) {
-                 progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+                progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
             }
             if (slides[currentSlide] && slides[currentSlide].querySelector('#simulationAreaApex')) {
                 resetSimulationApex();
-                firstAgentResponseApex(); 
+                firstAgentResponseApex();
             }
         }
 
@@ -535,34 +632,34 @@ Can you please look into this on priority and resolve it as soon as possible? [c
             if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
             updateSlideDisplay();
         }
-        
-        let simulationStateApex = 0; 
+
+        let simulationStateApex = 0;
         const chatHistoryApex = document.getElementById('chatHistoryApex');
         const agentResponseSectionApex = document.getElementById('agentResponseSectionApex');
         const userInputApex = document.getElementById('userInputApex');
 
         function resetSimulationApex() {
             simulationStateApex = 0;
-            if(chatHistoryApex) { 
-                 chatHistoryApex.innerHTML = '<p><strong>User:</strong> I am following up on the issue I raised earlier. My air conditioning is still not working, and it\'s getting very hot in the room. Can you please look into this on priority and resolve it as soon as possible?</p>';
+            if (chatHistoryApex) {
+                chatHistoryApex.innerHTML = '<p><strong>User:</strong> I am following up on the issue I raised earlier. My air conditioning is still not working, and it\'s getting very hot in the room. Can you please look into this on priority and resolve it as soon as possible?</p>';
             }
-            if(agentResponseSectionApex) agentResponseSectionApex.innerHTML = '';
-            if(userInputApex) userInputApex.value = '';
+            if (agentResponseSectionApex) agentResponseSectionApex.innerHTML = '';
+            if (userInputApex) userInputApex.value = '';
         }
 
         function firstAgentResponseApex() {
-             if (slides[currentSlide] && slides[currentSlide].querySelector('#simulationAreaApex') && simulationStateApex === 0) {
-                 setTimeout(() => {
-                    if (agentResponseSectionApex) { 
+            if (slides[currentSlide] && slides[currentSlide].querySelector('#simulationAreaApex') && simulationStateApex === 0) {
+                setTimeout(() => {
+                    if (agentResponseSectionApex) {
                         agentResponseSectionApex.innerHTML = `<p><strong>Agent (mock):</strong> I understand you're following up. To proceed, could you please provide the case number for your existing issue? (Based on new instructions & action input)</p>`;
                     }
-                    simulationStateApex = 1; 
+                    simulationStateApex = 1;
                 }, 500);
             }
         }
-        
+
         function processUserInputApex() {
-            if (!userInputApex || !chatHistoryApex || !agentResponseSectionApex) return; 
+            if (!userInputApex || !chatHistoryApex || !agentResponseSectionApex) return;
 
             const uInput = userInputApex.value.trim();
             if (uInput === '') return;
@@ -572,25 +669,26 @@ Can you please look into this on priority and resolve it as soon as possible? [c
             chatHistoryApex.appendChild(userMessageDiv);
             userInputApex.value = '';
 
-            if (simulationStateApex === 1) { 
+            if (simulationStateApex === 1) {
                 agentResponseSectionApex.innerHTML = `<p><strong>Agent (mock):</strong> Thank you for providing Case Number ${uInput}.</p>`;
                 agentResponseSectionApex.innerHTML += `<p><strong>Agent (mock):</strong> Creating followup task for you... (Loading text)</p>`;
                 setTimeout(() => {
                     agentResponseSectionApex.innerHTML += `<p><strong>Agent (mock):</strong> Follow-up task created and email sent successfully for Case: ${uInput}. (Outcome Message)</p>`;
-                    simulationStateApex = 2; 
+                    simulationStateApex = 2;
                 }, 2000);
-            } else if (simulationStateApex === 2) { 
-                 agentResponseSectionApex.innerHTML = `<p><strong>Agent (mock):</strong> Is there anything else I can assist you with regarding this follow-up?</p>`;
+            } else if (simulationStateApex === 2) {
+                agentResponseSectionApex.innerHTML = `<p><strong>Agent (mock):</strong> Is there anything else I can assist you with regarding this follow-up?</p>`;
             } else {
                 agentResponseSectionApex.innerHTML = `<p><strong>Agent (mock):</strong> How can I help you?</p>`;
             }
-             chatHistoryApex.scrollTop = chatHistoryApex.scrollHeight; 
+            chatHistoryApex.scrollTop = chatHistoryApex.scrollHeight;
         }
-        
+
         document.addEventListener('DOMContentLoaded', () => {
             updateSlideDisplay();
         });
     </script>
 
 </body>
+
 </html>
