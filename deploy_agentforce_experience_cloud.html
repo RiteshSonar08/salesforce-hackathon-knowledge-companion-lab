@@ -10,7 +10,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f7f9fc; /* Slightly lighter page background */
             color: #333;
             display: flex;
             flex-direction: column;
@@ -25,31 +25,31 @@
             top: 0;
             left: 0;
             z-index: 10000; 
-            background-color: #dce4e9; 
+            background-color: #e9ecef; /* Slightly adjusted progress bar background */
             height: 12px; 
         }
 
         .progress-bar {
             width: 0%; 
             height: 100%; 
-            background-color: #007bff;
+            background-color: #007aff; /* Kept consistent blue */
             transition: width 0.4s ease;
         }
 
         .slide-deck {
             width: 90%;
             max-width: 1320px; 
-            background-color: #fff;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
-            border-radius: 8px;
+            background-color: #ffffff; /* Clear white for slides */
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* Softer, more diffuse shadow */
+            border-radius: 10px; /* Slightly more rounded corners */
             overflow: hidden; 
-            border: 1px solid #ddd;
-            margin: 20px auto; 
+            border: 1px solid #e0e0e0; /* Lighter border */
+            margin: 25px auto; /* Increased top/bottom margin */
         }
 
         .slide {
             display: none;
-            padding: 30px 40px 40px 40px;
+            padding: 35px 45px 45px 45px; /* Adjusted padding */
             min-height: 500px; 
             box-sizing: border-box;
             animation: fadeInAnimation 0.5s ease-in-out;
@@ -66,72 +66,97 @@
 
         .slide h2 {
             color: #004a99; 
-            border-bottom: 3px solid #004a99;
-            padding-bottom: 12px;
+            border-bottom: 2px solid #0056b3; /* Adjusted border */
+            padding-bottom: 15px; /* Increased padding */
             margin-top: 0;
-            font-size: 1.8em;
+            margin-bottom: 25px; /* Space after main title */
+            font-size: 1.9em; /* Slightly larger */
         }
         
         .slide h2 .subtitle {
             display: block;
-            font-size: 0.7em;
+            font-size: 0.65em; /* Adjusted subtitle size */
             color: #555;
-            margin-top: 5px;
+            margin-top: 8px; /* Spacing for subtitle */
             font-weight: normal;
         }
 
         .slide h3 {
             color: #0056b3; 
-            margin-top: 25px;
-            font-size: 1.4em;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
+            margin-top: 30px; /* Increased margin */
+            margin-bottom: 15px; /* Space after h3 */
+            font-size: 1.5em; /* Adjusted size */
+            border-bottom: 1px solid #e0e6ed; /* Lighter border */
+            padding-bottom: 10px; /* Adjusted padding */
         }
          .slide h4 {
             color: #0067cc;
-            margin-top: 20px;
-            font-size: 1.2em;
+            margin-top: 25px; /* Increased margin */
+            margin-bottom: 10px; /* Space after h4 */
+            font-size: 1.25em; /* Adjusted size */
         }
 
         .slide p, .slide li {
-            line-height: 1.7; 
-            color: #444; 
+            line-height: 1.75; /* Increased for readability */
+            color: #3e4a59; /* Softer black for text */
             font-size: 1.05em;
+            margin-bottom: 1em; /* Spacing for paragraphs */
         }
 
         .slide ul {
             padding-left: 25px;
+            list-style-type: disc; /* Standard disc */
         }
         
         .slide ul li {
-            margin-bottom: 8px; 
+            margin-bottom: 10px; /* Increased spacing for list items */
+        }
+        .slide ol li { /* Also apply to ordered lists if used */
+            margin-bottom: 10px;
         }
 
-        .slide code, .slide .code-like {
-            background-color: #e0eaf3; 
-            padding: 3px 7px;
-            border-radius: 4px;
-            font-family: 'Consolas', 'Courier New', monospace;
-            color: #1c3d5f;
-            font-size: 0.95em;
+
+        .slide code, .slide .code-like { 
+            background-color: #eef2f7; /* Lighter, softer blue */
+            padding: 4px 8px; /* Adjusted padding */
+            border-radius: 5px; /* Slightly more rounded */
+            font-family: 'SF Mono', 'Consolas', 'Courier New', monospace; /* More modern mono font stack */
+            color: #2c3e50; /* Darker blue-gray for code text */
+            font-size: 0.9em; /* Adjusted size */
         }
+        
+        .slide pre { 
+            background-color: #2b303b; 
+            color: #d8dee9; 
+            padding: 20px; 
+            border-radius: 8px; 
+            overflow-x: auto;
+            font-family: 'SF Mono', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em; 
+            border: 1px solid #3e4451; 
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+            line-height: 1.6; 
+        }
+
 
         .slide table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-top: 25px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 3px 6px rgba(0,0,0,0.06); 
         }
 
         .slide th, .slide td {
-            border: 1px solid #ccc; 
-            padding: 12px; 
+            border: 1px solid #dde4eb; 
+            padding: 14px; 
             text-align: left;
             font-size: 0.95em;
         }
 
         .slide th {
-            background-color: #e9edf1; 
+            background-color: #f8f9fa; 
             color: #004a99;
             font-weight: 600;
         }
@@ -139,19 +164,19 @@
         .slide img.doc-screenshot { 
             max-width: 80%; 
             height: auto;
-            border: 1px solid #bbb; 
-            border-radius: 6px;
-            margin: 20px auto; 
+            border: 1px solid #d1d5db; 
+            border-radius: 8px; 
+            margin: 25px auto; 
             display: block;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.12);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1); 
         }
          .placeholder-info {
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 15px 0;
+            background-color: #feefc3; 
+            border: 1px solid #fce08d; 
+            color: #795516; 
+            padding: 12px 15px; 
+            border-radius: 6px; 
+            margin: 20px 0; 
             font-size: 0.9em;
         }
         
@@ -160,7 +185,7 @@
             padding: 10px 0 20px 0; 
         }
         
-        .navigation {
+        .navigation { /* Kept as is, per request */
             display: inline-flex; 
             align-items: center;
             padding: 6px; 
@@ -170,7 +195,7 @@
             border: 1px solid #d1d5db; 
         }
 
-        .navigation button {
+        .navigation button { /* Kept as is, per request */
             background-color: #007aff; 
             color: white;
             border: none;
@@ -186,17 +211,17 @@
             gap: 5px; 
         }
         
-        .navigation button:hover:not(:disabled) {
+        .navigation button:hover:not(:disabled) { /* Kept as is, per request */
             background-color: #005ec4; 
         }
 
-        .navigation button:disabled {
+        .navigation button:disabled { /* Kept as is, per request */
             background-color: #d1d5db; 
             color: #8e8e93; 
             cursor: not-allowed;
         }
         
-        #slideIndicator {
+        #slideIndicator { /* Kept as is, per request */
             padding: 0 18px; 
             font-weight: 500; 
             color: #1c1c1e; 
@@ -209,11 +234,11 @@
             border: 2px dashed #007bff;
             padding: 20px; 
             margin-top: 25px;
-            border-radius: 6px;
-            background-color: #f5f9ff; 
+            border-radius: 8px; /* Consistent rounding */
+            background-color: #f5faff; /* Slightly different light blue */
         }
-
-        #omniChannelFlowDiagram {
+        
+        #omniChannelFlowDiagram { /* Styles for d3.js container */
             width: 100%;
             min-height: 250px;
             background-color: #f9f9f9;
@@ -231,10 +256,10 @@
         
         .image-caption {
             font-size: 0.9em;
-            color: #667; 
+            color: #5f6c7b; /* Softer caption color */
             text-align: center;
-            margin-top: 8px;
-            margin-bottom: 18px;
+            margin-top: 10px; /* Adjusted margin */
+            margin-bottom: 20px; /* Adjusted margin */
         }
 
     </style>
@@ -248,7 +273,7 @@
     <div class="slide-deck">
 
         <div class="slide active">
-            <h2>Deploy Agentforce on Experience Cloud Site <span class="subtitle">User Guide Introduction</span></h2>
+            <h2>Deploy Agentforce on Experience Cloud Site</h2>
             <p>This guide walks through configuring a Service deployment to expose an Agentforce agent (e.g., Coral Cloud Agent) directly to your customers via an Experience Cloud Site. [cite: 1]</p>
             <p>Several components need to be configured, primarily leveraging Omni-Channel within Service Cloud to bring everything together. [cite: 2]</p>
             <h3>Conceptual Architecture:</h3>
@@ -266,12 +291,10 @@
                 <li>Step 5: Add Agent to the Experience Site. (Renamed from "Step 4" in doc for clarity)</li>
             </ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">Initial Setup</span></h2>
             <p>Messaging allows you to create channels for handling customer messages. [cite: 4] In this context, we'll use it to enable customers to engage with the Agentforce agent. [cite: 4]</p>
-            <hr>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;"> 
             <h3>1.1 Enable Messaging</h3>
             <ul>
                 <li>In Setup Quick Find, search for and select <span class="code-like">Messaging Settings</span>. [cite: 5]</li>
@@ -284,8 +307,6 @@
                 <p style="font-size:0.9em;"><em>Visual representation of Messaging being enabled.</em></p>
             </div>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">1.2 Create Routing Configuration</span></h2>
             <ul>
@@ -309,8 +330,6 @@
             </table>
             <ul><li>Click on <span class="code-like">Save</span>. [cite: 9]</li></ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">1.3 Create a Queue</span></h2>
             <ul>
@@ -332,8 +351,6 @@
             </table>
             <ul><li>Click on <span class="code-like">Save</span>. [cite: 12]</li></ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">1.4 Create Presence Status</span></h2>
             <ul>
@@ -352,8 +369,6 @@
             </table>
             <ul><li>Click on <span class="code-like">Save</span>. [cite: 15]</li></ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Omni-Channel Config <span class="subtitle">1.5 Create Presence Status Permission Set</span></h2>
             <h4>Permission Set Creation</h4>
@@ -383,8 +398,6 @@
                 <li>Click <span class="code-like">Save</span>, then <span class="code-like">Done</span>. [cite: 20]</li>
             </ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Omni-Channel Config <span class="subtitle">1.6 Create Presence Configuration</span></h2>
             <ul>
@@ -405,8 +418,6 @@
                 <li>Click <span class="code-like">Save</span>. [cite: 24]</li>
             </ul>
         </div>
-        <hr>
-        
         <div class="slide">
             <h2>Step 1: Omni-Channel Config <span class="subtitle">1.7 Create a Messaging Channel</span></h2>
             <ul>
@@ -425,12 +436,10 @@
             </table>
             <ul><li>Click on <span class="code-like">Save</span>. [cite: 28]</li></ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 2: Create Omni-Channel Routing Flow <span class="subtitle">Automating Agent Assignment</span></h2>
             <p>Use Flow to route customers to an Agentforce Agent directly from your Experience Cloud site. [cite: 28]</p>
-            <hr>
+             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             <h3>2.1 Create the "Route to Agent" Flow</h3>
             <h4>Initial Flow Setup</h4>
             <ul>
@@ -456,8 +465,6 @@
             <div id="omniChannelFlowDiagram">
                 </div>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 2: Omni-Channel Routing Flow <span class="subtitle">2.2 Element: Get Messaging Session</span></h2>
             <ul>
@@ -484,8 +491,6 @@
             </table>
             <ul><li>Leave "How Many Records to Store" and "How to Store Record Data" to their defaults. [cite: 40]</li></ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 2: Omni-Channel Routing Flow <span class="subtitle">2.3 Element: Route Work</span></h2>
             <ul>
@@ -508,8 +513,6 @@
                 </tbody>
             </table>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 2: Omni-Channel Routing Flow <span class="subtitle">2.4 Save and Activate</span></h2>
             <ul>
@@ -530,12 +533,10 @@
                 <p style="font-size:0.9em;"><em>Represents the successful activation of your Omni-Channel Flow.</em></p>
             </div>
         </div>
-        <hr>
-        
         <div class="slide">
             <h2>Step 3: Update Messaging Channel <span class="subtitle">Linking Flow to Channel</span></h2>
             <p>Associate the Agentforce Agent (e.g., Coral Cloud Agent) to the newly created routing flow by updating the messaging channel configuration. [cite: 46]</p>
-            <hr>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             <h3>3.1 Add "Route-to-Agent" Flow to Messaging Config</h3>
             <ul>
                 <li>In Setup Quick Find, search for and select <span class="code-like">Messaging Settings</span>. [cite: 47]</li>
@@ -557,12 +558,10 @@
                 <li>Accept the Terms and Conditions if prompted. [cite: 50]</li>
             </ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 4: Create Embedded Service Deployment <span class="subtitle">Exposing the Agent</span></h2>
             <p>Create an Embedded Service deployment to distribute your agent for use on your Experience Cloud site. [cite: 51]</p>
-            <hr>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             <ul>
                 <li>In Setup Quick Find, search for and select <span class="code-like">Embedded Service Deployments</span>. [cite: 52]</li>
                 <li>Click on <span class="code-like">New Deployment</span>. [cite: 52]</li>
@@ -584,12 +583,10 @@
                 <li>Once saved, click on <span class="code-like">Publish</span>. [cite: 55]</li>
             </ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 5: Add Agent to Experience Site <span class="subtitle">Final Integration</span></h2>
             <p>The final step is to add the configured Embedded Messaging component to your Experience Cloud site. [cite: 56]</p>
-            <hr>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             <h3>Integration Steps:</h3>
             <ul>
                 <li>Navigate to the Experience Builder for your site. [cite: 56]</li>
@@ -607,8 +604,6 @@
                 <p><em>Clicking this would open the chat window powered by your Agentforce Agent and Omni-Channel setup.</em></p>
             </div>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Deployment Complete! <span class="subtitle">Summary & Next Steps</span></h2>
             <p>You have successfully configured the necessary components to deploy an Agentforce agent on an Experience Cloud Site using Omni-Channel and Embedded Messaging.</p>
@@ -631,8 +626,6 @@
                 <li>Customize the look and feel of the Embedded Messaging chat window.</li>
             </ul>
         </div>
-        <hr>
-
         <div class="navigation-container">
             <div class="navigation">
                 <button id="prevButton" onclick="changeSlide(-1)" disabled>&lsaquo; Previous</button>
@@ -757,7 +750,9 @@
         }
         
         // Initialize
-        updateSlideDisplay();
+        document.addEventListener('DOMContentLoaded', () => { // Ensure DOM is ready
+            updateSlideDisplay();
+        });
     </script>
 
 </body>
