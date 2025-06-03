@@ -10,7 +10,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f7f9fc; /* Slightly lighter page background */
             color: #333;
             display: flex;
             flex-direction: column;
@@ -25,31 +25,31 @@
             top: 0;
             left: 0;
             z-index: 10000; 
-            background-color: #dce4e9; 
+            background-color: #e9ecef; /* Slightly adjusted progress bar background */
             height: 12px; 
         }
 
         .progress-bar {
             width: 0%; 
             height: 100%; 
-            background-color: #007bff;
+            background-color: #007aff; /* Kept consistent blue */
             transition: width 0.4s ease;
         }
 
         .slide-deck {
             width: 90%;
             max-width: 1320px; 
-            background-color: #fff;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
-            border-radius: 8px;
+            background-color: #ffffff; /* Clear white for slides */
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* Softer, more diffuse shadow */
+            border-radius: 10px; /* Slightly more rounded corners */
             overflow: hidden; 
-            border: 1px solid #ddd;
-            margin: 20px auto; 
+            border: 1px solid #e0e0e0; /* Lighter border */
+            margin: 25px auto; /* Increased top/bottom margin */
         }
 
         .slide {
             display: none;
-            padding: 30px 40px 40px 40px;
+            padding: 35px 45px 45px 45px; /* Adjusted padding */
             min-height: 500px; 
             box-sizing: border-box;
             animation: fadeInAnimation 0.5s ease-in-out;
@@ -66,86 +66,97 @@
 
         .slide h2 {
             color: #004a99; 
-            border-bottom: 3px solid #004a99;
-            padding-bottom: 12px;
+            border-bottom: 2px solid #0056b3; /* Adjusted border */
+            padding-bottom: 15px; /* Increased padding */
             margin-top: 0;
-            font-size: 1.8em;
+            margin-bottom: 25px; /* Space after main title */
+            font-size: 1.9em; /* Slightly larger */
         }
         
         .slide h2 .subtitle {
             display: block;
-            font-size: 0.7em;
+            font-size: 0.65em; /* Adjusted subtitle size */
             color: #555;
-            margin-top: 5px;
+            margin-top: 8px; /* Spacing for subtitle */
             font-weight: normal;
         }
 
         .slide h3 {
             color: #0056b3; 
-            margin-top: 25px;
-            font-size: 1.4em;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
+            margin-top: 30px; /* Increased margin */
+            margin-bottom: 15px; /* Space after h3 */
+            font-size: 1.5em; /* Adjusted size */
+            border-bottom: 1px solid #e0e6ed; /* Lighter border */
+            padding-bottom: 10px; /* Adjusted padding */
         }
          .slide h4 {
             color: #0067cc;
-            margin-top: 20px;
-            font-size: 1.2em;
+            margin-top: 25px; /* Increased margin */
+            margin-bottom: 10px; /* Space after h4 */
+            font-size: 1.25em; /* Adjusted size */
         }
 
         .slide p, .slide li {
-            line-height: 1.7; 
-            color: #444; 
+            line-height: 1.75; /* Increased for readability */
+            color: #3e4a59; /* Softer black for text */
             font-size: 1.05em;
+            margin-bottom: 1em; /* Spacing for paragraphs */
         }
 
         .slide ul {
             padding-left: 25px;
+            list-style-type: disc; /* Standard disc */
         }
         
         .slide ul li {
-            margin-bottom: 8px; 
+            margin-bottom: 10px; /* Increased spacing for list items */
+        }
+        .slide ol li {
+            margin-bottom: 10px;
         }
 
-        .slide code, .slide .code-like { /* Applied to general code-like text */
-            background-color: #e0eaf3; 
-            padding: 3px 7px;
-            border-radius: 4px;
-            font-family: 'Consolas', 'Courier New', monospace;
-            color: #1c3d5f;
-            font-size: 0.95em;
+
+        .slide code, .slide .code-like { 
+            background-color: #eef2f7; /* Lighter, softer blue */
+            padding: 4px 8px; /* Adjusted padding */
+            border-radius: 5px; /* Slightly more rounded */
+            font-family: 'SF Mono', 'Consolas', 'Courier New', monospace; /* More modern mono font stack */
+            color: #2c3e50; /* Darker blue-gray for code text */
+            font-size: 0.9em; /* Adjusted size */
         }
         
-        .slide pre { /* Specifically for <pre> blocks */
-            background-color: #2d333b; 
-            color: #cdd9e5; 
-            padding: 18px;
-            border-radius: 6px;
+        .slide pre { 
+            background-color: #2b303b; /* Maintained dark theme for pre, good contrast */
+            color: #d8dee9; /* Light text for dark background */
+            padding: 20px; /* Increased padding */
+            border-radius: 8px; /* More rounded */
             overflow-x: auto;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 0.9em;
-            border: 1px solid #444c56;
-            white-space: pre-wrap; /* Ensures long lines wrap */
-            word-wrap: break-word; /* Breaks long words if necessary */
+            font-family: 'SF Mono', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em; /* Consistent code font size */
+            border: 1px solid #3e4451; /* Subtle border for dark pre */
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+            line-height: 1.6; /* Better line spacing in code blocks */
         }
 
 
         .slide table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-top: 25px; /* Increased margin */
+            margin-bottom: 25px; /* Added bottom margin */
+            box-shadow: 0 3px 6px rgba(0,0,0,0.06); /* Refined shadow */
         }
 
         .slide th, .slide td {
-            border: 1px solid #ccc; 
-            padding: 12px; 
+            border: 1px solid #dde4eb; /* Lighter table borders */
+            padding: 14px; /* Increased padding */
             text-align: left;
             font-size: 0.95em;
         }
 
         .slide th {
-            background-color: #e9edf1; 
+            background-color: #f8f9fa; /* Very light gray for table headers */
             color: #004a99;
             font-weight: 600;
         }
@@ -153,19 +164,19 @@
         .slide img.doc-screenshot { 
             max-width: 80%; 
             height: auto;
-            border: 1px solid #bbb; 
-            border-radius: 6px;
-            margin: 20px auto; 
+            border: 1px solid #d1d5db; /* Softer border for images */
+            border-radius: 8px; /* Consistent rounding */
+            margin: 25px auto; /* Increased margin */
             display: block;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.12);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1); /* Refined shadow */
         }
          .placeholder-info {
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 15px 0;
+            background-color: #feefc3; /* Softer yellow */
+            border: 1px solid #fce08d; /* Softer border */
+            color: #795516; /* Adjusted text color */
+            padding: 12px 15px; /* Adjusted padding */
+            border-radius: 6px; /* Consistent rounding */
+            margin: 20px 0; /* Adjusted margin */
             font-size: 0.9em;
         }
         
@@ -174,7 +185,7 @@
             padding: 10px 0 20px 0; 
         }
         
-        .navigation {
+        .navigation { /* Kept as is, per request */
             display: inline-flex; 
             align-items: center;
             padding: 6px; 
@@ -184,7 +195,7 @@
             border: 1px solid #d1d5db; 
         }
 
-        .navigation button {
+        .navigation button { /* Kept as is, per request */
             background-color: #007aff; 
             color: white;
             border: none;
@@ -200,17 +211,17 @@
             gap: 5px; 
         }
         
-        .navigation button:hover:not(:disabled) {
+        .navigation button:hover:not(:disabled) { /* Kept as is, per request */
             background-color: #005ec4; 
         }
 
-        .navigation button:disabled {
+        .navigation button:disabled { /* Kept as is, per request */
             background-color: #d1d5db; 
             color: #8e8e93; 
             cursor: not-allowed;
         }
         
-        #slideIndicator {
+        #slideIndicator { /* Kept as is, per request */
             padding: 0 18px; 
             font-weight: 500; 
             color: #1c1c1e; 
@@ -223,16 +234,16 @@
             border: 2px dashed #007bff;
             padding: 20px; 
             margin-top: 25px;
-            border-radius: 6px;
-            background-color: #f5f9ff; 
+            border-radius: 8px; /* Consistent rounding */
+            background-color: #f5faff; /* Slightly different light blue */
         }
         
         .image-caption {
             font-size: 0.9em;
-            color: #667; 
+            color: #5f6c7b; /* Softer caption color */
             text-align: center;
-            margin-top: 8px;
-            margin-bottom: 18px;
+            margin-top: 10px; /* Adjusted margin */
+            margin-bottom: 20px; /* Adjusted margin */
         }
 
     </style>
@@ -247,13 +258,13 @@
 
         <div class="slide active">
             <h2>Agentforce with Apex <span class="subtitle">User Guide Introduction</span></h2>
-            <p>This guide demonstrates how to use Apex to create custom actions for your Agentforce agent. We will create an Apex class that allows an agent to create a follow-up task for a case and send a confirmation email to the customer. [cite: 4, 15]</p>
+            <p>This guide demonstrates how to use Apex to create custom actions for your Agentforce agent. We will create an Apex class that allows an agent to create a follow-up task for a case and send a confirmation email to the customer.</p>
             <h3>Overall Process:</h3>
             <ul>
-                <li>Step 1: Create the Apex class. [cite: 1]</li>
-                <li>Step 2: Add extra instructions to your existing topic. [cite: 35]</li>
-                <li>Step 3: Create the agent custom action based on the Apex class. [cite: 38]</li>
-                <li>Step 4: Add the new action to your agent's topic. [cite: 45]</li>
+                <li>Step 1: Create the Apex class.</li>
+                <li>Step 2: Add extra instructions to your existing topic.</li>
+                <li>Step 3: Create the agent custom action based on the Apex class.</li>
+                <li>Step 4: Add the new action to your agent's topic.</li>
                 <li>Step 5: Try out the new functionality.</li>
             </ul>
             <div class="interactive-area">
@@ -261,12 +272,9 @@
                 <p>Imagine a scenario where a customer has an unresolved issue (e.g., faulty air conditioning). This Apex action will enable an agent to quickly log a high-priority follow-up task for the support team and simultaneously inform the customer that their issue is being addressed. [cite: 13, 14, 17, 18]</p>
             </div>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Create the Apex Class <span class="subtitle">Initial Setup</span></h2>
             <p>First, we'll create the Apex class that defines the custom logic.</p>
-            <hr>
             <h3>1.1 Launch Code Builder & Create Class</h3>
             <ul>
                 <li>From App Launcher, open <span class="code-like">Code Builder</span> and click <span class="code-like">Launch</span>. [cite: 1]</li>
@@ -281,126 +289,114 @@
                 <p style="font-size:0.9em;"><em>Visual representation of creating the Apex class.</em></p>
             </div>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Create the Apex Class <span class="subtitle">1.2 Apex Code - Structure</span></h2>
-            <p>Replace the default Apex class content with the following code. We'll break down key parts.</p>
-            <hr>
+            <p>Replace the default Apex class content with the following code. [cite: 4] We'll break down key parts.</p>
             <h4>Class Definition and Invocable Method:</h4>
             <pre><code>public with sharing class CaseFollowUpAgentAction {
 
     @InvocableMethod(label='Create Follow-Up Task & Email' 
-                     description='Creates a customizable follow-up task and sends a plain text email to the customer.')
-    public static List&lt;FollowUpResponse&gt; createFollowUpTaskAndEmail(List&lt;FollowUpRequest&gt; requests) {
-        List&lt;FollowUpResponse&gt; responses = new List&lt;FollowUpResponse&gt;();
-        FollowUpResponse response = new FollowUpResponse();
+                     description='Creates a customizable follow-up task and sends a plain text email to the customer.') 
+    public static List&lt;FollowUpResponse&gt; createFollowUpTaskAndEmail(List&lt;FollowUpRequest&gt; requests) { 
+        List&lt;FollowUpResponse&gt; responses = new List&lt;FollowUpResponse&gt;(); [cite: 4]
+        FollowUpResponse response = new FollowUpResponse(); [cite: 5]
         // ... rest of the method ...
     }
     // ... Request and Response inner classes ...
 }</code></pre>
             <ul>
                 <li>The class <code class="code-like">CaseFollowUpAgentAction</code> will contain our logic. [cite: 4]</li>
-                <li>The <code class="code-like">@InvocableMethod</code> annotation makes the <code class="code-like">createFollowUpTaskAndEmail</code> method available to Agentforce and other Salesforce automation tools. [cite: 32]</li>
-                <li>The `label` and `description` in `@InvocableMethod` are important as they help Agentforce understand how to use this action. [cite: 34]</li>
+                <li>The <code class="code-like">@InvocableMethod</code> annotation makes the <code class="code-like">createFollowUpTaskAndEmail</code> method available to Agentforce and other Salesforce automation tools. [cite: 4, 32]</li>
+                <li>The `label` and `description` in `@InvocableMethod` are important as they help Agentforce understand how to use this action. [cite: 4, 34]</li>
                 <li>It takes a list of <code class="code-like">FollowUpRequest</code> objects and returns a list of <code class="code-like">FollowUpResponse</code> objects. [cite: 4, 33]</li>
             </ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Create the Apex Class <span class="subtitle">1.3 Apex Code - Input & Query</span></h2>
             <p>Inside the <code class="code-like">createFollowUpTaskAndEmail</code> method:</p>
-            <hr>
             <h4>Input Validation:</h4>
             <pre><code>// Validate input request.
-if (requests == null || requests.isEmpty() || requests[0].caseNumber == null) { 
-    response.isSuccess = false;
+if (requests == null || requests.isEmpty() || requests[0].caseNumber == null) {  [cite: 5]
+    response.isSuccess = false; [cite: 5]
     response.outcomeMessage = 'Error: Case Number not provided in the request.'; [cite: 6]
-    responses.add(response); 
-    return responses;
+    responses.add(response); [cite: 6]
+    return responses; [cite: 6]
 } 
 
-FollowUpRequest request = requests[0]; 
-String caseNumber = request.caseNumber;</code></pre>
+FollowUpRequest request = requests[0]; [cite: 7]
+String caseNumber = request.caseNumber; [cite: 7]</code></pre>
             <ul><li>This section ensures a case number is provided in the request. [cite: 5, 6, 7]</li></ul>
             <h4>Querying the Case:</h4>
-            <pre><code>try { 
-    Case caseRecord = [ 
+            <pre><code>try { [cite: 8]
+    Case caseRecord = [  [cite: 8]
         SELECT Id, CaseNumber, ContactId, Contact.Email, Contact.FirstName, Contact.LastName 
         FROM Case 
         WHERE CaseNumber = :caseNumber 
         LIMIT 1 
-    ]; [cite: 8, 9]
+    ]; [cite: 9]
 
-    if (caseRecord.Id == null) { 
+    if (caseRecord.Id == null) { [cite: 10]
         throw new HandledException('Case with CaseNumber ' + caseNumber + ' not found.'); [cite: 10]
     } 
-    if (caseRecord.ContactId == null || String.isBlank(caseRecord.Contact.Email)) { 
+    if (caseRecord.ContactId == null || String.isBlank(caseRecord.Contact.Email)) { [cite: 11]
         throw new HandledException('Case contact or contact email is missing for Case : ' + caseNumber); [cite: 11]
     } 
     // ...
 } catch (Exception e) { /* ... */ }</code></pre>
             <ul>
-                <li>The code attempts to find a <code class="code-like">Case</code> record matching the provided <code class="code-like">caseNumber</code>. [cite: 8]</li>
+                <li>The code attempts to find a <code class="code-like">Case</code> record matching the provided <code class="code-like">caseNumber</code>. [cite: 8, 9]</li>
                 <li>It selects fields like <code class="code-like">ContactId</code>, <code class="code-like">Contact.Email</code>, etc., needed for task creation and email. [cite: 8]</li>
                 <li>It throws errors if the case is not found or if essential contact details are missing. [cite: 10, 11]</li>
             </ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Create the Apex Class <span class="subtitle">1.4 Apex Code - Task Creation</span></h2>
             <p>Continuing within the <code class="code-like">try</code> block:</p>
-            <hr>
             <h4>Creating the Follow-Up Task:</h4>
             <pre><code>// --- 1. Create the Follow-Up Task ---
-Task followUpTask = new Task();
+Task followUpTask = new Task(); [cite: 12]
 followUpTask.Subject = 'Follow-Up for Case: ' + caseRecord.CaseNumber; [cite: 13]
-followUpTask.WhatId = caseRecord.Id; // Relates to the Case
-followUpTask.WhoId = caseRecord.ContactId; // Relates to the Contact
-followUpTask.OwnerId = UserInfo.getUserId(); // Assign to current user
-followUpTask.Status = 'Open';
+followUpTask.WhatId = caseRecord.Id; // Relates to the Case [cite: 13]
+followUpTask.WhoId = caseRecord.ContactId; // Relates to the Contact [cite: 13]
+followUpTask.OwnerId = UserInfo.getUserId(); // Assign to current user [cite: 13]
+followUpTask.Status = 'Open'; [cite: 13]
 followUpTask.Priority = 'High'; [cite: 14]
 
-insert followUpTask; 
-System.debug('Successfully inserted Task: ' + followUpTask.Id);</code></pre>
+insert followUpTask; [cite: 14]
+System.debug('Successfully inserted Task: ' + followUpTask.Id); [cite: 14]</code></pre>
             <ul>
                 <li>A new <code class="code-like">Task</code> object is created. [cite: 12]</li>
                 <li>The subject is set to indicate it's a follow-up for the specific case. [cite: 13]</li>
-                <li>It's related to the <code class="code-like">Case</code> (<code class="code-like">WhatId</code>) and the <code class="code-like">Contact</code> (<code class="code-like">WhoId</code>).</li>
-                <li>The task is assigned to the current user, with 'Open' status and 'High' priority. [cite: 14]</li>
-                <li>The task is then inserted into the database.</li>
+                <li>It's related to the <code class="code-like">Case</code> (<code class="code-like">WhatId</code>) and the <code class="code-like">Contact</code> (<code class="code-like">WhoId</code>). [cite: 13]</li>
+                <li>The task is assigned to the current user, with 'Open' status and 'High' priority. [cite: 13, 14]</li>
+                <li>The task is then inserted into the database. [cite: 14]</li>
             </ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Create the Apex Class <span class="subtitle">1.5 Apex Code - Email Logic</span></h2>
             <p>Next, the code creates and sends a confirmation email:</p>
-            <hr>
             <h4>Creating and Sending Email:</h4>
             <pre><code>// --- 2. Create and Send the Confirmation Email using SingleEmailMessage ---
 Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage(); [cite: 15]
-mail.setTargetObjectId(caseRecord.ContactId); [cite: 16] // Sets recipient to the Case's Contact
-mail.setSaveAsActivity(true); // Logs the email as an activity
+mail.setTargetObjectId(caseRecord.ContactId); // Sets recipient to the Case's Contact [cite: 16]
+mail.setSaveAsActivity(true); // Logs the email as an activity [cite: 16]
 mail.setSubject('Update Regarding Your Case: ' + caseRecord.CaseNumber); [cite: 16]
 
-String emailBody = 'Dear ' + (String.isNotBlank(caseRecord.Contact.FirstName) ? caseRecord.Contact.FirstName : 'Customer') + ',\n\n';
+String emailBody = 'Dear ' + (String.isNotBlank(caseRecord.Contact.FirstName) ? caseRecord.Contact.FirstName : 'Customer') + ',\n\n'; [cite: 16]
 emailBody += 'This is a confirmation that we have processed your request related to Case ' + caseRecord.CaseNumber + '.\n'; [cite: 17]
 emailBody += 'A follow-up will be conducted within the next few hours to ensure everything is resolved to your satisfaction.\n\n'; [cite: 18]
 emailBody += 'Thank you for your patience.\n\n'; [cite: 19]
-emailBody += 'Sincerely,\nSupport Team'; [cite: 20]
+emailBody += 'Sincerely,\nSupport Team'; [cite: 19] // Support Team as sender's name part of the body [cite: 20]
 
-mail.setPlainTextBody(emailBody); 
-mail.setWhatId(caseRecord.Id); // Relates email to the Case
+mail.setPlainTextBody(emailBody); [cite: 20]
+mail.setWhatId(caseRecord.Id); // Relates email to the Case [cite: 20]
 
-Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail}); [cite: 20]
-System.debug('Successfully sent email to Contact: ' + caseRecord.Contact.Email); [cite: 21]
+// Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail}); // Original line, a second sendEmail is below
+// System.debug('Successfully sent email to Contact: ' + caseRecord.Contact.Email); // Original debug [cite:21]
 
 // Optional: Check email send results
-Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.Email[] {mail});
-if (results != null && results[0].isSuccess()) { 
+Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.Email[] {mail}); [cite: 21]
+if (results != null && results[0].isSuccess()) { [cite: 22]
     System.debug('Email sent successfully test'); [cite: 22]
 } else { 
     System.debug('Email failed to send: ' + results[0].getErrors()[0].getMessage()); [cite: 23]
@@ -409,70 +405,62 @@ if (results != null && results[0].isSuccess()) {
                 <li>A <code class="code-like">Messaging.SingleEmailMessage</code> object is used. [cite: 15]</li>
                 <li>The email is targeted to the case's contact and related to the case. [cite: 16, 20]</li>
                 <li>The subject and body are dynamically constructed using case details. [cite: 16, 17, 18, 19]</li>
-                <li><code class="code-like">Messaging.sendEmail()</code> sends the email. [cite: 20] The code includes an example of checking send results. [cite: 22, 23]</li>
+                <li><code class="code-like">Messaging.sendEmail()</code> sends the email. The code includes an example of checking send results. [cite: 21, 22, 23]</li>
             </ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Create the Apex Class <span class="subtitle">1.6 Apex Code - Response & Errors</span></h2>
             <p>Finally, the method sets the response and handles potential errors:</p>
-            <hr>
             <h4>Setting Success Response:</h4>
             <pre><code>// Set success response.
-response.isSuccess = true;
+response.isSuccess = true; [cite: 24]
 response.outcomeMessage = 'Follow-up task created and email sent successfully for Case: ' + caseRecord.CaseNumber; [cite: 25]
 // ...
-responses.add(response); 
-return responses;</code></pre>
+responses.add(response); [cite: 28]
+return responses; [cite: 28]</code></pre>
             <h4>Exception Handling:</h4>
-            <pre><code>} catch (Exception e) { 
-    response.isSuccess = false;
+            <pre><code>} catch (Exception e) { [cite: 26]
+    response.isSuccess = false; [cite: 26]
     response.outcomeMessage = 'An error occurred: ' + e.getMessage(); [cite: 27]
     System.debug('CaseFollowUpAgentAction ~~ Exception Type: ' + e.getTypeName() + 
                  ', Message: ' + e.getMessage() + 
                  ', Stack Trace: ' + e.getStackTraceString()); [cite: 27]
 } 
-responses.add(response); 
+responses.add(response); [cite: 28]
 return responses; [cite: 28]</code></pre>
             <ul>
                 <li>If all operations are successful, <code class="code-like">isSuccess</code> is set to true and a success message is provided. [cite: 24, 25]</li>
                 <li>The <code class="code-like">catch</code> block handles any exceptions, sets <code class="code-like">isSuccess</code> to false, and captures the error message. [cite: 26, 27]</li>
             </ul>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 1: Create the Apex Class <span class="subtitle">1.7 Apex Code - Inner Classes</span></h2>
             <p>The Apex class includes two inner classes for handling the request and response data structures, using <code class="code-like">@InvocableVariable</code>.</p>
-            <hr>
             <h4><code class="code-like">FollowUpRequest</code> Inner Class:</h4>
-            <pre><code>public class FollowUpRequest { 
+            <pre><code>public class FollowUpRequest { [cite: 29]
     @InvocableVariable(required=true label='Case Number' 
                        description='Stores the case number of the existing case for which a follow-up task needs to be created.') 
-    public String caseNumber;
-    // Constructor [cite: 30]
+    public String caseNumber; [cite: 29]
+    public FollowUpRequest() { [cite: 30]
+    } 
 }</code></pre>
             <ul><li>This class defines the input structure, requiring a <code class="code-like">caseNumber</code>. [cite: 29] The descriptions for `@InvocableVariable` are important for Agentforce. [cite: 34]</li></ul>
 
             <h4><code class="code-like">FollowUpResponse</code> Inner Class:</h4>
-            <pre><code>public class FollowUpResponse { 
+            <pre><code>public class FollowUpResponse { [cite: 30]
     @InvocableVariable(label='Outcome Message' 
                        description='A message indicating the success or failure of the operation.') 
-    public String outcomeMessage;
+    public String outcomeMessage; [cite: 30]
     @InvocableVariable(label='Is Success' 
                        description='True if the operation was successful, false otherwise.') 
     public Boolean isSuccess = false; [cite: 31]
 }</code></pre>
-            <ul><li>This class defines the output structure, including an <code class="code-like">outcomeMessage</code> and an <code class="code-like">isSuccess</code> flag. [cite: 30, 31] The descriptions here are also used by Agentforce. [cite: 34]</li></ul>
+            <ul><li>This class defines the output structure, including an <code class="code-like">outcomeMessage</code> and an <code class="code-like">isSuccess</code> flag. [cite: 30, 31] The descriptions here are also used by Agentforce. [cite: 33, 34]</li></ul>
             <p>After pasting all the code, <strong>save the file</strong> in Code Builder. [cite: 35]</p>
         </div>
-        <hr>
-        
         <div class="slide">
             <h2>Step 2: Add Extra Instructions to Existing Topic</h2>
             <p>Enhance your existing Agentforce topic with new instructions to guide the agent on when to use the follow-up action.</p>
-            <hr>
             <h3>New Instructions:</h3>
             <ul>
                 <li><strong>Instruction 1 (Task Definition):</strong>
@@ -488,12 +476,9 @@ return responses; [cite: 28]</code></pre>
             </ul>
             <p>Add these instructions to the topic you configured previously. This helps the agent understand the context and prerequisites for the new "Create Follow-Up Task" action.</p>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 3: Create the Agent Custom Action <span class="subtitle">Exposing Apex to Agent</span></h2>
             <p>Now, create an Agent Custom Action to make your Apex method usable by the Agentforce agent.</p>
-            <hr>
             <h3>Action Configuration:</h3>
             <ul>
                 <li>From Setup, open <span class="code-like">Agent Assets</span> and click on the <span class="code-like">Actions Tab</span>. [cite: 38]</li>
@@ -511,14 +496,11 @@ return responses; [cite: 28]</code></pre>
                 </tbody>
             </table>
             <ul><li>Click <span class="code-like">Next</span>. [cite: 41]</li></ul>
-             <p>Notice that the instruction fields are pre-filled based on the descriptions provided in your Apex code's <code class="code-like">@InvocableMethod</code> and <code class="code-like">@InvocableVariable</code> annotations. [cite: 41]</p>
+             <p>Notice that the instruction fields are pre-filled based on the descriptions provided in the Apex code's <code class="code-like">@InvocableMethod</code> and <code class="code-like">@InvocableVariable</code> annotations. [cite: 41]</p>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 3: Create Agent Custom Action <span class="subtitle">Input/Output Settings</span></h2>
             <p>Configure the input and output behavior for the custom action.</p>
-            <hr>
             <h3>Settings:</h3>
             <ul>
                 <li>Set the <span class="code-like">Loading Text</span> to: "Creating followup task for you...". [cite: 42]</li>
@@ -539,16 +521,13 @@ return responses; [cite: 28]</code></pre>
                 <p style="font-size:0.9em;"><em>Visual representation of action settings.</em></p>
             </div>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 4: Add the Action to Your Agent</h2>
             <p>Integrate the newly created custom action into your agent's existing topic.</p>
-            <hr>
             <h3>Steps:</h3>
             <ul>
                 <li>From Setup, open <span class="code-like">Agentforce Agents</span>. [cite: 45]</li>
-                <li>Click on your Agent (e.g., <span class="code-like">Agentforce</span>). [cite: 45]</li>
+                <li>Click your agent (e.g., <span class="code-like">Agentforce</span>). [cite: 45]</li>
                 <li>Click <span class="code-like">Open in Builder</span>. [cite: 45]</li>
                 <li>In the Topics sidebar, click on the topic you created/updated previously. [cite: 46]</li>
                 <li>Click the <span class="code-like">This Topic's Actions</span> tab. [cite: 46]</li>
@@ -558,13 +537,10 @@ return responses; [cite: 28]</code></pre>
             </ul>
             <p>Remember to re-activate your agent if it was deactivated for these changes.</p>
         </div>
-        <hr>
-
         <div class="slide">
             <h2>Step 5: Try It Out! <span class="subtitle">Testing the Apex Action</span></h2>
             <p>Test the new functionality using the Conversation Preview panel.</p>
-            <hr>
-            <h3>Scenario:</h3>
+            <h3>Scenario Prompt:</h3>
             <p>Enter the following prompt into the Conversation Preview panel: [cite: 48]</p>
             <pre><code>I am following up on the issue I raised earlier. [cite: 48]
 My air conditioning is still not working, and it's getting very hot in the room. [cite: 49]
@@ -588,11 +564,9 @@ Can you please look into this on priority and resolve it as soon as possible? [c
                 <li>Once you provide a valid case number, the agent will execute the Apex action.</li>
                 <li>You should see the "Loading Text": "Creating followup task for you...". [cite: 42]</li>
                 <li>Finally, the "Outcome Message" from the Apex action (e.g., "Follow-up task created and email sent successfully...") should be displayed in the conversation. [cite: 25, 44]</li>
-                <li>A task should be created against the case, and an email sent to the case's contact. [cite: 4]</li>
+                <li>A task should be created against the case, and an email sent to the case's contact. [cite: 14, 21]</li>
             </ol>
         </div>
-        <hr>
-        
         <div class="slide">
             <h2>Conclusion & Key Learnings</h2>
             <p>You have successfully created and integrated an Apex-based custom action into your Agentforce agent!</p>
@@ -601,8 +575,8 @@ Can you please look into this on priority and resolve it as soon as possible? [c
                 <li>Apex classes with <code class="code-like">@InvocableMethod</code> can extend Agentforce capabilities significantly. [cite: 32]</li>
                 <li>Input (<code class="code-like">FollowUpRequest</code>) and output (<code class="code-like">FollowUpResponse</code>) structures are defined using inner classes with <code class="code-like">@InvocableVariable</code>. [cite: 29, 30, 31, 33]</li>
                 <li>Descriptions in annotations are crucial for Agentforce to understand and configure the action. [cite: 34]</li>
-                <li>Agent Custom Actions bridge the gap between your Apex logic and the agent. [cite: 38]</li>
-                <li>Topic instructions guide the agent on when and how to use custom actions. [cite: 37]</li>
+                <li>Agent Custom Actions bridge the gap between your Apex logic and the agent. [cite: 38, 40]</li>
+                <li>Topic instructions guide the agent on when and how to use custom actions. [cite: 35, 36, 37]</li>
             </ul>
             <h3>Further Exploration:</h3>
             <ul>
@@ -611,9 +585,6 @@ Can you please look into this on priority and resolve it as soon as possible? [c
                 <li>Explore different ways to handle errors and provide feedback to the user.</li>
             </ul>
         </div>
-        <hr>
-
-
         <div class="navigation-container">
             <div class="navigation">
                 <button id="prevButton" onclick="changeSlide(-1)" disabled>&lsaquo; Previous</button>
@@ -643,7 +614,6 @@ Can you please look into this on priority and resolve it as soon as possible? [c
             if (progressBar) {
                  progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
             }
-             // Reset Apex simulation if on that slide
             if (slides[currentSlide] && slides[currentSlide].querySelector('#simulationAreaApex')) {
                 resetSimulationApex();
                 firstAgentResponseApex(); 
@@ -657,15 +627,14 @@ Can you please look into this on priority and resolve it as soon as possible? [c
             updateSlideDisplay();
         }
         
-        // --- Simulation logic for Apex Action ---
-        let simulationStateApex = 0; // 0: initial, 1: waiting for case number
+        let simulationStateApex = 0; 
         const chatHistoryApex = document.getElementById('chatHistoryApex');
         const agentResponseSectionApex = document.getElementById('agentResponseSectionApex');
         const userInputApex = document.getElementById('userInputApex');
 
         function resetSimulationApex() {
             simulationStateApex = 0;
-            if(chatHistoryApex) { // Check if element exists
+            if(chatHistoryApex) { 
                  chatHistoryApex.innerHTML = '<p><strong>User:</strong> I am following up on the issue I raised earlier. My air conditioning is still not working, and it\'s getting very hot in the room. Can you please look into this on priority and resolve it as soon as possible?</p>';
             }
             if(agentResponseSectionApex) agentResponseSectionApex.innerHTML = '';
@@ -675,8 +644,8 @@ Can you please look into this on priority and resolve it as soon as possible? [c
         function firstAgentResponseApex() {
              if (slides[currentSlide] && slides[currentSlide].querySelector('#simulationAreaApex') && simulationStateApex === 0) {
                  setTimeout(() => {
-                    if (agentResponseSectionApex) { // Check if element exists
-                        agentResponseSectionApex.innerHTML = `<p><strong>Agent (mock):</strong> I understand you're following up. To proceed, could you please provide the case number for your existing issue? (Based on new instructions & action input) [cite: 37, 43]</p>`;
+                    if (agentResponseSectionApex) { 
+                        agentResponseSectionApex.innerHTML = `<p><strong>Agent (mock):</strong> I understand you're following up. To proceed, could you please provide the case number for your existing issue? (Based on new instructions & action input)</p>`;
                     }
                     simulationStateApex = 1; 
                 }, 500);
@@ -684,7 +653,7 @@ Can you please look into this on priority and resolve it as soon as possible? [c
         }
         
         function processUserInputApex() {
-            if (!userInputApex || !chatHistoryApex || !agentResponseSectionApex) return; // Check if elements exist
+            if (!userInputApex || !chatHistoryApex || !agentResponseSectionApex) return; 
 
             const uInput = userInputApex.value.trim();
             if (uInput === '') return;
@@ -694,24 +663,21 @@ Can you please look into this on priority and resolve it as soon as possible? [c
             chatHistoryApex.appendChild(userMessageDiv);
             userInputApex.value = '';
 
-            if (simulationStateApex === 1) { // Expecting Case Number
+            if (simulationStateApex === 1) { 
                 agentResponseSectionApex.innerHTML = `<p><strong>Agent (mock):</strong> Thank you for providing Case Number ${uInput}.</p>`;
-                agentResponseSectionApex.innerHTML += `<p><strong>Agent (mock):</strong> Creating followup task for you... (Loading text) [cite: 42]</p>`;
+                agentResponseSectionApex.innerHTML += `<p><strong>Agent (mock):</strong> Creating followup task for you... (Loading text)</p>`;
                 setTimeout(() => {
-                    agentResponseSectionApex.innerHTML += `<p><strong>Agent (mock):</strong> Follow-up task created and email sent successfully for Case: ${uInput}. (Outcome Message) [cite: 25, 44]</p>`;
+                    agentResponseSectionApex.innerHTML += `<p><strong>Agent (mock):</strong> Follow-up task created and email sent successfully for Case: ${uInput}. (Outcome Message)</p>`;
                     simulationStateApex = 2; 
                 }, 2000);
             } else if (simulationStateApex === 2) { 
                  agentResponseSectionApex.innerHTML = `<p><strong>Agent (mock):</strong> Is there anything else I can assist you with regarding this follow-up?</p>`;
             } else {
-                // Fallback, should ideally not be reached if firstAgentResponseApex sets state correctly
                 agentResponseSectionApex.innerHTML = `<p><strong>Agent (mock):</strong> How can I help you?</p>`;
             }
              chatHistoryApex.scrollTop = chatHistoryApex.scrollHeight; 
         }
-
-        // Initialize
-        // Ensure DOM is loaded before trying to access elements for the first slide's simulation
+        
         document.addEventListener('DOMContentLoaded', () => {
             updateSlideDisplay();
         });
