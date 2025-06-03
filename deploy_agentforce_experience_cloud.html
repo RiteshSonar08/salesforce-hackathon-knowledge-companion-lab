@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy Agentforce on Experience Cloud Site - User Guide</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 12px; /* Space for the fixed progress bar */
+            min-height: 100vh;
+        }
+
+        .progress-bar-outer-container {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10000; 
+            background-color: #dce4e9; 
+            height: 12px; 
+        }
+
+        .progress-bar {
+            width: 0%; 
+            height: 100%; 
+            background-color: #007bff;
+            transition: width 0.4s ease;
+        }
+
+        .slide-deck {
+            width: 90%;
+            max-width: 1320px; 
+            background-color: #fff;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            overflow: hidden; 
+            border: 1px solid #ddd;
+            margin: 20px auto; 
+        }
+
+        .slide {
+            display: none;
+            padding: 30px 40px 40px 40px;
+            min-height: 500px; 
+            box-sizing: border-box;
+            animation: fadeInAnimation 0.5s ease-in-out;
+        }
+
+        @keyframes fadeInAnimation {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide h2 {
+            color: #004a99; 
+            border-bottom: 3px solid #004a99;
+            padding-bottom: 12px;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        
+        .slide h2 .subtitle {
+            display: block;
+            font-size: 0.7em;
+            color: #555;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+
+        .slide h3 {
+            color: #0056b3; 
+            margin-top: 25px;
+            font-size: 1.4em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+         .slide h4 {
+            color: #0067cc;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        .slide p, .slide li {
+            line-height: 1.7; 
+            color: #444; 
+            font-size: 1.05em;
+        }
+
+        .slide ul {
+            padding-left: 25px;
+        }
+        
+        .slide ul li {
+            margin-bottom: 8px; 
+        }
+
+        .slide code, .slide .code-like {
+            background-color: #e0eaf3; 
+            padding: 3px 7px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: #1c3d5f;
+            font-size: 0.95em;
+        }
+
+        .slide table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .slide th, .slide td {
+            border: 1px solid #ccc; 
+            padding: 12px; 
+            text-align: left;
+            font-size: 0.95em;
+        }
+
+        .slide th {
+            background-color: #e9edf1; 
+            color: #004a99;
+            font-weight: 600;
+        }
+
+        .slide img.doc-screenshot { 
+            max-width: 80%; 
+            height: auto;
+            border: 1px solid #bbb; 
+            border-radius: 6px;
+            margin: 20px auto; 
+            display: block;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.12);
+        }
+         .placeholder-info {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+        
+        .navigation-container { 
+            text-align: center; 
+            padding: 10px 0 20px 0; 
+        }
+        
+        .navigation {
+            display: inline-flex; 
+            align-items: center;
+            padding: 6px; 
+            background-color: #f0f2f5; 
+            border-radius: 30px; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+            border: 1px solid #d1d5db; 
+        }
+
+        .navigation button {
+            background-color: #007aff; 
+            color: white;
+            border: none;
+            padding: 8px 18px; 
+            border-radius: 20px; 
+            cursor: pointer;
+            font-size: 0.95em; 
+            font-weight: 500; 
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px; 
+        }
+        
+        .navigation button:hover:not(:disabled) {
+            background-color: #005ec4; 
+        }
+
+        .navigation button:disabled {
+            background-color: #d1d5db; 
+            color: #8e8e93; 
+            cursor: not-allowed;
+        }
+        
+        #slideIndicator {
+            padding: 0 18px; 
+            font-weight: 500; 
+            color: #1c1c1e; 
+            font-size: 0.95em; 
+            min-width: 50px; 
+            text-align: center;
+        }
+        
+        .interactive-area {
+            border: 2px dashed #007bff;
+            padding: 20px; 
+            margin-top: 25px;
+            border-radius: 6px;
+            background-color: #f5f9ff; 
+        }
+
+        #omniChannelFlowDiagram {
+            width: 100%;
+            min-height: 250px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #omniChannelFlowDiagram svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .image-caption {
+            font-size: 0.9em;
+            color: #667; 
+            text-align: center;
+            margin-top: 8px;
+            margin-bottom: 18px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="progress-bar-outer-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="slide-deck">
+
+        <div class="slide active">
+            <h2>Deploy Agentforce on Experience Cloud Site <span class="subtitle">User Guide Introduction</span></h2>
+            <p>This guide walks through configuring a Service deployment to expose an Agentforce agent (e.g., Coral Cloud Agent) directly to your customers via an Experience Cloud Site. [cite: 1]</p>
+            <p>Several components need to be configured, primarily leveraging Omni-Channel within Service Cloud to bring everything together. [cite: 2]</p>
+            <h3>Conceptual Architecture:</h3>
+             <div class="placeholder-info">
+                <strong>Image Note:</strong> Replace <code>placeholder_omni_channel_architecture.webp</code> with the architecture diagram from your document (e.g., `service-agent-architecture_omni-channel-architecture.yFsXV5_T.webp`). [cite: 3]
+            </div>
+            <img src="placeholder_omni_channel_architecture.webp" alt="Omni-Channel Architecture Diagram [Source: 3]" class="doc-screenshot" />
+            <p class="image-caption">Omni-Channel Architecture (based on [cite: 3]).</p>
+            <h3>Overall Process:</h3>
+            <ul>
+                <li>Step 1: Enable messaging and configure Omni-Channel.</li>
+                <li>Step 2: Create Omni-Channel routing flow.</li>
+                <li>Step 3: Update the messaging channel with the routing flow.</li>
+                <li>Step 4: Create an embedded service deployment.</li>
+                <li>Step 5: Add Agent to the Experience Site. (Renamed from "Step 4" in doc for clarity)</li>
+            </ul>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">Initial Setup</span></h2>
+            <p>Messaging allows you to create channels for handling customer messages. [cite: 4] In this context, we'll use it to enable customers to engage with the Agentforce agent. [cite: 4]</p>
+            <hr>
+            <h3>1.1 Enable Messaging</h3>
+            <ul>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Messaging Settings</span>. [cite: 5]</li>
+                <li>Set <span class="code-like">Messaging</span> to <span class="code-like">On</span>. [cite: 5]</li>
+            </ul>
+             <div class="interactive-area">
+                <p><strong>Simulation:</strong> Imagine the Salesforce Setup screen.</p>
+                <label for="messagingToggle">Messaging Status:</label>
+                <select id="messagingToggle" disabled><option>On</option></select>
+                <p style="font-size:0.9em;"><em>Visual representation of Messaging being enabled.</em></p>
+            </div>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">1.2 Create Routing Configuration</span></h2>
+            <ul>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Routing Configurations</span>. [cite: 6]</li>
+                <li>Click on <span class="code-like">New</span>. [cite: 6]</li>
+                <li>Set field values as follows: [cite: 7]</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Routing Configuration Name</td><td>Agent Routing Configuration [cite: 8]</td></tr>
+                    <tr><td>Developer Name</td><td>Agent_Routing_Configuration [cite: 8]</td></tr>
+                    <tr><td>Overflow Assignee</td><td>Leave Blank [cite: 8]</td></tr>
+                    <tr><td>Routing Priority</td><td>1 [cite: 8]</td></tr>
+                    <tr><td>Routing Model</td><td>Most Available [cite: 8]</td></tr>
+                    <tr><td>Push Time-out(seconds)</td><td>Leave Blank [cite: 8]</td></tr>
+                    <tr><td>Capacity Type</td><td>Keep default: Inherited [cite: 8]</td></tr>
+                    <tr><td>Units of Capacity</td><td>2 [cite: 8]</td></tr>
+                    <tr><td>Percentage of Capacity</td><td>Leave Blank [cite: 8]</td></tr>
+                </tbody>
+            </table>
+            <ul><li>Click on <span class="code-like">Save</span>. [cite: 9]</li></ul>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">1.3 Create a Queue</span></h2>
+            <ul>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Queues</span>.</li>
+                <li>Click on <span class="code-like">New</span>.</li>
+                <li>Set field values as follows: [cite: 10]</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Label</td><td>Messaging Queue [cite: 11]</td></tr>
+                    <tr><td>Queue Name</td><td>Messaging_Queue [cite: 11]</td></tr>
+                    <tr><td>Queue Email</td><td>Leave Blank [cite: 11]</td></tr>
+                    <tr><td>Send Email to Members</td><td>Keep default: False [cite: 11]</td></tr>
+                    <tr><td>Routing Configuration</td><td>Agent_Routing_Configuration [cite: 11]</td></tr>
+                    <tr><td>Selected Objects</td><td>Messaging Session [cite: 11]</td></tr>
+                    <tr><td>Selected Members</td><td>Admin User [cite: 11]</td></tr>
+                </tbody>
+            </table>
+            <ul><li>Click on <span class="code-like">Save</span>. [cite: 12]</li></ul>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">1.4 Create Presence Status</span></h2>
+            <ul>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Presence Statuses</span>. [cite: 12]</li>
+                <li>Click on <span class="code-like">New</span>. [cite: 13]</li>
+                <li>Set field values as follows:</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Label</td><td>Available [cite: 14]</td></tr>
+                    <tr><td>Developer Name</td><td>Available [cite: 14]</td></tr>
+                    <tr><td>Status Options</td><td>Keep default: Online [cite: 14]</td></tr>
+                    <tr><td>Selected Channels</td><td>Messaging [cite: 14]</td></tr>
+                </tbody>
+            </table>
+            <ul><li>Click on <span class="code-like">Save</span>. [cite: 15]</li></ul>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 1: Omni-Channel Config <span class="subtitle">1.5 Create Presence Status Permission Set</span></h2>
+            <h4>Permission Set Creation</h4>
+            <ul>
+                <li>In Setup Quick Find, search for <span class="code-like">Permission Sets</span>, then select it. [cite: 15]</li>
+                <li>Click <span class="code-like">New</span>. [cite: 16]</li>
+                <li>Set field values: [cite: 16]</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Label</td><td>Customer Service Agent [cite: 17]</td></tr>
+                    <tr><td>API Name</td><td>Customer_Service_Agent [cite: 17]</td></tr>
+                    <tr><td>Description</td><td>This permission set grants access to messaging and the Available Messaging Status. [cite: 17]</td></tr>
+                    <tr><td>License</td><td>Keep default: None [cite: 17]</td></tr>
+                </tbody>
+            </table>
+            <ul><li>Click <span class="code-like">Save</span>. [cite: 18]</li></ul>
+            <h4>Configure Presence Status Access & Assign</h4>
+            <ul>
+                <li>Under Apps, click <span class="code-like">Service Presence Statuses Access</span>. [cite: 18]</li>
+                <li>Click <span class="code-like">Edit</span>. [cite: 18]</li>
+                <li>Add <span class="code-like">Available</span> to Enabled Service Presence Statuses. [cite: 19]</li>
+                <li>Click <span class="code-like">Save</span>. [cite: 19]</li>
+                <li>Click <span class="code-like">Manage Assignments</span>, then <span class="code-like">Add Assignments</span>. [cite: 19]</li>
+                <li>Check the box next to <span class="code-like">Admin User</span>. [cite: 20]</li>
+                <li>Click <span class="code-like">Save</span>, then <span class="code-like">Done</span>. [cite: 20]</li>
+            </ul>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 1: Omni-Channel Config <span class="subtitle">1.6 Create Presence Configuration</span></h2>
+            <ul>
+                <li>In Setup Quick Find, search for <span class="code-like">Presence Configuration</span>, then select it. [cite: 21]</li>
+                <li>Click <span class="code-like">New</span>. [cite: 21]</li>
+                <li>Set field values: [cite: 22]</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Presence Configuration Name</td><td>Messaging Presence Configuration [cite: 23]</td></tr>
+                    <tr><td>Developer Name</td><td>Messaging_Presence_Configuration [cite: 23]</td></tr>
+                    <tr><td>Capacity</td><td>20 [cite: 23]</td></tr>
+                </tbody>
+            </table>
+            <ul>
+                <li>Every other value should be left to the defaults. [cite: 24]</li>
+                <li>Click <span class="code-like">Save</span>. [cite: 24]</li>
+            </ul>
+        </div>
+        <hr>
+        
+        <div class="slide">
+            <h2>Step 1: Omni-Channel Config <span class="subtitle">1.7 Create a Messaging Channel</span></h2>
+            <ul>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Messaging Settings</span>. [cite: 25]</li>
+                <li>Click on <span class="code-like">New Channel</span>. [cite: 26]</li>
+                <li>Click <span class="code-like">Start</span>. [cite: 26]</li>
+                <li>Select <span class="code-like">Messaging for In-App and Web</span>. [cite: 26]</li>
+                <li>Set field values as follows:</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Channel Name</td><td>Agent Channel [cite: 27]</td></tr>
+                    <tr><td>Developer Name</td><td>Agent_Channel [cite: 27]</td></tr>
+                </tbody>
+            </table>
+            <ul><li>Click on <span class="code-like">Save</span>. [cite: 28]</li></ul>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 2: Create Omni-Channel Routing Flow <span class="subtitle">Automating Agent Assignment</span></h2>
+            <p>Use Flow to route customers to an Agentforce Agent directly from your Experience Cloud site. [cite: 28]</p>
+            <hr>
+            <h3>2.1 Create the "Route to Agent" Flow</h3>
+            <h4>Initial Flow Setup</h4>
+            <ul>
+                <li>In Setup, search for <span class="code-like">Flow</span> in Quick Find and select <span class="code-like">Flows</span>. [cite: 29]</li>
+                <li>Click <span class="code-like">New Flow</span>. [cite: 30]</li>
+                <li>Click on <span class="code-like">Start From Scratch</span>, then <span class="code-like">Next</span>. [cite: 30]</li>
+                <li>Select <span class="code-like">Omni-Channel Flow</span> and click <span class="code-like">Create</span>. [cite: 30]</li>
+            </ul>
+            <h4>Create Flow Variable</h4>
+            <ul>
+                <li>Open the Toolbox/Resources panel (click sidebar icon if needed). [cite: 31, 32]</li>
+                <li>Using the "New Resource" button, create a variable: [cite: 33]</li>
+            </ul>
+            <table>
+                <thead><tr><th>Resource Type</th><th>API Name</th><th>Description</th><th>Data Type</th><th>Available for input</th><th>Available for output</th></tr></thead>
+                <tbody>
+                    <tr><td>Variable</td><td>recordId [cite: 34]</td><td>The recordId is used to assign a messaging session to an Agent. [cite: 34]</td><td>Text [cite: 34]</td><td>✅ [cite: 34]</td><td>Unchecked [cite: 34]</td></tr>
+                </tbody>
+            </table>
+             <div class="placeholder-info">
+                <strong>Conceptual Flow Diagram:</strong> The following slides will build out this Omni-Channel Flow.
+            </div>
+            <div id="omniChannelFlowDiagram">
+                </div>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 2: Omni-Channel Routing Flow <span class="subtitle">2.2 Element: Get Messaging Session</span></h2>
+            <ul>
+                <li>Mouse over the circle under the Start element, click <span class="code-like">+</span>, and select <span class="code-like">Get Records</span>. [cite: 35]</li>
+                <li>Configure the "Get Records" action: [cite: 36]</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Label</td><td>Get Messaging Session [cite: 37]</td></tr>
+                    <tr><td>API Name</td><td>Get_Messaging_Session [cite: 37]</td></tr>
+                    <tr><td>Description</td><td>Get the related messaging session that you would like to route to an agent. [cite: 37]</td></tr>
+                    <tr><td>Data Source</td><td>Salesforce Object [cite: 37]</td></tr>
+                    <tr><td>Object</td><td>Messaging Session [cite: 37]</td></tr>
+                    <tr><td>Condition Requirements</td><td>All Conditions Are Met (AND) [cite: 37]</td></tr>
+                </tbody>
+            </table>
+            <ul><li>Define the condition: [cite: 38]</li></ul>
+            <table>
+                <thead><tr><th>Field</th><th>Operator</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Id</td><td>Equals</td><td>$recordId [cite: 39]</td></tr>
+                </tbody>
+            </table>
+            <ul><li>Leave "How Many Records to Store" and "How to Store Record Data" to their defaults. [cite: 40]</li></ul>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 2: Omni-Channel Routing Flow <span class="subtitle">2.3 Element: Route Work</span></h2>
+            <ul>
+                <li>Mouse over the circle under the "Get Messaging Session" element, click <span class="code-like">+</span>, and select <span class="code-like">Route Work</span>. [cite: 41]</li>
+                <li>Configure the "Route Work" action: [cite: 42]</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Label</td><td>Route to Agent [cite: 43]</td></tr>
+                    <tr><td>API Name</td><td>Route_to_Agent [cite: 43]</td></tr>
+                    <tr><td>Description</td><td>Route the messaging session to the Coral Cloud Agent [cite: 43]</td></tr>
+                    <tr><td>How Many Work Records to Route?</td><td>Keep default: Single [cite: 43]</td></tr>
+                    <tr><td>Record Id Variable</td><td>$recordId [cite: 43]</td></tr>
+                    <tr><td>Service Channel</td><td>Messaging [cite: 43]</td></tr>
+                    <tr><td>Route To</td><td>Agentforce Service Agent [cite: 43]</td></tr>
+                    <tr><td>Agentforce Service Agent</td><td>Customer Serivce Agent [cite: 43]</td></tr>
+                    <tr><td>Fallback Queue</td><td>Select Queue [cite: 43]</td></tr>
+                    <tr><td>Fallback Queue Id</td><td>Messaging Queue [cite: 43]</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 2: Omni-Channel Routing Flow <span class="subtitle">2.4 Save and Activate</span></h2>
+            <ul>
+                <li>Click on <span class="code-like">Save</span> in the Flow Builder. [cite: 44]</li>
+                <li>Set the values for the flow: [cite: 44]</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Flow Label</td><td>Route to Agent [cite: 45]</td></tr>
+                    <tr><td>Flow API Name</td><td>Route_to_Agent [cite: 45]</td></tr>
+                </tbody>
+            </table>
+            <ul><li>Click on <span class="code-like">Activate</span>. [cite: 46]</li></ul>
+            <div class="interactive-area">
+                <p><strong>Simulation: Flow Activation</strong></p>
+                <button onclick="alert('Flow \"Route to Agent\" is now Active! (Simulated)')">Activate Flow</button>
+                <p style="font-size:0.9em;"><em>Represents the successful activation of your Omni-Channel Flow.</em></p>
+            </div>
+        </div>
+        <hr>
+        
+        <div class="slide">
+            <h2>Step 3: Update Messaging Channel <span class="subtitle">Linking Flow to Channel</span></h2>
+            <p>Associate the Agentforce Agent (e.g., Coral Cloud Agent) to the newly created routing flow by updating the messaging channel configuration. [cite: 46]</p>
+            <hr>
+            <h3>3.1 Add "Route-to-Agent" Flow to Messaging Config</h3>
+            <ul>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Messaging Settings</span>. [cite: 47]</li>
+                <li>Open the <span class="code-like">Agent Channel</span>. [cite: 48]</li>
+                <li>Click on the <span class="code-like">Edit</span> button under <span class="code-like">Omni-Channel Settings</span>. [cite: 48]</li>
+                <li>Configure the settings as follows:</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Routing Type</td><td>Omni-Flow [cite: 49]</td></tr>
+                    <tr><td>Flow Definition</td><td>Route to Agent [cite: 49]</td></tr>
+                    <tr><td>Fallback Queue</td><td>Messaging Queue [cite: 49]</td></tr>
+                </tbody>
+            </table>
+            <ul>
+                <li>Click on <span class="code-like">Save</span>. [cite: 50]</li>
+                <li>Click on <span class="code-like">Activate</span>. [cite: 50]</li>
+                <li>Accept the Terms and Conditions if prompted. [cite: 50]</li>
+            </ul>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 4: Create Embedded Service Deployment <span class="subtitle">Exposing the Agent</span></h2>
+            <p>Create an Embedded Service deployment to distribute your agent for use on your Experience Cloud site. [cite: 51]</p>
+            <hr>
+            <ul>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Embedded Service Deployments</span>. [cite: 52]</li>
+                <li>Click on <span class="code-like">New Deployment</span>. [cite: 52]</li>
+                <li>Select <span class="code-like">Messaging for In-App and Web</span>, then click <span class="code-like">Next</span>. [cite: 53]</li>
+                <li>Select <span class="code-like">Web</span>. [cite: 53]</li>
+                <li>Configure the deployment:</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Embedded Service Deployment Name</td><td>Agent Web Deployment [cite: 54]</td></tr>
+                    <tr><td>API Name</td><td>Agent_Web_Deployment [cite: 54]</td></tr>
+                    <tr><td>Domain</td><td>Give your site domain (e.g., <code>your-exp-cloud-site.my.site.com</code>) [cite: 54]</td></tr>
+                    <tr><td>Messaging Channel</td><td>Agent Channel [cite: 54]</td></tr>
+                </tbody>
+            </table>
+            <ul>
+                <li>Click on <span class="code-like">Save</span>. [cite: 55]</li>
+                <li>Once saved, click on <span class="code-like">Publish</span>. [cite: 55]</li>
+            </ul>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Step 5: Add Agent to Experience Site <span class="subtitle">Final Integration</span></h2>
+            <p>The final step is to add the configured Embedded Messaging component to your Experience Cloud site. [cite: 56]</p>
+            <hr>
+            <h3>Integration Steps:</h3>
+            <ul>
+                <li>Navigate to the Experience Builder for your site. [cite: 56]</li>
+                <li>From the components panel, find the <span class="code-like">Embedded Messaging</span> component.</li>
+                <li>Drag and drop the <span class="code-like">Embedded Messaging</span> component onto your desired page or template footer. [cite: 56]</li>
+                <li>Configure the component to use your "Agent Web Deployment".</li>
+                <li>Publish your Experience Cloud site changes.</li>
+            </ul>
+            <h3>Start Interacting!</h3>
+            <p>Once published, your Agentforce agent should be accessible to customers through the chat widget on your Experience Cloud site. [cite: 57]</p>
+             <div class="interactive-area">
+                <p><strong>Simulation: Experience Cloud Interaction</strong></p>
+                <p>Imagine your Experience Cloud site with a chat widget:</p>
+                <div style="width:80px; height:80px; background-color:#007aff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:24px; margin:10px auto;">💬</div>
+                <p><em>Clicking this would open the chat window powered by your Agentforce Agent and Omni-Channel setup.</em></p>
+            </div>
+        </div>
+        <hr>
+
+        <div class="slide">
+            <h2>Deployment Complete! <span class="subtitle">Summary & Next Steps</span></h2>
+            <p>You have successfully configured the necessary components to deploy an Agentforce agent on an Experience Cloud Site using Omni-Channel and Embedded Messaging.</p>
+            <h3>Recap of Key Configurations:</h3>
+            <ul>
+                <li>Enabled Messaging and set up core Omni-Channel objects (Routing Configuration, Queue, Presence Statuses, Permission Set, Presence Configuration).</li>
+                <li>Created a Messaging Channel for In-App and Web.</li>
+                <li>Built and activated an Omni-Channel Flow to route messaging sessions to your agent.
+                    <ul><li>This flow uses the <code class="code-like">$recordId</code> of the Messaging Session and the <code class="code-like">Route Work</code> action.</li></ul>
+                </li>
+                <li>Updated the Messaging Channel to use this Omni-Flow.</li>
+                <li>Created and published an Embedded Service Deployment.</li>
+                <li>Added the Embedded Messaging component to your Experience Cloud site.</li>
+            </ul>
+            <h3>Next Steps & Considerations:</h3>
+            <ul>
+                <li>Thoroughly test the end-to-end customer experience.</li>
+                <li>Review agent availability and capacity settings.</li>
+                <li>Explore advanced Omni-Channel routing rules or skills-based routing if needed.</li>
+                <li>Customize the look and feel of the Embedded Messaging chat window.</li>
+            </ul>
+        </div>
+        <hr>
+
+        <div class="navigation-container">
+            <div class="navigation">
+                <button id="prevButton" onclick="changeSlide(-1)" disabled>&lsaquo; Previous</button>
+                <span id="slideIndicator">1 / 16</span>
+                <button id="nextButton" onclick="changeSlide(1)">Next &rsaquo;</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+        const slideIndicator = document.getElementById('slideIndicator');
+        const progressBar = document.getElementById('progressBar');
+
+        function drawOmniChannelFlowDiagram(highlightElementId = null) {
+            const flowData = {
+                nodes: [
+                    { id: 1, name: "Start (Omni-Flow)", x: 150, y: 125, type: "start" },
+                    { id: 2, name: "Input: recordId", x: 350, y: 50, type: "variable"},
+                    { id: 3, name: "Get Messaging Session\n(using recordId)", x: 350, y: 125, type: "process" },
+                    { id: 4, name: "Route Work\n(to Agentforce Agent)", x: 600, y: 125, type: "action" },
+                    { id: 5, name: "End", x: 800, y: 125, type: "end" }
+                ],
+                links: [
+                    { source: 1, target: 3 },
+                    { source: 2, target: 3, type: "dashed" }, // Indicates variable usage
+                    { source: 3, target: 4 },
+                    { source: 4, target: 5 }
+                ]
+            };
+
+            const container = d3.select("#omniChannelFlowDiagram");
+            container.select("svg").remove(); 
+
+            const svg = container.append("svg")
+                .attr("preserveAspectRatio", "xMidYMid meet")
+                .attr("viewBox", `0 0 900 250`);
+
+            svg.append("defs").append("marker")
+                .attr("id", "arrow-omni")
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", 19).attr("refY", 0)
+                .attr("markerWidth", 6).attr("markerHeight", 6)
+                .attr("orient", "auto-start-reverse")
+                .append("path").attr("d", "M0,-5L10,0L0,5").attr("fill", "#555");
+
+            const link = svg.append("g").selectAll("line")
+                .data(flowData.links).join("line")
+                .attr("x1", d => flowData.nodes.find(n => n.id === d.source).x)
+                .attr("y1", d => flowData.nodes.find(n => n.id === d.source).y)
+                .attr("x2", d => flowData.nodes.find(n => n.id === d.target).x)
+                .attr("y2", d => flowData.nodes.find(n => n.id === d.target).y)
+                .attr("stroke", d => d.type === "dashed" ? "#aaa" : "#555")
+                .attr("stroke-dasharray", d => d.type === "dashed" ? "5,5" : "none")
+                .attr("stroke-width", 1.5)
+                .attr("marker-end", d => d.type === "dashed" ? "none" : "url(#arrow-omni)");
+
+            const node = svg.append("g").selectAll("g.node-group")
+                .data(flowData.nodes).join("g")
+                .attr("class", "node-group")
+                .attr("transform", d => `translate(${d.x},${d.y})`);
+            
+            const nodeWidth = 160; const nodeHeight = 50;
+            node.append("rect")
+                .attr("x", -nodeWidth / 2).attr("y", -nodeHeight / 2)
+                .attr("width", nodeWidth).attr("height", nodeHeight)
+                .attr("rx", d => d.type === 'start' || d.type === 'end' ? nodeHeight / 2 : (d.type === 'variable' ? 3 : 6))
+                .attr("ry", d => d.type === 'start' || d.type === 'end' ? nodeHeight / 2 : (d.type === 'variable' ? 3 : 6))
+                .attr("fill", d => {
+                    if (d.id === highlightElementId) return "#007aff";
+                    if (d.type === 'start' || d.type === 'end') return "#4caf50";
+                    if (d.type === 'action') return "#ff9800";
+                    if (d.type === 'variable') return "#e0eaf3";
+                    return "#2196f3"; // process
+                })
+                .attr("stroke", d => d.id === highlightElementId ? "#0056b3" : "#333")
+                .attr("stroke-width", 1.5);
+            
+            node.selectAll("text").data(d => d.name.split("\n").map(line => ({line: line, data: d})))
+                .join("text")
+                .attr("text-anchor", "middle")
+                .attr("dy", (d,i,nodes) => `${(i - (nodes.length -1)/2) * 1.1 + 0.35}em`) // Basic multi-line support
+                .text(d => d.line)
+                .attr("font-size", "11px").attr("font-family", "sans-serif")
+                .attr("fill", d => (d.data.id === highlightElementId || d.data.type === 'start' || d.data.type === 'end' || d.data.type === 'action') && d.data.type !== 'variable' ? "#fff" : "#333");
+        }
+
+
+        function updateSlideDisplay() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+            prevButton.disabled = currentSlide === 0;
+            nextButton.disabled = currentSlide === totalSlides - 1;
+            slideIndicator.textContent = `${currentSlide + 1} / ${totalSlides}`;
+            
+            if (progressBar) {
+                 progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+            }
+
+            // d3.js diagram logic
+            const omniFlowIntroSlide = 8; // Slide 9 (0-indexed)
+            const getMsgSessionSlide = 9; // Slide 10
+            const routeWorkSlide = 10; // Slide 11
+
+            if (document.getElementById('omniChannelFlowDiagram')) {
+                 if (currentSlide === omniFlowIntroSlide) drawOmniChannelFlowDiagram();
+                 if (currentSlide === getMsgSessionSlide) drawOmniChannelFlowDiagram(3); // Highlight Get Messaging Session
+                 if (currentSlide === routeWorkSlide) drawOmniChannelFlowDiagram(4); // Highlight Route Work
+            }
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+            updateSlideDisplay();
+        }
+        
+        // Initialize
+        updateSlideDisplay();
+    </script>
+
+</body>
+</html>
