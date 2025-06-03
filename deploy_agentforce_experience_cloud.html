@@ -271,14 +271,8 @@
     <div class="slide-deck">
         <div class="slide active">
             <h2>Deploy Agentforce on Experience Cloud Site</h2>
-            <p>This guide walks through configuring a Service deployment to expose an Agentforce agent (e.g., Coral Cloud Agent) directly to your customers via an Experience Cloud Site. [cite: 1]</p>
-            <p>Several components need to be configured, primarily leveraging Omni-Channel within Service Cloud to bring everything together. [cite: 2]</p>
-            <h3>Conceptual Architecture:</h3>
-             <div class="placeholder-info">
-                <strong>Image Note:</strong> Replace <code>placeholder_omni_channel_architecture.webp</code> with the architecture diagram from your document (e.g., `service-agent-architecture_omni-channel-architecture.yFsXV5_T.webp`). [cite: 3]
-            </div>
-            <img src="placeholder_omni_channel_architecture.webp" alt="Omni-Channel Architecture Diagram [Source: 3]" class="doc-screenshot" />
-            <p class="image-caption">Omni-Channel Architecture (based on [cite: 3]).</p>
+            <p>This guide walks through configuring a Service deployment to expose an Agentforce agent (e.g., Coral Cloud Agent) directly to your customers via an Experience Cloud Site.</p>
+            <p>Several components need to be configured, primarily leveraging Omni-Channel within Service Cloud to bring everything together.</p>
             <h3>Overall Process:</h3>
             <ul>
                 <li>Step 1: Enable messaging and configure Omni-Channel.</li>
@@ -290,316 +284,294 @@
         </div>
         <div class="slide">
             <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">Initial Setup</span></h2>
-            <p>Messaging allows you to create channels for handling customer messages. [cite: 4] In this context, we'll use it to enable customers to engage with the Agentforce agent. [cite: 4]</p>
+            <p>Messaging allows you to create channels for handling customer messages. In this context, we'll use it to enable customers to engage with the Agentforce agent.</p>
             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;"> 
             <h3>1.1 Enable Messaging</h3>
             <ul>
-                <li>In Setup Quick Find, search for and select <span class="code-like">Messaging Settings</span>. [cite: 5]</li>
-                <li>Set <span class="code-like">Messaging</span> to <span class="code-like">On</span>. [cite: 5]</li>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Messaging Settings</span>.</li>
+                <li>Set <span class="code-like">Messaging</span> to <span class="code-like">On</span>.</li>
             </ul>
-             <div class="interactive-area">
-                <p><strong>Simulation:</strong> Imagine the Salesforce Setup screen.</p>
-                <label for="messagingToggle">Messaging Status:</label>
-                <select id="messagingToggle" disabled><option>On</option></select>
-                <p style="font-size:0.9em;"><em>Visual representation of Messaging being enabled.</em></p>
-            </div>
         </div>
         <div class="slide">
             <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">1.2 Create Routing Configuration</span></h2>
             <ul>
-                <li>In Setup Quick Find, search for and select <span class="code-like">Routing Configurations</span>. [cite: 6]</li>
-                <li>Click on <span class="code-like">New</span>. [cite: 6]</li>
-                <li>Set field values as follows: [cite: 7]</li>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Routing Configurations</span>.</li>
+                <li>Click on <span class="code-like">New</span>.</li>
+                <li>Set field values as follows:</li>
             </ul>
             <table>
                 <thead><tr><th>Field</th><th>Value</th></tr></thead>
                 <tbody>
-                    <tr><td>Routing Configuration Name</td><td>Agent Routing Configuration [cite: 8]</td></tr>
-                    <tr><td>Developer Name</td><td>Agent_Routing_Configuration [cite: 8]</td></tr>
-                    <tr><td>Overflow Assignee</td><td>Leave Blank [cite: 8]</td></tr>
-                    <tr><td>Routing Priority</td><td>1 [cite: 8]</td></tr>
-                    <tr><td>Routing Model</td><td>Most Available [cite: 8]</td></tr>
-                    <tr><td>Push Time-out(seconds)</td><td>Leave Blank [cite: 8]</td></tr>
-                    <tr><td>Capacity Type</td><td>Keep default: Inherited [cite: 8]</td></tr>
-                    <tr><td>Units of Capacity</td><td>2 [cite: 8]</td></tr>
-                    <tr><td>Percentage of Capacity</td><td>Leave Blank [cite: 8]</td></tr>
+                    <tr><td>Routing Configuration Name</td><td>Agent Routing Configuration</td></tr>
+                    <tr><td>Developer Name</td><td>Agent_Routing_Configuration</td></tr>
+                    <tr><td>Overflow Assignee</td><td>Leave Blank</td></tr>
+                    <tr><td>Routing Priority</td><td>1</td></tr>
+                    <tr><td>Routing Model</td><td>Most Available</td></tr>
+                    <tr><td>Push Time-out(seconds)</td><td>Leave Blank</td></tr>
+                    <tr><td>Capacity Type</td><td>Keep default: Inherited</td></tr>
+                    <tr><td>Units of Capacity</td><td>2</td></tr>
+                    <tr><td>Percentage of Capacity</td><td>Leave Blank</td></tr>
                 </tbody>
             </table>
-            <ul><li>Click on <span class="code-like">Save</span>. [cite: 9]</li></ul>
+            <ul><li>Click on <span class="code-like">Save</span>.</li></ul>
         </div>
         <div class="slide">
             <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">1.3 Create a Queue</span></h2>
             <ul>
                 <li>In Setup Quick Find, search for and select <span class="code-like">Queues</span>.</li>
                 <li>Click on <span class="code-like">New</span>.</li>
-                <li>Set field values as follows: [cite: 10]</li>
-            </ul>
-            <table>
-                <thead><tr><th>Field</th><th>Value</th></tr></thead>
-                <tbody>
-                    <tr><td>Label</td><td>Messaging Queue [cite: 11]</td></tr>
-                    <tr><td>Queue Name</td><td>Messaging_Queue [cite: 11]</td></tr>
-                    <tr><td>Queue Email</td><td>Leave Blank [cite: 11]</td></tr>
-                    <tr><td>Send Email to Members</td><td>Keep default: False [cite: 11]</td></tr>
-                    <tr><td>Routing Configuration</td><td>Agent_Routing_Configuration [cite: 11]</td></tr>
-                    <tr><td>Selected Objects</td><td>Messaging Session [cite: 11]</td></tr>
-                    <tr><td>Selected Members</td><td>Admin User [cite: 11]</td></tr>
-                </tbody>
-            </table>
-            <ul><li>Click on <span class="code-like">Save</span>. [cite: 12]</li></ul>
-        </div>
-        <div class="slide">
-            <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">1.4 Create Presence Status</span></h2>
-            <ul>
-                <li>In Setup Quick Find, search for and select <span class="code-like">Presence Statuses</span>. [cite: 12]</li>
-                <li>Click on <span class="code-like">New</span>. [cite: 13]</li>
                 <li>Set field values as follows:</li>
             </ul>
             <table>
                 <thead><tr><th>Field</th><th>Value</th></tr></thead>
                 <tbody>
-                    <tr><td>Label</td><td>Available [cite: 14]</td></tr>
-                    <tr><td>Developer Name</td><td>Available [cite: 14]</td></tr>
-                    <tr><td>Status Options</td><td>Keep default: Online [cite: 14]</td></tr>
-                    <tr><td>Selected Channels</td><td>Messaging [cite: 14]</td></tr>
+                    <tr><td>Label</td><td>Messaging Queue</td></tr>
+                    <tr><td>Queue Name</td><td>Messaging_Queue</td></tr>
+                    <tr><td>Queue Email</td><td>Leave Blank</td></tr>
+                    <tr><td>Send Email to Members</td><td>Keep default: False</td></tr>
+                    <tr><td>Routing Configuration</td><td>Agent_Routing_Configuration</td></tr>
+                    <tr><td>Selected Objects</td><td>Messaging Session</td></tr>
+                    <tr><td>Selected Members</td><td>Admin User</td></tr>
                 </tbody>
             </table>
-            <ul><li>Click on <span class="code-like">Save</span>. [cite: 15]</li></ul>
+            <ul><li>Click on <span class="code-like">Save</span>.</li></ul>
+        </div>
+        <div class="slide">
+            <h2>Step 1: Enable Messaging & Configure Omni-Channel <span class="subtitle">1.4 Create Presence Status</span></h2>
+            <ul>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Presence Statuses</span>.</li>
+                <li>Click on <span class="code-like">New</span>.</li>
+                <li>Set field values as follows:</li>
+            </ul>
+            <table>
+                <thead><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Label</td><td>Available</td></tr>
+                    <tr><td>Developer Name</td><td>Available</td></tr>
+                    <tr><td>Status Options</td><td>Keep default: Online</td></tr>
+                    <tr><td>Selected Channels</td><td>Messaging</td></tr>
+                </tbody>
+            </table>
+            <ul><li>Click on <span class="code-like">Save</span>.</li></ul>
         </div>
         <div class="slide">
             <h2>Step 1: Omni-Channel Config <span class="subtitle">1.5 Create Presence Status Permission Set</span></h2>
             <h4>Permission Set Creation</h4>
             <ul>
-                <li>In Setup Quick Find, search for <span class="code-like">Permission Sets</span>, then select it. [cite: 15]</li>
-                <li>Click <span class="code-like">New</span>. [cite: 16]</li>
-                <li>Set field values: [cite: 16]</li>
+                <li>In Setup Quick Find, search for <span class="code-like">Permission Sets</span>, then select it.</li>
+                <li>Click <span class="code-like">New</span>.</li>
+                <li>Set field values:</li>
             </ul>
             <table>
                 <thead><tr><th>Field</th><th>Value</th></tr></thead>
                 <tbody>
-                    <tr><td>Label</td><td>Customer Service Agent [cite: 17]</td></tr>
-                    <tr><td>API Name</td><td>Customer_Service_Agent [cite: 17]</td></tr>
-                    <tr><td>Description</td><td>This permission set grants access to messaging and the Available Messaging Status. [cite: 17]</td></tr>
-                    <tr><td>License</td><td>Keep default: None [cite: 17]</td></tr>
+                    <tr><td>Label</td><td>Customer Service Agent</td></tr>
+                    <tr><td>API Name</td><td>Customer_Service_Agent</td></tr>
+                    <tr><td>Description</td><td>This permission set grants access to messaging and the Available Messaging Status.</td></tr>
+                    <tr><td>License</td><td>Keep default: None</td></tr>
                 </tbody>
             </table>
-            <ul><li>Click <span class="code-like">Save</span>. [cite: 18]</li></ul>
+            <ul><li>Click <span class="code-like">Save</span>.</li></ul>
             <h4>Configure Presence Status Access & Assign</h4>
             <ul>
-                <li>Under Apps, click <span class="code-like">Service Presence Statuses Access</span>. [cite: 18]</li>
-                <li>Click <span class="code-like">Edit</span>. [cite: 18]</li>
-                <li>Add <span class="code-like">Available</span> to Enabled Service Presence Statuses. [cite: 19]</li>
-                <li>Click <span class="code-like">Save</span>. [cite: 19]</li>
-                <li>Click <span class="code-like">Manage Assignments</span>, then <span class="code-like">Add Assignments</span>. [cite: 19]</li>
-                <li>Check the box next to <span class="code-like">Admin User</span>. [cite: 20]</li>
-                <li>Click <span class="code-like">Save</span>, then <span class="code-like">Done</span>. [cite: 20]</li>
+                <li>Under Apps, click <span class="code-like">Service Presence Statuses Access</span>.</li>
+                <li>Click <span class="code-like">Edit</span>.</li>
+                <li>Add <span class="code-like">Available</span> to Enabled Service Presence Statuses.</li>
+                <li>Click <span class="code-like">Save</span>.</li>
+                <li>Click <span class="code-like">Manage Assignments</span>, then <span class="code-like">Add Assignments</span>.</li>
+                <li>Check the box next to <span class="code-like">Admin User</span>.</li>
+                <li>Click <span class="code-like">Save</span>, then <span class="code-like">Done</span>.</li>
             </ul>
         </div>
         <div class="slide">
             <h2>Step 1: Omni-Channel Config <span class="subtitle">1.6 Create Presence Configuration</span></h2>
             <ul>
-                <li>In Setup Quick Find, search for <span class="code-like">Presence Configuration</span>, then select it. [cite: 21]</li>
-                <li>Click <span class="code-like">New</span>. [cite: 21]</li>
-                <li>Set field values: [cite: 22]</li>
+                <li>In Setup Quick Find, search for <span class="code-like">Presence Configuration</span>, then select it.</li>
+                <li>Click <span class="code-like">New</span>.</li>
+                <li>Set field values:</li>
             </ul>
             <table>
                 <thead><tr><th>Field</th><th>Value</th></tr></thead>
                 <tbody>
-                    <tr><td>Presence Configuration Name</td><td>Messaging Presence Configuration [cite: 23]</td></tr>
-                    <tr><td>Developer Name</td><td>Messaging_Presence_Configuration [cite: 23]</td></tr>
-                    <tr><td>Capacity</td><td>20 [cite: 23]</td></tr>
+                    <tr><td>Presence Configuration Name</td><td>Messaging Presence Configuration</td></tr>
+                    <tr><td>Developer Name</td><td>Messaging_Presence_Configuration</td></tr>
+                    <tr><td>Capacity</td><td>20</td></tr>
                 </tbody>
             </table>
             <ul>
-                <li>Every other value should be left to the defaults. [cite: 24]</li>
-                <li>Click <span class="code-like">Save</span>. [cite: 24]</li>
+                <li>Every other value should be left to the defaults.</li>
+                <li>Click <span class="code-like">Save</span>.</li>
             </ul>
         </div>
         <div class="slide">
             <h2>Step 1: Omni-Channel Config <span class="subtitle">1.7 Create a Messaging Channel</span></h2>
             <ul>
-                <li>In Setup Quick Find, search for and select <span class="code-like">Messaging Settings</span>. [cite: 25]</li>
-                <li>Click on <span class="code-like">New Channel</span>. [cite: 26]</li>
-                <li>Click <span class="code-like">Start</span>. [cite: 26]</li>
-                <li>Select <span class="code-like">Messaging for In-App and Web</span>. [cite: 26]</li>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Messaging Settings</span>.</li>
+                <li>Click on <span class="code-like">New Channel</span>.</li>
+                <li>Click <span class="code-like">Start</span>.</li>
+                <li>Select <span class="code-like">Messaging for In-App and Web</span>.</li>
                 <li>Set field values as follows:</li>
             </ul>
             <table>
                 <thead><tr><th>Field</th><th>Value</th></tr></thead>
                 <tbody>
-                    <tr><td>Channel Name</td><td>Agent Channel [cite: 27]</td></tr>
-                    <tr><td>Developer Name</td><td>Agent_Channel [cite: 27]</td></tr>
+                    <tr><td>Channel Name</td><td>Agent Channel</td></tr>
+                    <tr><td>Developer Name</td><td>Agent_Channel</td></tr>
                 </tbody>
             </table>
-            <ul><li>Click on <span class="code-like">Save</span>. [cite: 28]</li></ul>
+            <ul><li>Click on <span class="code-like">Save</span>.</li></ul>
         </div>
         <div class="slide">
             <h2>Step 2: Create Omni-Channel Routing Flow <span class="subtitle">Automating Agent Assignment</span></h2>
-            <p>Use Flow to route customers to an Agentforce Agent directly from your Experience Cloud site. [cite: 28]</p>
+            <p>Use Flow to route customers to an Agentforce Agent directly from your Experience Cloud site.</p>
              <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             <h3>2.1 Create the "Route to Agent" Flow</h3>
             <h4>Initial Flow Setup</h4>
             <ul>
-                <li>In Setup, search for <span class="code-like">Flow</span> in Quick Find and select <span class="code-like">Flows</span>. [cite: 29]</li>
-                <li>Click <span class="code-like">New Flow</span>. [cite: 30]</li>
-                <li>Click on <span class="code-like">Start From Scratch</span>, then <span class="code-like">Next</span>. [cite: 30]</li>
-                <li>Select <span class="code-like">Omni-Channel Flow</span> and click <span class="code-like">Create</span>. [cite: 30]</li>
+                <li>In Setup, search for <span class="code-like">Flow</span> in Quick Find and select <span class="code-like">Flows</span>.</li>
+                <li>Click <span class="code-like">New Flow</span>.</li>
+                <li>Click on <span class="code-like">Start From Scratch</span>, then <span class="code-like">Next</span>.</li>
+                <li>Select <span class="code-like">Omni-Channel Flow</span> and click <span class="code-like">Create</span>.</li>
             </ul>
             <h4>Create Flow Variable</h4>
             <ul>
-                <li>Open the Toolbox/Resources panel (click sidebar icon if needed). [cite: 31, 32]</li>
+                <li>Open the Toolbox/Resources panel (click sidebar icon if needed).</li>
                 <li>Using the "New Resource" button, create a variable: [cite: 33]</li>
             </ul>
             <table>
                 <thead><tr><th>Resource Type</th><th>API Name</th><th>Description</th><th>Data Type</th><th>Available for input</th><th>Available for output</th></tr></thead>
                 <tbody>
-                    <tr><td>Variable</td><td>recordId [cite: 34]</td><td>The recordId is used to assign a messaging session to an Agent. [cite: 34]</td><td>Text [cite: 34]</td><td>✅ [cite: 34]</td><td>Unchecked [cite: 34]</td></tr>
+                    <tr><td>Variable</td><td>recordId</td><td>The recordId is used to assign a messaging session to an Agent.</td><td>Text</td><td>✅</td><td>Unchecked</td></tr>
                 </tbody>
             </table>
-             <div class="placeholder-info">
-                <strong>Conceptual Flow Diagram:</strong> The following slides will build out this Omni-Channel Flow.
-            </div>
-            <div id="omniChannelFlowDiagram">
-                </div>
         </div>
         <div class="slide">
             <h2>Step 2: Omni-Channel Routing Flow <span class="subtitle">2.2 Element: Get Messaging Session</span></h2>
             <ul>
-                <li>Mouse over the circle under the Start element, click <span class="code-like">+</span>, and select <span class="code-like">Get Records</span>. [cite: 35]</li>
-                <li>Configure the "Get Records" action: [cite: 36]</li>
+                <li>Mouse over the circle under the Start element, click <span class="code-like">+</span>, and select <span class="code-like">Get Records</span>.</li>
+                <li>Configure the "Get Records" action:</li>
             </ul>
             <table>
                 <thead><tr><th>Field</th><th>Value</th></tr></thead>
                 <tbody>
-                    <tr><td>Label</td><td>Get Messaging Session [cite: 37]</td></tr>
-                    <tr><td>API Name</td><td>Get_Messaging_Session [cite: 37]</td></tr>
-                    <tr><td>Description</td><td>Get the related messaging session that you would like to route to an agent. [cite: 37]</td></tr>
-                    <tr><td>Data Source</td><td>Salesforce Object [cite: 37]</td></tr>
-                    <tr><td>Object</td><td>Messaging Session [cite: 37]</td></tr>
-                    <tr><td>Condition Requirements</td><td>All Conditions Are Met (AND) [cite: 37]</td></tr>
+                    <tr><td>Label</td><td>Get Messaging Session</td></tr>
+                    <tr><td>API Name</td><td>Get_Messaging_Session</td></tr>
+                    <tr><td>Description</td><td>Get the related messaging session that you would like to route to an agent.</td></tr>
+                    <tr><td>Data Source</td><td>Salesforce Object</td></tr>
+                    <tr><td>Object</td><td>Messaging Session</td></tr>
+                    <tr><td>Condition Requirements</td><td>All Conditions Are Met (AND)</td></tr>
                 </tbody>
             </table>
-            <ul><li>Define the condition: [cite: 38]</li></ul>
+            <ul><li>Define the condition:</li></ul>
             <table>
                 <thead><tr><th>Field</th><th>Operator</th><th>Value</th></tr></thead>
                 <tbody>
-                    <tr><td>Id</td><td>Equals</td><td>$recordId [cite: 39]</td></tr>
+                    <tr><td>Id</td><td>Equals</td><td>$recordId</td></tr>
                 </tbody>
             </table>
-            <ul><li>Leave "How Many Records to Store" and "How to Store Record Data" to their defaults. [cite: 40]</li></ul>
+            <ul><li>Leave "How Many Records to Store" and "How to Store Record Data" to their defaults.</li></ul>
         </div>
         <div class="slide">
             <h2>Step 2: Omni-Channel Routing Flow <span class="subtitle">2.3 Element: Route Work</span></h2>
             <ul>
-                <li>Mouse over the circle under the "Get Messaging Session" element, click <span class="code-like">+</span>, and select <span class="code-like">Route Work</span>. [cite: 41]</li>
-                <li>Configure the "Route Work" action: [cite: 42]</li>
+                <li>Mouse over the circle under the "Get Messaging Session" element, click <span class="code-like">+</span>, and select <span class="code-like">Route Work</span>.</li>
+                <li>Configure the "Route Work" action:</li>
             </ul>
             <table>
                 <thead><tr><th>Field</th><th>Value</th></tr></thead>
                 <tbody>
-                    <tr><td>Label</td><td>Route to Agent [cite: 43]</td></tr>
-                    <tr><td>API Name</td><td>Route_to_Agent [cite: 43]</td></tr>
-                    <tr><td>Description</td><td>Route the messaging session to the Coral Cloud Agent [cite: 43]</td></tr>
-                    <tr><td>How Many Work Records to Route?</td><td>Keep default: Single [cite: 43]</td></tr>
-                    <tr><td>Record Id Variable</td><td>$recordId [cite: 43]</td></tr>
-                    <tr><td>Service Channel</td><td>Messaging [cite: 43]</td></tr>
-                    <tr><td>Route To</td><td>Agentforce Service Agent [cite: 43]</td></tr>
-                    <tr><td>Agentforce Service Agent</td><td>Customer Serivce Agent [cite: 43]</td></tr>
-                    <tr><td>Fallback Queue</td><td>Select Queue [cite: 43]</td></tr>
-                    <tr><td>Fallback Queue Id</td><td>Messaging Queue [cite: 43]</td></tr>
+                    <tr><td>Label</td><td>Route to Agent</td></tr>
+                    <tr><td>API Name</td><td>Route_to_Agent</td></tr>
+                    <tr><td>Description</td><td>Route the messaging session to the Coral Cloud Agent</td></tr>
+                    <tr><td>How Many Work Records to Route?</td><td>Keep default: Single</td></tr>
+                    <tr><td>Record Id Variable</td><td>$recordId</td></tr>
+                    <tr><td>Service Channel</td><td>Messaging</td></tr>
+                    <tr><td>Route To</td><td>Agentforce Service Agent</td></tr>
+                    <tr><td>Agentforce Service Agent</td><td>Customer Serivce Agent</td></tr>
+                    <tr><td>Fallback Queue</td><td>Select Queue</td></tr>
+                    <tr><td>Fallback Queue Id</td><td>Messaging Queue</td></tr>
                 </tbody>
             </table>
         </div>
         <div class="slide">
             <h2>Step 2: Omni-Channel Routing Flow <span class="subtitle">2.4 Save and Activate</span></h2>
             <ul>
-                <li>Click on <span class="code-like">Save</span> in the Flow Builder. [cite: 44]</li>
-                <li>Set the values for the flow: [cite: 44]</li>
+                <li>Click on <span class="code-like">Save</span> in the Flow Builder.</li>
+                <li>Set the values for the flow:</li>
             </ul>
             <table>
                 <thead><tr><th>Field</th><th>Value</th></tr></thead>
                 <tbody>
-                    <tr><td>Flow Label</td><td>Route to Agent [cite: 45]</td></tr>
-                    <tr><td>Flow API Name</td><td>Route_to_Agent [cite: 45]</td></tr>
+                    <tr><td>Flow Label</td><td>Route to Agent</td></tr>
+                    <tr><td>Flow API Name</td><td>Route_to_Agent</td></tr>
                 </tbody>
             </table>
-            <ul><li>Click on <span class="code-like">Activate</span>. [cite: 46]</li></ul>
-            <div class="interactive-area">
-                <p><strong>Simulation: Flow Activation</strong></p>
-                <button onclick="alert('Flow \"Route to Agent\" is now Active! (Simulated)')">Activate Flow</button>
-                <p style="font-size:0.9em;"><em>Represents the successful activation of your Omni-Channel Flow.</em></p>
-            </div>
+            <ul><li>Click on <span class="code-like">Activate</span>.</li></ul>
         </div>
         <div class="slide">
             <h2>Step 3: Update Messaging Channel <span class="subtitle">Linking Flow to Channel</span></h2>
-            <p>Associate the Agentforce Agent (e.g., Coral Cloud Agent) to the newly created routing flow by updating the messaging channel configuration. [cite: 46]</p>
+            <p>Associate the Agentforce Agent (e.g., Coral Cloud Agent) to the newly created routing flow by updating the messaging channel configuration.</p>
             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             <h3>3.1 Add "Route-to-Agent" Flow to Messaging Config</h3>
             <ul>
-                <li>In Setup Quick Find, search for and select <span class="code-like">Messaging Settings</span>. [cite: 47]</li>
-                <li>Open the <span class="code-like">Agent Channel</span>. [cite: 48]</li>
-                <li>Click on the <span class="code-like">Edit</span> button under <span class="code-like">Omni-Channel Settings</span>. [cite: 48]</li>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Messaging Settings</span>.</li>
+                <li>Open the <span class="code-like">Agent Channel</span>.</li>
+                <li>Click on the <span class="code-like">Edit</span> button under <span class="code-like">Omni-Channel Settings</span>.</li>
                 <li>Configure the settings as follows:</li>
             </ul>
             <table>
                 <thead><tr><th>Field</th><th>Value</th></tr></thead>
                 <tbody>
-                    <tr><td>Routing Type</td><td>Omni-Flow [cite: 49]</td></tr>
-                    <tr><td>Flow Definition</td><td>Route to Agent [cite: 49]</td></tr>
-                    <tr><td>Fallback Queue</td><td>Messaging Queue [cite: 49]</td></tr>
+                    <tr><td>Routing Type</td><td>Omni-Flow</td></tr>
+                    <tr><td>Flow Definition</td><td>Route to Agent</td></tr>
+                    <tr><td>Fallback Queue</td><td>Messaging Queue</td></tr>
                 </tbody>
             </table>
             <ul>
-                <li>Click on <span class="code-like">Save</span>. [cite: 50]</li>
-                <li>Click on <span class="code-like">Activate</span>. [cite: 50]</li>
-                <li>Accept the Terms and Conditions if prompted. [cite: 50]</li>
+                <li>Click on <span class="code-like">Save</span>.</li>
+                <li>Click on <span class="code-like">Activate</span>.</li>
+                <li>Accept the Terms and Conditions if prompted.</li>
             </ul>
         </div>
         <div class="slide">
             <h2>Step 4: Create Embedded Service Deployment <span class="subtitle">Exposing the Agent</span></h2>
-            <p>Create an Embedded Service deployment to distribute your agent for use on your Experience Cloud site. [cite: 51]</p>
+            <p>Create an Embedded Service deployment to distribute your agent for use on your Experience Cloud site.</p>
             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             <ul>
-                <li>In Setup Quick Find, search for and select <span class="code-like">Embedded Service Deployments</span>. [cite: 52]</li>
-                <li>Click on <span class="code-like">New Deployment</span>. [cite: 52]</li>
-                <li>Select <span class="code-like">Messaging for In-App and Web</span>, then click <span class="code-like">Next</span>. [cite: 53]</li>
-                <li>Select <span class="code-like">Web</span>. [cite: 53]</li>
+                <li>In Setup Quick Find, search for and select <span class="code-like">Embedded Service Deployments</span>.</li>
+                <li>Click on <span class="code-like">New Deployment</span>.</li>
+                <li>Select <span class="code-like">Messaging for In-App and Web</span>, then click <span class="code-like">Next</span>.</li>
+                <li>Select <span class="code-like">Web</span>.</li>
                 <li>Configure the deployment:</li>
             </ul>
             <table>
                 <thead><tr><th>Field</th><th>Value</th></tr></thead>
                 <tbody>
-                    <tr><td>Embedded Service Deployment Name</td><td>Agent Web Deployment [cite: 54]</td></tr>
-                    <tr><td>API Name</td><td>Agent_Web_Deployment [cite: 54]</td></tr>
-                    <tr><td>Domain</td><td>Give your site domain (e.g., <code>your-exp-cloud-site.my.site.com</code>) [cite: 54]</td></tr>
-                    <tr><td>Messaging Channel</td><td>Agent Channel [cite: 54]</td></tr>
+                    <tr><td>Embedded Service Deployment Name</td><td>Agent Web Deployment</td></tr>
+                    <tr><td>API Name</td><td>Agent_Web_Deployment</td></tr>
+                    <tr><td>Domain</td><td>Give your site domain (e.g., <code>your-exp-cloud-site.my.site.com</code>)</td></tr>
+                    <tr><td>Messaging Channel</td><td>Agent Channel</td></tr>
                 </tbody>
             </table>
             <ul>
-                <li>Click on <span class="code-like">Save</span>. [cite: 55]</li>
-                <li>Once saved, click on <span class="code-like">Publish</span>. [cite: 55]</li>
+                <li>Click on <span class="code-like">Save</span>.</li>
+                <li>Once saved, click on <span class="code-like">Publish</span>.</li>
             </ul>
         </div>
         <div class="slide">
             <h2>Step 5: Add Agent to Experience Site <span class="subtitle">Final Integration</span></h2>
-            <p>The final step is to add the configured Embedded Messaging component to your Experience Cloud site. [cite: 56]</p>
+            <p>The final step is to add the configured Embedded Messaging component to your Experience Cloud site.</p>
             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             <h3>Integration Steps:</h3>
             <ul>
-                <li>Navigate to the Experience Builder for your site. [cite: 56]</li>
+                <li>Navigate to the Experience Builder for your site.</li>
                 <li>From the components panel, find the <span class="code-like">Embedded Messaging</span> component.</li>
-                <li>Drag and drop the <span class="code-like">Embedded Messaging</span> component onto your desired page or template footer. [cite: 56]</li>
+                <li>Drag and drop the <span class="code-like">Embedded Messaging</span> component onto your desired page or template footer.</li>
                 <li>Configure the component to use your "Agent Web Deployment".</li>
                 <li>Publish your Experience Cloud site changes.</li>
             </ul>
             <h3>Start Interacting!</h3>
-            <p>Once published, your Agentforce agent should be accessible to customers through the chat widget on your Experience Cloud site. [cite: 57]</p>
-             <div class="interactive-area">
-                <p><strong>Simulation: Experience Cloud Interaction</strong></p>
-                <p>Imagine your Experience Cloud site with a chat widget:</p>
-                <div style="width:80px; height:80px; background-color:#007aff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:24px; margin:10px auto;">💬</div>
-                <p><em>Clicking this would open the chat window powered by your Agentforce Agent and Omni-Channel setup.</em></p>
-            </div>
+            <p>Once published, your Agentforce agent should be accessible to customers through the chat widget on your Experience Cloud site.</p>
         </div>
         <div class="slide">
             <h2>Deployment Complete! <span class="subtitle">Summary & Next Steps</span></h2>
